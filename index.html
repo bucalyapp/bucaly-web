@@ -174,6 +174,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .fd-v{font-size:14.5px;font-weight:700;color:#fff;}
 .fd-l{font-size:10.5px;color:#94A3B8;margin-top:2px;}
 .sec-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:7px;}
+/* FEEDBACK GATE */
+.fb-hero{text-align:center;padding:18px 0 22px;}
+.fb-icon{font-size:44px;margin-bottom:12px;animation:fb-bounce 1.8s ease-in-out infinite;}
+@keyframes fb-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.fb-title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:var(--navy);letter-spacing:-0.02em;margin-bottom:8px;}
+.fb-sub{font-size:13px;color:var(--grey);line-height:1.55;max-width:300px;margin:0 auto;}
+.fb-options{display:flex;flex-direction:column;gap:12px;}
+.fb-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:none;border-radius:18px;padding:20px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.fb-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.12);}
+.fb-card-patient{background:linear-gradient(135deg,#00B89C,#007A6E);}
+.fb-card-dentist{background:linear-gradient(135deg,#0B1F35,#1A3A5C);}
+.fb-emoji{font-size:30px;margin-bottom:8px;}
+.fb-card-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-0.01em;}
+.fb-card-desc{font-size:12.5px;color:rgba(255,255,255,.82);line-height:1.5;margin-bottom:12px;}
+.fb-card-cta{font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.18);padding:7px 14px;border-radius:20px;align-self:flex-start;}
 </style>
 </head>
 <body>
@@ -488,7 +503,31 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div class="fd-opt" onclick="alert('Pagarás al contado.')"><div class="fd-v">Contado</div><div class="fd-l">Sin financiamiento</div></div>
     </div>
   </div>
-  <button class="btn btn-p" onclick="go('s0')">Volver al inicio</button>
+  <button class="btn btn-p" onclick="go('sFeedback')">Continuar →</button>
+</div>
+
+<!-- ══ FEEDBACK GATE — pregunta final ══ -->
+<div class="screen" id="sFeedback">
+  <div class="fb-hero">
+    <div class="fb-icon">💬</div>
+    <h2 class="fb-title">¡Ayúdanos a mejorar Bucaly!</h2>
+    <p class="fb-sub">Estamos en beta y tu opinión define el rumbo de la app. Toma 1 minuto.</p>
+  </div>
+  <div class="fb-options">
+    <button class="fb-card fb-card-patient" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfgAPAOf9zYjc7GHOK8v7W1ZxVCcYAOaHm1lCq7xQWphFTX7Q/viewform','_blank')">
+      <span class="fb-emoji">🙋</span>
+      <span class="fb-card-title">Soy paciente</span>
+      <span class="fb-card-desc">Cuéntanos cómo fue tu experiencia con el triaje</span>
+      <span class="fb-card-cta">Dar mi opinión →</span>
+    </button>
+    <button class="fb-card fb-card-dentist" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSenGrNAEVadPe15qlObbuqqaAJxK1_jgTUxv_aCHe8QSqMBMQ/viewform','_blank')">
+      <span class="fb-emoji">🦷</span>
+      <span class="fb-card-title">Soy dentista</span>
+      <span class="fb-card-desc">Evalúa el potencial de Bucaly para tu clínica</span>
+      <span class="fb-card-cta">Dar mi opinión →</span>
+    </button>
+  </div>
+  <button class="btn btn-s" onclick="go('s0')" style="margin-top:18px;">Saltar y volver al inicio</button>
 </div>
 
 </div><!-- /main -->
