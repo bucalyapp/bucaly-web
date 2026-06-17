@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bucaly — Triaje Dental</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#009E8C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bucaly">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300;1,600&display=swap');
+:root{
+  --bg:#F6F4F1;--white:#fff;--navy:#0B1F35;--teal:#009E8C;--teal-l:#E4F5F3;--teal-m:#9FD9D2;
+  --gold:#B45309;--gold-l:#FEF3C7;--red:#B91C1C;--red-l:#FEE2E2;
+  --orange:#C2410C;--orange-l:#FFEDD5;--grey:#6B7280;--grey-l:#F3F4F6;
+  --border:#E2DDD8;--text:#111827;--r:14px;--r-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo-icon{width:34px;height:34px;background:var(--teal);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.logo-name{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--navy);letter-spacing:-0.03em;}
+.beta-tag{font-size:10px;font-weight:600;background:var(--teal-l);color:var(--teal);padding:3px 8px;border-radius:20px;border:1px solid var(--teal-m);}
+.main{flex:1;max-width:500px;margin:0 auto;padding:20px 16px 80px;width:100%;}
+.screen{display:none;}.screen.active{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.prog-wrap{margin-bottom:20px;}
+.prog-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-label{font-size:11px;color:var(--grey);font-weight:500;}
+.prog-step{font-size:11px;color:var(--teal);font-weight:600;}
+.prog-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s ease;}
+.back-btn{background:none;border:none;color:var(--grey);font-size:13px;cursor:pointer;padding:0;margin-bottom:16px;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;}
+.back-btn:hover{color:var(--navy);}
+.ai-badge{display:inline-flex;align-items:center;gap:5px;background:var(--teal-l);color:var(--teal);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-bottom:12px;border:1px solid var(--teal-m);}
+/* WELCOME */
+.w-hero{text-align:center;padding:24px 0 18px;}
+.w-icon{width:72px;height:72px;background:var(--teal);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px;box-shadow:0 8px 24px rgba(0,158,140,.22);}
+.w-title{font-family:'Fraunces',serif;font-size:25px;font-weight:600;color:var(--navy);letter-spacing:-0.03em;line-height:1.15;margin-bottom:10px;}
+.w-title em{font-style:italic;color:var(--teal);}
+.w-sub{font-size:13.5px;color:var(--grey);line-height:1.65;max-width:340px;margin:0 auto;}
+.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:16px 0;}
+.value-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px;}
+.value-ic{font-size:19px;margin-bottom:5px;}
+.value-title{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:3px;}
+.value-desc{font-size:11px;color:var(--grey);line-height:1.45;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0;}
+.stat-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 8px;text-align:center;}
+.stat-v{font-size:18px;font-weight:700;color:var(--teal);letter-spacing:-0.03em;}
+.stat-l{font-size:10px;color:var(--grey);line-height:1.4;margin-top:2px;}
+/* BUTTONS */
+.btn{width:100%;border:none;border-radius:var(--r);padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;letter-spacing:-0.01em;}
+.btn-p{background:var(--teal);color:#fff;margin-top:4px;}
+.btn-p:hover{background:#00877A;transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,158,140,.28);}
+.btn-s{background:var(--white);color:var(--navy);border:1.5px solid var(--border);margin-top:10px;}
+.btn-s:hover{border-color:var(--teal);color:var(--teal);}
+.btn-d{background:var(--red);color:#fff;margin-top:10px;}
+.btn-d:hover{background:#991B1B;}
+/* CARDS */
+.q-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;}
+.q-title{font-size:15.5px;font-weight:600;color:var(--navy);margin-bottom:3px;line-height:1.35;}
+.q-sub{font-size:12.5px;color:var(--grey);margin-bottom:14px;line-height:1.55;}
+.q-hint{font-size:11.5px;color:var(--grey);background:var(--grey-l);border-radius:8px;padding:8px 10px;margin-top:10px;line-height:1.5;}
+/* OPTIONS */
+.options{display:flex;flex-direction:column;gap:7px;}
+.option{padding:12px 15px;border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text);background:var(--white);transition:all .15s;display:flex;align-items:flex-start;gap:11px;text-align:left;font-family:'Inter',sans-serif;line-height:1.4;}
+.option:hover{border-color:var(--teal);background:var(--teal-l);color:var(--navy);}
+.option.sel{border-color:var(--teal);background:var(--teal-l);color:var(--navy);}
+.opt-ic{font-size:18px;flex-shrink:0;margin-top:1px;}
+.opt-text{flex:1;}
+.opt-sub{font-size:11px;color:var(--grey);margin-top:2px;font-weight:400;}
+/* SYMPTOM INPUT */
+.sym-input{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:13px;font-size:13.5px;font-family:'Inter',sans-serif;color:var(--text);resize:none;height:88px;transition:border-color .15s;outline:none;}
+.sym-input:focus{border-color:var(--teal);}
+.sym-input::placeholder{color:#9CA3AF;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.chip{padding:6px 12px;background:var(--white);border:1.5px solid var(--border);border-radius:20px;font-size:12.5px;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;color:var(--text);}
+.chip:hover,.chip.sel-chip{border-color:var(--teal);color:var(--teal);background:var(--teal-l);}
+/* SLIDER */
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;background:linear-gradient(to right,var(--teal) 0%,var(--teal) 0%,var(--border) 0%);border-radius:3px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--teal);border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.slider-val{text-align:center;font-size:22px;font-weight:700;color:var(--navy);margin-top:10px;}
+.slider-desc{text-align:center;font-size:12px;color:var(--grey);margin-top:2px;}
+.slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--grey);margin-top:5px;}
+/* CHECKBOX */
+.check-list{display:flex;flex-direction:column;gap:7px;}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:all .15s;}
+.check-item:hover{border-color:var(--teal);background:var(--teal-l);}
+.check-item.checked{border-color:var(--teal);background:var(--teal-l);}
+.check-ic{width:18px;height:18px;border:2px solid #D1D5DB;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;color:transparent;}
+.check-item.checked .check-ic{background:var(--teal);border-color:var(--teal);color:#fff;}
+.check-text{font-size:13px;color:var(--text);line-height:1.4;}
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px;text-align:center;}
+.spinner{width:44px;height:44px;border:4px solid var(--teal-l);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite;margin-bottom:18px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-title{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:5px;}
+.load-sub{font-size:13px;color:var(--grey);line-height:1.6;}
+.load-note{font-size:11.5px;color:var(--teal);margin-top:12px;}
+/* RESULT */
+.alert-box{border-radius:var(--r);padding:15px 17px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;}
+.alert-box.emergency{background:#FEF2F2;border:2px solid #EF4444;}
+.alert-box.urgent{background:var(--orange-l);border:1.5px solid #FB923C;}
+.alert-box.soon{background:var(--gold-l);border:1.5px solid #FCD34D;}
+.alert-box.routine{background:var(--teal-l);border:1.5px solid var(--teal-m);}
+.alert-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.alert-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.alert-box.emergency .alert-label{color:#B91C1C;}
+.alert-box.urgent .alert-label{color:#C2410C;}
+.alert-box.soon .alert-label{color:#B45309;}
+.alert-box.routine .alert-label{color:var(--teal);}
+.alert-title{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:4px;line-height:1.3;}
+.alert-desc{font-size:12.5px;color:#374151;line-height:1.6;}
+.hipotesis-box{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.hip-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin-bottom:10px;}
+.hip-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.hip-item:last-child{border-bottom:none;padding-bottom:0;}
+.hip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.hip-main{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:2px;}
+.hip-why{font-size:11.5px;color:var(--grey);line-height:1.5;}
+.hip-prob{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;margin-left:auto;flex-shrink:0;}
+.hp-h{color:#166534;background:#DCFCE7;}
+.hp-m{color:#92400E;background:#FEF3C7;}
+.hp-l{color:#1E3A5F;background:#DBEAFE;}
+.spec-box{background:var(--navy);border-radius:var(--r);padding:18px;margin-bottom:12px;color:#fff;}
+.spec-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-m);margin-bottom:7px;}
+.spec-name{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:6px;letter-spacing:-0.02em;}
+.spec-desc{font-size:12.5px;color:#94A3B8;line-height:1.6;}
+.disclaimer{background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--r-sm);padding:12px 14px;margin-bottom:14px;}
+.disclaimer p{font-size:12px;color:#78350F;line-height:1.6;}
+.disclaimer strong{color:#92400E;}
+.evidence-note{background:var(--grey-l);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:14px;}
+.evidence-note p{font-size:11px;color:var(--grey);line-height:1.6;}
+/* DENTISTS */
+.dentist-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:15px;margin-bottom:11px;cursor:pointer;transition:all .15s;}
+.dentist-card:hover{border-color:var(--teal);box-shadow:0 4px 14px rgba(0,0,0,.07);}
+.d-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
+.d-name{font-size:14.5px;font-weight:600;color:var(--navy);}
+.d-price{font-size:13.5px;font-weight:600;color:var(--teal);}
+.d-spec{font-size:11.5px;color:var(--grey);margin-bottom:7px;}
+.d-meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;}
+.d-tag{font-size:11px;background:var(--grey-l);color:var(--grey);padding:3px 8px;border-radius:20px;}
+.d-tag.av{background:var(--teal-l);color:var(--teal);font-weight:500;}
+.stars{color:#D97706;font-size:12px;}
+/* APPOINTMENT */
+.appt-banner{background:var(--teal);border-radius:var(--r);padding:22px;text-align:center;color:#fff;margin-bottom:14px;}
+.appt-ic{font-size:44px;margin-bottom:10px;}
+.appt-title{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:7px;}
+.appt-sub{font-size:13px;opacity:.85;line-height:1.5;}
+.appt-detail{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:15px;margin-bottom:12px;}
+.appt-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);gap:12px;}
+.appt-row:last-child{border-bottom:none;}
+.appt-rl{font-size:12.5px;color:var(--grey);flex-shrink:0;}
+.appt-rv{font-size:12.5px;font-weight:500;color:var(--navy);text-align:right;}
+/* FINDENT */
+.findent{background:linear-gradient(135deg,#0B1F35,#1A3A5C);border-radius:var(--r);padding:18px;margin-bottom:14px;color:#fff;}
+.fd-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal-m);margin-bottom:7px;}
+.fd-title{font-size:15px;font-weight:600;margin-bottom:5px;}
+.fd-desc{font-size:12.5px;color:#94A3B8;margin-bottom:13px;line-height:1.55;}
+.fd-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.fd-opt{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:9px;padding:10px;text-align:center;cursor:pointer;transition:all .15s;}
+.fd-opt:hover{background:rgba(0,158,140,.22);border-color:var(--teal);}
+.fd-v{font-size:14.5px;font-weight:700;color:#fff;}
+.fd-l{font-size:10.5px;color:#94A3B8;margin-top:2px;}
+.sec-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:7px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo"><div class="logo-icon">🦷</div><span class="logo-name">Bucaly</span></div>
+  <span class="beta-tag">BETA</span>
+</div>
+<div class="main">
+
+<!-- ══ S0: WELCOME ══ -->
+<div class="screen active" id="s0">
+  <div class="w-hero">
+    <div class="w-icon">🦷</div>
+    <h1 class="w-title">Del síntoma al dentista<br><em>en minutos.</em></h1>
+    <p class="w-sub">Triaje dental con IA que te orienta sobre tu urgencia, te recomienda el especialista correcto, agenda tu hora y te permite pagar en cuotas.</p>
+  </div>
+  <div class="value-grid">
+    <div class="value-card"><div class="value-ic">🧠</div><div class="value-title">Triaje con IA</div><div class="value-desc">Evalúa tus síntomas y te orienta sobre urgencia y especialista. Basado en guías clínicas internacionales.</div></div>
+    <div class="value-card"><div class="value-ic">🎯</div><div class="value-title">Especialista correcto</div><div class="value-desc">Solo dentistas que corresponden a tu caso, filtrados por cercanía y disponibilidad.</div></div>
+    <div class="value-card"><div class="value-ic">📅</div><div class="value-title">Agenda en segundos</div><div class="value-desc">Reserva tu hora sin llamadas ni formularios.</div></div>
+    <div class="value-card"><div class="value-ic">💳</div><div class="value-title">Paga en cuotas</div><div class="value-desc">FinDent te permite financiar tratamientos sin trámites bancarios.</div></div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-v">540k</div><div class="stat-l">personas sin atención dental en Chile</div></div>
+    <div class="stat-box"><div class="stat-v">238d</div><div class="stat-l">espera prom. sistema público</div></div>
+    <div class="stat-box"><div class="stat-v">2 min</div><div class="stat-l">del síntoma a tu hora agendada</div></div>
+  </div>
+  <div class="disclaimer" style="margin-bottom:14px;">
+    <p>⚠ <strong>El triaje es orientativo</strong> — no reemplaza el diagnóstico clínico. Solo un profesional puede diagnosticarte tras examen e imágenes. Úsalo como punto de partida para tomar mejores decisiones.</p>
+  </div>
+  <button class="btn btn-p" onclick="go('s1')">Iniciar triaje gratuito →</button>
+  <button class="btn btn-s" onclick="skipToSearch()">Ya sé lo que necesito — buscar dentista →</button>
+</div>
+
+<!-- ══ S1: SÍNTOMA PRINCIPAL ══ -->
+<div class="screen" id="s1">
+  <button class="back-btn" onclick="go('s0')">← Inicio</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Motivo de consulta</span><span class="prog-step" id="stepLbl1">Paso 1</span></div><div class="prog-bar"><div class="prog-fill" style="width:10%"></div></div></div>
+  <div class="ai-badge">✦ Triaje clínico con IA</div>
+  <div class="q-card">
+    <p class="q-title">¿Cuál es tu problema principal?</p>
+    <p class="q-sub">Cuéntanoslo con tus palabras o elige una opción rápida</p>
+    <textarea class="sym-input" id="symText" placeholder="Ej: tengo un dolor fuerte en una muela desde ayer, no puedo dormir..."></textarea>
+    <div class="chips">
+      <span class="chip" onclick="setSym(this,'Dolor en un diente o muela')">😣 Dolor dental</span>
+      <span class="chip" onclick="setSym(this,'Tengo la cara o encía hinchada')">😮 Hinchazón</span>
+      <span class="chip" onclick="setSym(this,'Me sangra la encía al cepillarme')">🩸 Encía sangra</span>
+      <span class="chip" onclick="setSym(this,'Sufrí un golpe y me afectó un diente')">💥 Traumatismo</span>
+      <span class="chip" onclick="setSym(this,'Se me rompió un diente o se cayó un empaste')">🦷 Diente roto</span>
+      <span class="chip" onclick="setSym(this,'Me duele la mandíbula, escucho ruidos o me cuesta abrir la boca')">😬 Mandíbula / ATM</span>
+      <span class="chip" onclick="setSym(this,'Quiero un implante dental')">✨ Implante</span>
+      <span class="chip" onclick="setSym(this,'Quiero blanquearme los dientes')">⬜ Blanqueamiento</span>
+      <span class="chip" onclick="setSym(this,'Quiero una revisión general, no tengo síntomas')">🔍 Chequeo preventivo</span>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="nextS1()">Continuar →</button>
+</div>
+
+<!-- ══ S2: SEÑALES DE ALARMA ══ -->
+<div class="screen" id="s2">
+  <button class="back-btn" onclick="go('s1')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Señales de alerta</span><span class="prog-step">Paso 2</span></div><div class="prog-bar"><div class="prog-fill" style="width:22%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Tienes alguno de estos síntomas ahora?</p>
+    <p class="q-sub">Son señales que nos ayudan a identificar situaciones que requieren atención inmediata. Marca todos los que apliquen.</p>
+    <div class="check-list" id="alarmaList">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo la cara, mejilla o cuello <strong>hinchados</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo <strong>fiebre</strong> (temperatura mayor a 38°C)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Me cuesta <strong>tragar o abrir la boca</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Siento que me <strong>cuesta respirar</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Hay <strong>sangrado que no cede</strong> desde hace más de 20 minutos</span></div>
+    </div>
+    <div class="q-hint">Si no tienes ninguno de estos síntomas, continúa sin marcar nada.</div>
+  </div>
+  <button class="btn btn-p" onclick="nextS2()">Continuar →</button>
+</div>
+
+<!-- ══ S3A: DOLOR DENTAL (rama odontogénica) ══ -->
+<div class="screen" id="s3a">
+  <button class="back-btn" id="backS3a" onclick="go('s2')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Tipo de dolor</span><span class="prog-step">Paso 3</span></div><div class="prog-bar"><div class="prog-fill" style="width:34%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Cómo describirías el dolor?</p>
+    <p class="q-sub">La forma en que aparece el dolor es clave para orientar su posible origen</p>
+    <div class="options">
+      <button class="option" onclick="selAndNext(this,'tipodolor','espontaneo','s4a')">
+        <span class="opt-ic">⚡</span><div class="opt-text">Aparece <strong>solo, sin que nada lo provoque</strong><div class="opt-sub">Pulsa, late o es constante — incluso de noche o en reposo</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'tipodolor','provocado_breve','s4a')">
+        <span class="opt-ic">🥶</span><div class="opt-text">Solo con <strong>frío, calor o dulce</strong> y desaparece rápido<div class="opt-sub">El dolor dura menos de 30 segundos tras retirar el estímulo</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'tipodolor','provocado_linger','s4a')">
+        <span class="opt-ic">🌡️</span><div class="opt-text">Con frío/calor y <strong>tarda en desaparecer</strong><div class="opt-sub">Persiste más de 30 segundos después de retirar el estímulo</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'tipodolor','morder','s4a')">
+        <span class="opt-ic">😬</span><div class="opt-text">Al <strong>morder o presionar</strong> el diente<div class="opt-sub">No aparece espontáneamente</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'tipodolor','encia','s4a')">
+        <span class="opt-ic">🩸</span><div class="opt-text">En la <strong>encía</strong> más que en el diente<div class="opt-sub">Inflamación, presión o sangrado gingival</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3B: DOLOR ATM / MUSCULAR (rama no odontogénica) ══ -->
+<div class="screen" id="s3b">
+  <button class="back-btn" onclick="go('s2')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Dolor mandibular</span><span class="prog-step">Paso 3</span></div><div class="prog-bar"><div class="prog-fill" style="width:34%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Dónde sientes principalmente la molestia?</p>
+    <p class="q-sub">El dolor en la mandíbula puede tener varios orígenes — esto nos ayuda a diferenciarlo</p>
+    <div class="options">
+      <button class="option" onclick="selAndNext(this,'dolorAtm','articulacion','s4b')">
+        <span class="opt-ic">🦴</span><div class="opt-text">En la <strong>articulación</strong> (justo delante del oído)<div class="opt-sub">Siento dolor, clic o trabazón al abrir/cerrar la boca</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'dolorAtm','muscular','s4b')">
+        <span class="opt-ic">💪</span><div class="opt-text">En los <strong>músculos</strong> de la cara, sien o cuello<div class="opt-sub">Sensación de tensión, cansancio o dolor difuso al masticar</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'dolorAtm','ambos','s4b')">
+        <span class="opt-ic">😤</span><div class="opt-text">En <strong>ambos sitios</strong> — articulación y músculos<div class="opt-sub">O no puedo distinguir bien de dónde viene</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'dolorAtm','diente_tb','s3a')">
+        <span class="opt-ic">🦷</span><div class="opt-text">Creo que también hay <strong>dolor dental</strong> asociado<div class="opt-sub">Además del dolor mandibular, me duele un diente específico</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4A: INTENSIDAD (rama dental) ══ -->
+<div class="screen" id="s4a">
+  <button class="back-btn" id="backS4a" onclick="go('s3a')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Intensidad</span><span class="prog-step">Paso 4</span></div><div class="prog-bar"><div class="prog-fill" style="width:46%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Cuánto te duele ahora?</p>
+    <p class="q-sub">Escala EVA — usada clínicamente para evaluar intensidad del dolor (Hjermstad et al. J Pain Symptom Manage 2011)</p>
+    <input type="range" id="painSlider" min="0" max="10" value="0" oninput="updateSlider(this)" style="margin-top:16px">
+    <div class="slider-labels"><span>0 Sin dolor</span><span>10 Máximo</span></div>
+    <div class="slider-val" id="sliderVal">0 / 10</div>
+    <div class="slider-desc" id="sliderDesc">Sin dolor</div>
+  </div>
+  <button class="btn btn-p" onclick="go('s5a')">Continuar →</button>
+</div>
+
+<!-- ══ S4B: INTENSIDAD ATM ══ -->
+<div class="screen" id="s4b">
+  <button class="back-btn" onclick="go('s3b')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Intensidad</span><span class="prog-step">Paso 4</span></div><div class="prog-bar"><div class="prog-fill" style="width:46%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Con qué frecuencia tienes este dolor?</p>
+    <p class="q-sub">Los trastornos temporomandibulares tienen patrones distintos según el subtipo (DC/TMD 2018)</p>
+    <div class="options">
+      <button class="option" onclick="selAndNext(this,'frecAtm','constante','s5b')">
+        <span class="opt-ic">🔴</span><div class="opt-text"><strong>Constante</strong> — presente todo el día<div class="opt-sub">No cede aunque esté en reposo</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'frecAtm','masticar','s5b')">
+        <span class="opt-ic">🟡</span><div class="opt-text">Solo al <strong>masticar o mover la mandíbula</strong><div class="opt-sub">En reposo no molesta o molesta menos</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'frecAtm','manana','s5b')">
+        <span class="opt-ic">🌅</span><div class="opt-text">Peor al <strong>despertar por la mañana</strong><div class="opt-sub">Mejora durante el día</div></div>
+      </button>
+      <button class="option" onclick="selAndNext(this,'frecAtm','noche','s5b')">
+        <span class="opt-ic">🌙</span><div class="opt-text">Empeora <strong>de noche o con el estrés</strong><div class="opt-sub">Puede estar relacionado con apretamiento nocturno</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S5A: DURACIÓN (dental) ══ -->
+<div class="screen" id="s5a">
+  <button class="back-btn" onclick="go('s4a')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Evolución</span><span class="prog-step">Paso 5</span></div><div class="prog-bar"><div class="prog-fill" style="width:58%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Cuánto tiempo llevas con esto?</p>
+    <p class="q-sub">La duración es clave para estimar la progresión de la condición</p>
+    <div class="options">
+      <button class="option" onclick="selAndNext(this,'duracion','hoy','s6a')"><span class="opt-ic">⚡</span><div class="opt-text"><strong>Hoy o ayer</strong><div class="opt-sub">Menos de 48 horas</div></div></button>
+      <button class="option" onclick="selAndNext(this,'duracion','dias','s6a')"><span class="opt-ic">📅</span><div class="opt-text"><strong>Hace 2 a 7 días</strong><div class="opt-sub">Subagudo</div></div></button>
+      <button class="option" onclick="selAndNext(this,'duracion','semanas','s6a')"><span class="opt-ic">🗓️</span><div class="opt-text"><strong>Hace semanas</strong><div class="opt-sub">Entre 1 y 4 semanas</div></div></button>
+      <button class="option" onclick="selAndNext(this,'duracion','meses','s6a')"><span class="opt-ic">⏳</span><div class="opt-text"><strong>Hace meses o más</strong><div class="opt-sub">Condición crónica o de larga data</div></div></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S5B: DURACIÓN ATM ══ -->
+<div class="screen" id="s5b">
+  <button class="back-btn" onclick="go('s4b')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Evolución</span><span class="prog-step">Paso 5</span></div><div class="prog-bar"><div class="prog-fill" style="width:58%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Cuánto tiempo llevas con esta molestia mandibular?</p>
+    <p class="q-sub">Los TTM crónicos (más de 3 meses) tienen un manejo diferente a los agudos</p>
+    <div class="options">
+      <button class="option" onclick="selAndNext(this,'durAtm','dias','s6b')"><span class="opt-ic">⚡</span><div class="opt-text"><strong>Días o menos de 2 semanas</strong><div class="opt-sub">Inicio reciente o agudo</div></div></button>
+      <button class="option" onclick="selAndNext(this,'durAtm','meses','s6b')"><span class="opt-ic">🗓️</span><div class="opt-text"><strong>Semanas o meses</strong><div class="opt-sub">Condición subaguda o crónica</div></div></button>
+      <button class="option" onclick="selAndNext(this,'durAtm','siempre','s6b')"><span class="opt-ic">⏳</span><div class="opt-text"><strong>Hace años o es recurrente</strong><div class="opt-sub">Viene y va desde hace tiempo</div></div></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S6A: FACTORES DENTAL ══ -->
+<div class="screen" id="s6a">
+  <button class="back-btn" onclick="go('s5a')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Factores asociados</span><span class="prog-step">Paso 6</span></div><div class="prog-bar"><div class="prog-fill" style="width:72%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Hay algo más que notes?</p>
+    <p class="q-sub">Marca todo lo que corresponda</p>
+    <div class="check-list" id="factDentalList">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Noto <strong>mal sabor</strong> o mal aliento inusual</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo <strong>caries conocida</strong> o un empaste reciente</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">El diente fue <strong>tratado antes</strong> (endodoncia, corona)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo una <strong>pieza dental movediza</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">No voy al dentista hace <strong>más de 2 años</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo <strong>diabetes u otra enfermedad sistémica</strong></span></div>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="nextS6a()">Ver mi orientación →</button>
+</div>
+
+<!-- ══ S6B: FACTORES ATM ══ -->
+<div class="screen" id="s6b">
+  <button class="back-btn" onclick="go('s5b')">← Volver</button>
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Factores asociados</span><span class="prog-step">Paso 6</span></div><div class="prog-bar"><div class="prog-fill" style="width:72%"></div></div></div>
+  <div class="q-card">
+    <p class="q-title">¿Cuál de estos factores reconoces en tu caso?</p>
+    <p class="q-sub">Son datos clínicamente relevantes para orientar el origen del problema</p>
+    <div class="check-list" id="factAtmList">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Aprieto o <strong>rechino los dientes</strong> (especialmente de noche)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Escucho <strong>ruidos, chasquidos o crepitación</strong> al abrir la boca</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">He tenido períodos de <strong>mucho estrés o ansiedad</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">El dolor irradia al <strong>oído, sien o cuello</strong></span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Tengo <strong>cefaleas frecuentes</strong> (dolores de cabeza)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-ic">✓</div><span class="check-text">Me han dicho que tengo <strong>mordida alterada</strong> o he tenido ortodoncia</span></div>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="runAnalysis('atm')">Ver mi orientación →</button>
+</div>
+
+<!-- ══ LOADING ══ -->
+<div class="screen" id="sLoad">
+  <div class="loading">
+    <div class="spinner"></div>
+    <p class="load-title">Procesando tu información...</p>
+    <p class="load-sub">Evaluando tus respuestas para orientarte hacia el especialista más adecuado.</p>
+    <p class="load-note">Basado en guías AAE · SDCEP · OMS · AAP · DC/TMD · IADT</p>
+  </div>
+</div>
+
+<!-- ══ S_RESULT ══ -->
+<div class="screen" id="sResult">
+  <div class="prog-wrap"><div class="prog-row"><span class="prog-label">Tu orientación</span><span class="prog-step">Completado ✓</span></div><div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div></div>
+  <div class="ai-badge">✦ Orientación completada</div>
+  <div class="disclaimer">
+    <p>⚠ <strong>Lo que ves es una hipótesis orientativa</strong>, no un diagnóstico. Solo un profesional puede diagnosticarte tras examen clínico e imágenes. Si tienes dudas, consulta directamente.</p>
+  </div>
+  <div id="urgencyDiv"></div>
+  <div id="hipDiv"></div>
+  <div id="specDiv"></div>
+  <div id="evidenceDiv"></div>
+  <button class="btn btn-p" id="btnVer" onclick="go('sDentistas')">Ver especialistas disponibles →</button>
+  <button class="btn btn-d" id="btnEmerg" style="display:none" onclick="alert('Llama al 131 (SAMU) o ve al servicio de urgencias del hospital más cercano de inmediato.')">🚨 Ir a urgencias ahora</button>
+  <button class="btn btn-s" onclick="go('s0')">Volver al inicio</button>
+</div>
+
+<!-- ══ DENTISTAS ══ -->
+<div class="screen" id="sDentistas">
+  <button class="back-btn" onclick="go('sResult')">← Volver</button>
+  <p class="sec-lbl" id="dentLbl">Especialistas disponibles</p>
+  <p style="font-size:12.5px;color:var(--grey);margin-bottom:14px;">Santiago · Ordenados por disponibilidad</p>
+  <div id="dentList"></div>
+</div>
+
+<!-- ══ BÚSQUEDA DIRECTA ══ -->
+<div class="screen" id="sDirect">
+  <button class="back-btn" onclick="go('s0')">← Inicio</button>
+  <p class="sec-lbl">¿Qué tipo de dentista necesitas?</p>
+  <p style="font-size:12.5px;color:var(--grey);margin-bottom:14px;">Selecciona la especialidad</p>
+  <div class="options">
+    <button class="option" onclick="directSearch('Odontólogo General')"><span class="opt-ic">🦷</span><div class="opt-text">Odontólogo General<div class="opt-sub">Consulta, diagnóstico y tratamientos generales</div></div></button>
+    <button class="option" onclick="directSearch('Endodoncista')"><span class="opt-ic">🔬</span><div class="opt-text">Endodoncista<div class="opt-sub">Tratamientos de conducto (nervio)</div></div></button>
+    <button class="option" onclick="directSearch('Periodoncista')"><span class="opt-ic">🩸</span><div class="opt-text">Periodoncista<div class="opt-sub">Encías y hueso de soporte</div></div></button>
+    <button class="option" onclick="directSearch('Implantólogo')"><span class="opt-ic">✨</span><div class="opt-text">Implantólogo<div class="opt-sub">Implantes dentales</div></div></button>
+    <button class="option" onclick="directSearch('Especialista en ATM / Gnatología')"><span class="opt-ic">😬</span><div class="opt-text">Especialista en ATM / Gnatología<div class="opt-sub">Mandíbula, bruxismo y oclusión</div></div></button>
+    <button class="option" onclick="directSearch('Cirujano Oral y Maxilofacial')"><span class="opt-ic">⚕️</span><div class="opt-text">Cirujano Oral y Maxilofacial<div class="opt-sub">Cirugías, extracciones complejas</div></div></button>
+    <button class="option" onclick="directSearch('Odontólogo Estético')"><span class="opt-ic">⬜</span><div class="opt-text">Odontólogo Estético<div class="opt-sub">Blanqueamiento, carillas, diseño de sonrisa</div></div></button>
+    <button class="option" onclick="directSearch('Ortodoncista')"><span class="opt-ic">😁</span><div class="opt-text">Ortodoncista<div class="opt-sub">Brackets, alineadores, corrección dental</div></div></button>
+    <button class="option" onclick="directSearch('Urgencias Dentales')"><span class="opt-ic">🚨</span><div class="opt-text">Urgencias Dentales<div class="opt-sub">Atención inmediata, dolor agudo</div></div></button>
+  </div>
+</div>
+
+<!-- ══ CONFIRMACIÓN ══ -->
+<div class="screen" id="sConfirm">
+  <button class="back-btn" onclick="go('sDentistas')">← Volver</button>
+  <div class="appt-banner">
+    <div class="appt-ic">✅</div>
+    <p class="appt-title">¡Cita agendada!</p>
+    <p class="appt-sub">Te llegará confirmación por WhatsApp y email</p>
+  </div>
+  <div class="appt-detail">
+    <div class="appt-row"><span class="appt-rl">Profesional</span><span class="appt-rv" id="aNom">—</span></div>
+    <div class="appt-row"><span class="appt-rl">Especialidad</span><span class="appt-rv" id="aEsp">—</span></div>
+    <div class="appt-row"><span class="appt-rl">Fecha y hora</span><span class="appt-rv">Mañana · 10:30 AM</span></div>
+    <div class="appt-row"><span class="appt-rl">Dirección</span><span class="appt-rv" id="aDr">—</span></div>
+    <div class="appt-row"><span class="appt-rl">Valor consulta</span><span class="appt-rv" id="aPr">—</span></div>
+  </div>
+  <div class="findent">
+    <div class="fd-label">💳 FinDent — Financiamiento dental</div>
+    <div class="fd-title">¿Quieres pagar el tratamiento en cuotas?</div>
+    <div class="fd-desc">La clínica recibe el pago completo de inmediato. Tú pagas en cuotas sin trámites bancarios.</div>
+    <div class="fd-opts">
+      <div class="fd-opt" onclick="alert('3 cuotas sin interés activadas.')"><div class="fd-v">3 cuotas</div><div class="fd-l">Sin interés</div></div>
+      <div class="fd-opt" onclick="alert('6 cuotas sin interés activadas.')"><div class="fd-v">6 cuotas</div><div class="fd-l">Sin interés</div></div>
+      <div class="fd-opt" onclick="alert('12 cuotas activadas.')"><div class="fd-v">12 cuotas</div><div class="fd-l">Interés mínimo</div></div>
+      <div class="fd-opt" onclick="alert('Pagarás al contado.')"><div class="fd-v">Contado</div><div class="fd-l">Sin financiamiento</div></div>
+    </div>
+  </div>
+  <button class="btn btn-p" onclick="go('s0')">Volver al inicio</button>
+</div>
+
+</div><!-- /main -->
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const ST={
+  sym:'', rama:'', // 'dental' | 'atm' | 'estetico' | 'preventivo' | 'trauma'
+  alarmas:[], tipodolor:'', dolor:0,
+  dolorAtm:'', frecAtm:'', durAtm:'',
+  duracion:'', factDental:[], factAtm:[]
+};
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');window.scrollTo(0,0);}
+}
+function skipToSearch(){go('sDirect');}
+function directSearch(spec){ST.specName=spec;buildDentists(spec,'routine');go('sDentistas');}
+
+// ── INPUTS ───────────────────────────────────────────────────────────────────
+function setSym(el,txt){
+  document.getElementById('symText').value=txt;
+  ST.sym=txt;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel-chip'));
+  el.classList.add('sel-chip');
+}
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  el.querySelector('.check-ic').textContent=el.classList.contains('checked')?'✓':'';
+}
+function getChecked(listId){
+  return Array.from(document.querySelectorAll('#'+listId+' .check-item.checked')).map((_,i)=>i);
+}
+function updateSlider(el){
+  const v=parseInt(el.value); ST.dolor=v;
+  const pct=v*10;
+  el.style.background=`linear-gradient(to right,var(--teal) 0%,var(--teal) ${pct}%,var(--border) ${pct}%)`;
+  document.getElementById('sliderVal').textContent=v+' / 10';
+  const d=['Sin dolor','Molestia muy leve','Dolor leve','Leve-moderado','Moderado','Moderado','Considerable','Intenso','Muy intenso','Severo','Máximo insoportable'];
+  document.getElementById('sliderDesc').textContent=d[v]||'';
+}
+function selAndNext(el,field,val,next){
+  el.closest('.options').querySelectorAll('.option').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  ST[field]=val;
+  setTimeout(()=>go(next),280);
+}
+
+// ── CLASIFICACIÓN DE RAMA ─────────────────────────────────────────────────────
+// Determina qué árbol seguir según el síntoma inicial
+function getRama(sym){
+  const s=sym.toLowerCase();
+  if(/mandíbula|mandibula|atm|articulac|chasquido|ruido|abrir la boca|trabado|trismus|brux|rechina|aprieta/i.test(s)) return 'atm';
+  if(/blanqu|estét|cosmé|carilla|diseño de sonrisa/i.test(s)) return 'estetico';
+  if(/implante/i.test(s)) return 'implante';
+  if(/preventiv|chequeo|revisión|control|sin síntomas/i.test(s)) return 'preventivo';
+  if(/golpe|traumat|avulsión|caído|luxac/i.test(s)) return 'trauma';
+  if(/encía|encia|sangr|periodon/i.test(s)) return 'periodontal';
+  if(/hinchaz|hinchad|absceso|infección/i.test(s)) return 'absceso';
+  return 'dental'; // dolor dental genérico
+}
+
+// ── FLUJO S1 ──────────────────────────────────────────────────────────────────
+function nextS1(){
+  const v=document.getElementById('symText').value.trim();
+  if(!v){alert('Por favor cuéntanos qué te está pasando.');return;}
+  ST.sym=v;
+  ST.rama=getRama(v);
+  go('s2');
+}
+
+// ── FLUJO S2 (alarmas) ────────────────────────────────────────────────────────
+function nextS2(){
+  const checked=document.querySelectorAll('#alarmaList .check-item.checked');
+  ST.alarmas=Array.from(checked).map(el=>{
+    const txt=el.querySelector('.check-text').textContent;
+    if(txt.includes('hinchad')) return 'hinchazón';
+    if(txt.includes('fiebre')) return 'fiebre';
+    if(txt.includes('tragar')) return 'tragar';
+    if(txt.includes('respirar')) return 'respirar';
+    if(txt.includes('sangrado')) return 'sangrado';
+    return '';
+  });
+  const esEmergencia=(ST.alarmas.includes('tragar')||ST.alarmas.includes('respirar')||(ST.alarmas.includes('hinchazón')&&ST.alarmas.includes('fiebre')));
+  if(esEmergencia){runAnalysis('emergency');return;}
+
+  // Enrutar según rama
+  if(ST.rama==='atm') go('s3b');
+  else if(['estetico','implante','preventivo'].includes(ST.rama)){runAnalysis(ST.rama);}
+  else go('s3a'); // dental, trauma, periodontal, absceso
+}
+
+// ── FLUJO S6A (factores dental) ───────────────────────────────────────────────
+function nextS6a(){
+  const items=document.querySelectorAll('#factDentalList .check-item');
+  const labels=['mal_sabor','caries','tratado','movilidad','sin_dentista','sistemica'];
+  ST.factDental=[];
+  items.forEach((el,i)=>{if(el.classList.contains('checked'))ST.factDental.push(labels[i]);});
+  runAnalysis('dental');
+}
+
+// ── ANÁLISIS ──────────────────────────────────────────────────────────────────
+function runAnalysis(tipo){
+  ST.ramaFinal=tipo;
+  // Guardar factores ATM si aplica
+  if(tipo==='atm'){
+    const items=document.querySelectorAll('#factAtmList .check-item');
+    const labs=['bruxismo','ruidos','estres','irradiacion','cefaleas','ortodoncia'];
+    ST.factAtm=[];
+    items.forEach((el,i)=>{if(el.classList.contains('checked'))ST.factAtm.push(labs[i]);});
+  }
+  go('sLoad');
+  setTimeout(()=>{buildResult(tipo);go('sResult');},1800);
+}
+
+function buildResult(tipo){
+  let urgency,hips=[],spec,evidence='',isEmergencia=false;
+  const d=ST.dolor, dur=ST.duracion, td=ST.tipodolor, fd=ST.factDental;
+
+  // ── EMERGENCIA ────────────────────────────────────────────────────────────
+  if(tipo==='emergency'){
+    isEmergencia=true;
+    urgency={cls:'emergency',icon:'🚨',label:'EMERGENCIA MÉDICA — Atención inmediata',
+      title:'Ve a urgencias hospitalarias ahora',
+      desc:'La hinchazón facial con fiebre o dificultad para tragar/respirar puede indicar una infección dental extendida a espacios profundos del cuello, con riesgo de compromiso de la vía aérea. Esto no puede manejarse en una clínica dental regular.'};
+    hips=[
+      {dot:'#DC2626',main:'Celulitis cervicofacial de origen odontogénico',why:'Extensión de infección dental a espacios fasciales del cuello. Requiere hospitalización, antibioterapia IV y eventual drenaje quirúrgico.',prob:'hp-h',pt:'Probable'},
+      {dot:'#EA580C',main:'Angina de Ludwig',why:'Infección bilateral del piso de boca con riesgo de obstrucción de vía aérea. Emergencia vital que requiere UCI.',prob:'hp-m',pt:'Descartar urgente'},
+    ];
+    spec={name:'Urgencias Hospitalarias + Cirugía Maxilofacial',desc:'Evaluación inmediata con TAC cervical, inicio de antibioterapia endovenosa y coordinación con cirugía maxilofacial. No acudir a una clínica dental.'};
+    evidence='SDCEP Emergency Dental Care Guidelines 2021 · Tampi et al. JADA 2019';
+  }
+
+  // ── ATM / MUSCULAR ────────────────────────────────────────────────────────
+  else if(tipo==='atm'){
+    const fat=ST.factAtm; const dat=ST.dolorAtm; const fre=ST.frecAtm; const durat=ST.durAtm;
+    const esCronico=durat==='meses'||durat==='siempre';
+    const tieneRuidos=fat.includes('ruidos');
+    const tieneBrux=fat.includes('bruxismo');
+    const tieneIrrad=fat.includes('irradiacion');
+    urgency={cls:esCronico?'soon':'soon',icon:'🟡',
+      label:esCronico?'Pronto — dentro de 2 semanas':'Pronto — esta semana',
+      title:'Orientación hacia trastorno temporomandibular (TTM)',
+      desc:'Los trastornos temporomandibulares (TTM) son la segunda causa más frecuente de dolor orofacial crónico. El diagnóstico requiere evaluación clínica estructurada usando los criterios DC/TMD (De Leeuw & Klasser 2018), que distingue entre trastornos musculares, articulares o combinados. '+(esCronico?'La cronicidad del cuadro sugiere que puede requerir un enfoque multidisciplinario.':'La presentación reciente es favorable para el pronóstico.')};
+    hips=[
+      ...(tieneRuidos?[{dot:'#B45309',main:'Desplazamiento del disco articular de la ATM',why:'El clic o chasquido al abrir/cerrar es el signo cardinal. Puede ser con reducción (audible) o sin reducción (traba mandibular). Clasificación DC/TMD: Trastorno articular.',prob:'hp-h',pt:'Probable'}]:[]),
+      ...(tieneBrux?[{dot:'#B45309',main:'Mialgia masticatoria por bruxismo',why:'El apretamiento o rechinamiento de dientes genera sobrecarga de músculos masticadores (masetero, temporal). El dolor suele ser peor al despertar. DC/TMD: Trastorno muscular.',prob:'hp-h',pt:'Probable'}]:[]),
+      {dot:'#6B7280',main:'Artralgia temporomandibular',why:'Dolor articular puro sin desplazamiento discal. Requiere diferenciación con artritis sistémica (AR, psoriásica) que puede afectar la ATM.',prob:dat==='articulacion'?'hp-h':'hp-m',pt:dat==='articulacion'?'Probable':'Posible'},
+      ...(tieneIrrad?[{dot:'#1D4ED8',main:'Dolor referido de origen cervical o auricular',why:'El dolor de la ATM puede confundirse con otitis, neuralgia del trigémino o patología cervical. El diagnóstico diferencial es importante y puede requerir evaluación médica.',prob:'hp-l',pt:'A descartar'}]:[]),
+      {dot:'#166534',main:'TTM de origen postural / parafuncional',why:'Hábitos como morder objetos, posición al dormir o estrés sostenido generan sobrecarga articular. Muy frecuente y altamente tratable sin cirugía.',prob:'hp-m',pt:'Posible'},
+    ];
+    spec={name:'Especialista en ATM / Gnatología (Oclusión)',desc:'Aplicará los criterios diagnósticos DC/TMD mediante examen clínico estructurado: medición de apertura, palpación muscular y articular, auscultación de ruidos y análisis oclusal. El tratamiento puede incluir placa de descarga oclusal, fisioterapia orofacial, manejo del bruxismo y, en casos seleccionados, artrocentesis o artroscopía de la ATM.'};
+    evidence='De Leeuw R, Klasser GD. DC/TMD Axis I 2018 · NIDCR Temporomandibular Disorders 2023 · Schiffman E et al. J Oral Facial Pain 2014';
+  }
+
+  // ── DENTAL GENÉRICO ───────────────────────────────────────────────────────
+  else if(tipo==='dental'){
+    const severo=d>=7; const moderado=d>=4;
+    if(td==='espontaneo'||td==='provocado_linger'){
+      urgency={cls:severo?'urgent':'soon',icon:severo?'🔴':'🟡',
+        label:severo?'Urgente — dentro de 24 horas':'Pronto — dentro de esta semana',
+        title:severo?'Dolor de posible origen pulpar — requiere evaluación rápida':'Dolor que sugiere irritación pulpar',
+        desc:'El dolor '+(td==='espontaneo'?'espontáneo que pulsa o late':'que persiste más de 30 segundos tras retirar el frío o calor')+' es uno de los descriptores clínicos que la Asociación Americana de Endodontistas (AAE) asocia con inflamación pulpar avanzada. La inflamación pulpar existe en un continuo — solo el examen clínico con pruebas de vitalidad puede determinar el estado real del nervio (Karrar et al. Int Endod J 2025).'};
+      hips=[
+        {dot:'#DC2626',main:'Pulpitis irreversible sintomática (posible)',why:'Inflamación pulpar avanzada en la que el nervio posiblemente no puede recuperarse. Descriptores AAE: dolor espontáneo, latente, referido. Diagnóstico definitivo requiere pruebas clínicas.',prob:severo?'hp-h':'hp-m',pt:severo?'Compatible':'A confirmar'},
+        {dot:'#EA580C',main:'Periodontitis apical sintomática',why:'Inflamación del ligamento periodontal apical. Puede coexistir con pulpitis. Genera sensibilidad a la percusión. Clasificación AAE.',prob:'hp-m',pt:'Posible'},
+        ...(fd.includes('tratado')?[{dot:'#1D4ED8',main:'Fractura radicular vertical',why:'Especialmente en dientes con tratamiento previo o postes. Genera dolor difuso al morder. Solo detectable con TAC cone beam o transiluminación.',prob:'hp-l',pt:'A descartar'}]:[]),
+        {dot:'#B45309',main:'Pulpitis reversible con dolor severo',why:'En algunos casos puede generar dolor intenso. Solo las pruebas clínicas lo diferencian de la forma irreversible.',prob:'hp-l',pt:'A descartar'},
+      ];
+      spec={name:'Endodoncista / Odontólogo General',desc:'Realizará pruebas de vitalidad pulpar (frío con Endo-Ice, calor, percusión, palpación) y radiografía periapical para clasificar el diagnóstico pulpar según terminología AAE. Según el resultado, puede realizar tratamiento de conducto o pulpotomía vital (opción conservadora recomendada por ESE y AAE 2021).'};
+      evidence='AAE Consensus Conference Diagnostic Terminology J Endod 2009 · Karrar et al. Int Endod J 2025 · ESE Position Statement 2021';
+    }
+    else if(td==='provocado_breve'){
+      urgency={cls:d>=5?'soon':'routine',icon:d>=5?'🟡':'🟢',
+        label:'Pronto — esta semana',
+        title:'Dolor breve al frío/calor — evaluación necesaria',
+        desc:'El dolor que desaparece en menos de 30 segundos tras retirar el estímulo es compatible con una respuesta pulpar exagerada (pulpitis reversible según clasificación AAE). Sin embargo, la inflamación pulpar es un continuo y no una categoría discreta — puede variar. Una evaluación oportuna permite tratarla antes de que progrese.'};
+      hips=[
+        {dot:'#166534',main:'Pulpitis reversible',why:'Inflamación pulpar que puede resolverse con tratamiento adecuado. El dolor cede rápido al retirar el estímulo. Pronóstico favorable con intervención precoz.',prob:'hp-h',pt:'Compatible'},
+        {dot:'#B45309',main:'Hipersensibilidad dentinaria',why:'Dentina expuesta por recesión gingival, abrasión o bruxismo. Genera dolor breve al frío/calor/cepillado. La pulpa está sana. Muy prevalente y tratable.',prob:'hp-m',pt:'Posible'},
+        {dot:'#DC2626',main:'Pulpitis irreversible en etapa inicial',why:'En etapas tempranas puede simular pulpitis reversible. Si el dolor aumenta o aparece espontáneamente, la clasificación cambia.',prob:'hp-l',pt:'A descartar'},
+      ];
+      spec={name:'Odontólogo General',desc:'Evaluará con pruebas de frío, calor, percusión y sondaje periodontal. Diagnóstico diferencial entre pulpitis reversible, hipersensibilidad dentinaria y caries profunda. El tratamiento varía desde barnices fluorados hasta restauración profunda.'};
+      evidence='AAE Diagnostic Terminology J Endod 2009 · Splieth CH, Tachou A. Clin Oral Investig 2013';
+    }
+    else if(td==='morder'){
+      hips=[
+        {dot:'#B45309',main:'Periodontitis apical sintomática',why:'Inflamación del ligamento periodontal apical. Sensibilidad a la percusión es el signo cardinal. Origen pulpar.',prob:'hp-h',pt:'Frecuente'},
+        {dot:'#DC2626',main:'Absceso periodontal agudo',why:'En adultos, el más frecuente. Colección purulenta en bolsa periodontal. Genera dolor intenso al morder y palpación.',prob:'hp-m',pt:'Posible'},
+        {dot:'#1D4ED8',main:'Síndrome del diente fisurado',why:'Fisura invisible — genera dolor agudo al morder en cierta dirección. Requiere transiluminación para detección.',prob:'hp-m',pt:'Posible'},
+        ...(fd.includes('tratado')?[{dot:'#EA580C',main:'Fractura radicular vertical',why:'Posible en dientes con endodoncia o postes. Pronóstico generalmente desfavorable. Solo diagnosticable con TAC cone beam.',prob:'hp-m',pt:'A descartar'}]:[]),
+      ];
+      urgency={cls:'soon',icon:'🟡',label:'Pronto — esta semana',title:'Dolor al morder: varias hipótesis posibles',desc:'El dolor a la percusión o presión es un signo clínico inespecífico con múltiples posibles causas. Solo el examen clínico con pruebas dirigidas y radiografías puede determinar el origen real.'};
+      spec={name:'Odontólogo General',desc:'Realizará percusión horizontal y vertical, test con Tooth Slooth para fisuras, sondaje periodontal y radiografías. En sospecha de fractura puede solicitar TAC cone beam.'};
+      evidence='AAE Diagnostic Terminology J Endod 2009 · Lubisich EB et al. J Esthetic Rest Dent 2010 · Medscape Dental Abscess 2024';
+    }
+    else if(td==='encia'){
+      const movilidad=fd.includes('movilidad');const cronico=dur==='semanas'||dur==='meses';
+      urgency={cls:movilidad||cronico?'soon':'routine',icon:movilidad?'🟡':'🟢',
+        label:movilidad?'Pronto — esta semana':cronico?'Pronto — dentro de 2 semanas':'Sin urgencia — dentro de 1 mes',
+        title:movilidad?'Movilidad dental: posible periodontitis avanzada':cronico?'Sangrado crónico: puede indicar enfermedad periodontal':'Sangrado esporádico: probable gingivitis',
+        desc:movilidad?'La movilidad dental puede ser consecuencia de periodontitis con pérdida de hueso de soporte. Según clasificación AAP/EFP 2017 (Estadio III-IV), implica riesgo de pérdida dental. Requiere sondaje periodontal completo.':cronico?'El sangrado persistente de encías, especialmente con factores de riesgo como tabaco o diabetes, puede indicar periodontitis activa. Según la clasificación AAP/EFP 2017, progresa con pérdida ósea irreversible si no se trata.':'El sangrado esporádico al cepillarse generalmente indica gingivitis — reversible con profilaxis y mejor higiene.'};
+      hips=[
+        {dot:cronico?'#DC2626':'#166534',main:cronico?'Periodontitis (Estadio I–IV, AAP/EFP 2017)':'Gingivitis por biofilm dental',why:cronico?'Infección bacteriana crónica con destrucción de hueso y ligamento periodontal. Solo el sondaje periodontal y la radiografía permiten clasificarla.':'Inflamación gingival reversible. Sin pérdida ósea. Tratable con higiene profesional.',prob:'hp-h',pt:'Probable'},
+        ...(movilidad?[{dot:'#DC2626',main:'Periodontitis avanzada con pérdida ósea significativa',why:'La movilidad es consecuencia de la destrucción del ligamento y hueso alveolar. Estadio III-IV según AAP/EFP.',prob:'hp-h',pt:'A evaluar'}]:[]),
+        {dot:'#B45309',main:'Absceso periodontal agudo',why:'Puede coexistir con periodontitis. Colección purulenta en bolsa periodontal. El más frecuente en adultos (Medscape 2024).',prob:'hp-l',pt:'A descartar'},
+      ];
+      spec={name:movilidad||cronico?'Periodoncista':'Odontólogo General / Higienista',desc:movilidad||cronico?'Sondaje periodontal completo en 6 sitios por diente, radiografías y clasificación según AAP/EFP 2017 (Estadio, Grado A-C). Plan de tratamiento: RAR (raspado y alisado radicular), cirugía periodontal según estadío.':'Profilaxis profesional, instrucción de higiene y sondaje básico para descartar bolsas periodontales.'};
+      evidence='Tonetti MS et al. New Classification AAP/EFP J Clin Periodontol 2018 · OMS Oral Health Report 2022';
+    }
+    else{
+      urgency={cls:d>=7?'urgent':d>=4?'soon':'routine',icon:d>=7?'🔴':d>=4?'🟡':'🟢',label:'Evaluación recomendada',title:'Evaluación odontológica necesaria',desc:'Las respuestas no apuntan a un patrón clínico específico sin examen. Solo el dentista puede determinarlo.'};
+      hips=[{dot:'#6B7280',main:'Condición no especificada por síntomas',why:'El examen clínico con radiografías es necesario para llegar a un diagnóstico.',prob:'hp-l',pt:'Por evaluar'}];
+      spec={name:'Odontólogo General',desc:'Evaluación completa con historia clínica, examen oral, pruebas de vitalidad y radiografías.'};
+      evidence='OMS Oral Health Priority 2021–2030';
+    }
+  }
+
+  // ── TRAUMA ────────────────────────────────────────────────────────────────
+  else if(tipo==='trauma'){
+    urgency={cls:'urgent',icon:'🔴',label:'Urgente — en las próximas horas',
+      title:'El traumatismo dental requiere evaluación rápida',
+      desc:'Las guías IADT 2020 establecen que los traumatismos deben evaluarse en las primeras horas. Si el diente se desprendió completamente: guárdalo húmedo en leche fría o suero salino, NO lo toques por la raíz, y ve de inmediato. La ventana para reimplante es de 30–60 minutos.'};
+    hips=[
+      {dot:'#C2410C',main:'Fractura coronaria (con o sin compromiso pulpar)',why:'La más frecuente. El compromiso pulpar depende de la profundidad y debe evaluarse con pruebas de vitalidad.',prob:'hp-h',pt:'Frecuente'},
+      {dot:'#B45309',main:'Luxación dental (subluxación, intrusión, extrusión)',why:'Desplazamiento del diente sin pérdida total. Clasificación IADT. Requiere ferulización y seguimiento.',prob:'hp-m',pt:'Posible'},
+      {dot:'#DC2626',main:'Avulsión (pérdida total del diente)',why:'Emergencia con ventana terapéutica de 30–60 min para reimplante. El pronóstico depende del tiempo y del medio de conservación.',prob:'hp-l',pt:'A descartar'},
+    ];
+    spec={name:'Odontólogo General / Urgencias Dentales',desc:'Evaluación según clasificación IADT: tipo de fractura o luxación, pruebas de vitalidad pulpar, radiografía periapical. Tratamiento: ferulización, endodoncia, reimplante o extracción según el caso.'};
+    evidence='IADT Guidelines for the Management of Traumatic Dental Injuries 2020 · Andreassen JO et al. Int Endod J 2019';
+  }
+
+  // ── PERIODONTAL ───────────────────────────────────────────────────────────
+  else if(tipo==='periodontal'){
+    urgency={cls:'soon',icon:'🟡',label:'Pronto — esta semana',
+      title:'Problema de encías: requiere evaluación periodontal',
+      desc:'El sangrado o molestia en encías puede corresponder a gingivitis (reversible) o periodontitis (con pérdida ósea irreversible). Solo el sondaje periodontal y las radiografías permiten clasificarlo según la escala AAP/EFP 2017.'};
+    hips=[
+      {dot:'#166534',main:'Gingivitis por biofilm dental',why:'Inflamación reversible. Sin pérdida ósea. Tratable con higiene profesional.',prob:'hp-m',pt:'Posible'},
+      {dot:'#DC2626',main:'Periodontitis activa',why:'Pérdida ósea con bolsas periodontales. Irreversible si no se trata. Requiere clasificación por Estadio y Grado (AAP/EFP 2017).',prob:'hp-m',pt:'Posible'},
+      {dot:'#B45309',main:'Absceso periodontal agudo',why:'Colección purulenta en bolsa periodontal. Puede generar dolor intenso, hinchazón y movilidad.',prob:'hp-l',pt:'A descartar'},
+    ];
+    spec={name:'Periodoncista / Odontólogo General',desc:'Sondaje periodontal completo, radiografías y clasificación AAP/EFP 2017. Tratamiento según estadío: desde profilaxis hasta cirugía periodontal.'};
+    evidence='Tonetti MS et al. J Clin Periodontol 2018 · OMS Global Oral Health Report 2022';
+  }
+
+  // ── ABSCESO ───────────────────────────────────────────────────────────────
+  else if(tipo==='absceso'){
+    const conFiebre=ST.alarmas.includes('fiebre'); const conHinch=ST.alarmas.includes('hinchazón');
+    urgency={cls:conFiebre?'urgent':'urgent',icon:'🔴',
+      label:'Urgente — dentro de 24 horas',
+      title:'Hinchazón con posible absceso dental',
+      desc:'La hinchazón localizada sin signos sistémicos puede corresponder a un absceso dental. Según la SDCEP 2021, requiere atención dentro de 24 horas. '+(conFiebre?'La presencia de fiebre eleva el nivel de preocupación — si empeora, considera urgencias hospitalarias.':'Si aparece fiebre o la hinchazón aumenta rápidamente, ve a urgencias hospitalarias.')};
+    hips=[
+      {dot:'#DC2626',main:'Absceso periapical agudo',why:'El más frecuente — colección purulenta en el ápice del diente por necrosis pulpar. Puede generar movilidad, dolor intenso a la percusión y trismus.',prob:'hp-h',pt:'Probable'},
+      {dot:'#EA580C',main:'Absceso periodontal agudo',why:'Colección purulenta en la bolsa periodontal. Más frecuente en adultos con periodontitis preexistente.',prob:'hp-m',pt:'Posible'},
+      {dot:'#1D4ED8',main:'Absceso pericoronal (pericoronaritis)',why:'Alrededor de un diente en erupción incompleta (frecuente en cordales). Genera hinchazón y dificultad para abrir la boca.',prob:'hp-m',pt:'Posible'},
+    ];
+    spec={name:'Odontólogo General / Cirujano Oral',desc:'El drenaje quirúrgico es el tratamiento definitivo — los antibióticos solos no resuelven un absceso sin drenaje (Tampi et al. JADA 2019). El dentista evaluará origen, extensión y plan de tratamiento del diente causante.'};
+    evidence='SDCEP Emergency Dental Care Guidelines 2021 · Tampi et al. JADA 2019 · Medscape Dental Abscess 2024';
+  }
+
+  // ── ESTÉTICO ─────────────────────────────────────────────────────────────
+  else if(tipo==='estetico'){
+    urgency={cls:'routine',icon:'⬜',label:'Sin urgencia — tratamiento electivo',
+      title:'Blanqueamiento: efectivo y seguro con supervisión',
+      desc:'El blanqueamiento dental supervisado con peróxido de hidrógeno o carbamida es el tratamiento estético dental con mayor evidencia (Carey CM, J Evid Based Dent Pract 2014). Antes de iniciar se debe descartar caries activa y enfermedad periodontal. Las restauraciones existentes no responden al blanqueamiento.'};
+    hips=[{dot:'#166534',main:'Candidato a blanqueamiento profesional',why:'Con evaluación previa y sin contraindicaciones, el blanqueamiento tiene alta efectividad y seguridad (ADA 2023).',prob:'hp-h',pt:'Por confirmar'}];
+    spec={name:'Odontólogo Estético',desc:'Evaluación previa, sondaje periodontal, detección de caries y diseño del protocolo (feruleta domiciliaria o sesión en consulta). Fotografías antes/después para control del resultado.'};
+    evidence='Carey CM. J Evid Based Dent Pract 2014 · ADA Statement on Tooth Whitening 2023';
+  }
+
+  // ── IMPLANTE ─────────────────────────────────────────────────────────────
+  else if(tipo==='implante'){
+    urgency={cls:'routine',icon:'✨',label:'Sin urgencia — electivo',
+      title:'Los implantes requieren planificación cuidadosa',
+      desc:'Los implantes dentales tienen tasas de supervivencia a 10 años superiores al 95% con la técnica y planificación correctas (Jung et al. Clin Oral Implants Res 2012). Requieren evaluación de volumen óseo con TAC cone beam, estado periodontal y condiciones sistémicas antes de planificar.'};
+    hips=[
+      {dot:'#166534',main:'Candidato a implante convencional',why:'Suficiente hueso para colocación directa. Solo confirmable con TAC cone beam (CBCT).',prob:'hp-h',pt:'Por confirmar'},
+      {dot:'#B45309',main:'Candidato con necesidad de injerto óseo previo',why:'Atrofia por tiempo sin el diente. Puede requerir regeneración ósea guiada (GBR) o elevación de seno maxilar.',prob:'hp-m',pt:'Por evaluar'},
+    ];
+    spec={name:'Implantólogo / Cirujano Oral y Maxilofacial',desc:'TAC cone beam para evaluar volumen y calidad ósea, relación con nervio dentario inferior y seno maxilar. Planificación con software de implantología. El proceso puede durar 3–12 meses según necesidad de injertos.'};
+    evidence='Jung RE et al. Clin Oral Implants Res 2012 · Moraschini V et al. Int J Oral Maxillofac Surg 2015';
+  }
+
+  // ── PREVENTIVO ───────────────────────────────────────────────────────────
+  else{
+    urgency={cls:'routine',icon:'🟢',label:'Sin urgencia — control preventivo',
+      title:'El control preventivo es la mejor inversión en salud dental',
+      desc:'La OMS y la FDI recomiendan controles dentales cada 6–12 meses. El Oral Health Status Report OMS 2022 estima que el 45% de las enfermedades bucales son prevenibles con detección temprana.'};
+    hips=[
+      {dot:'#166534',main:'Estado de salud oral normal',why:'Sin síntomas. El control confirmaría o descartaría hallazgos subclínicos.',prob:'hp-h',pt:'Esperado'},
+      {dot:'#B45309',main:'Caries incipiente asintomática',why:'Las caries en esmalte o dentina superficial son asintomáticas. Solo detectables con examen clínico y radiografías.',prob:'hp-m',pt:'A evaluar'},
+    ];
+    spec={name:'Odontólogo General',desc:'Examen de tejidos blandos, sondaje periodontal básico, exploración de caries y radiografías aleta de mordida. Profilaxis y flúor tópico si corresponde.'};
+    evidence='OMS Global Oral Health Status Report 2022 · FDI Oral Health Atlas 2023';
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────────────────
+  document.getElementById('urgencyDiv').innerHTML=`<div class="alert-box ${urgency.cls}"><div class="alert-icon">${urgency.icon}</div><div><div class="alert-label">${urgency.label}</div><div class="alert-title">${urgency.title}</div><div class="alert-desc">${urgency.desc}</div></div></div>`;
+
+  let hipHtml=`<div class="hipotesis-box"><p class="hip-label">Hipótesis orientativas — no son diagnósticos definitivos</p>`;
+  hips.forEach(h=>{hipHtml+=`<div class="hip-item"><div class="hip-dot" style="background:${h.dot}"></div><div style="flex:1"><div class="hip-main">${h.main}</div><div class="hip-why">${h.why}</div></div><span class="hip-prob ${h.prob}">${h.pt}</span></div>`;});
+  hipHtml+=`</div>`;
+  document.getElementById('hipDiv').innerHTML=hipHtml;
+
+  document.getElementById('specDiv').innerHTML=`<div class="spec-box"><div class="spec-label">Tipo de especialista sugerido</div><div class="spec-name">${spec.name}</div><div class="spec-desc">${spec.desc}</div></div>`;
+  document.getElementById('evidenceDiv').innerHTML=`<div class="evidence-note"><p>📚 <strong>Base clínica:</strong> ${evidence}. Esta orientación usa guías internacionales como apoyo — no como sustituto del diagnóstico profesional.</p></div>`;
+
+  document.getElementById('btnEmerg').style.display=isEmergencia?'block':'none';
+  document.getElementById('btnVer').style.display=isEmergencia?'none':'block';
+
+  ST.specName=spec.name;
+  buildDentists(spec.name,urgency.cls);
+}
+
+function buildDentists(specName,cls){
+  document.getElementById('dentLbl').textContent=specName;
+  const nota=cls==='urgent'?'<p style="font-size:12px;color:#C2410C;font-weight:500;margin-bottom:12px;">⚡ Filtrado por disponibilidad inmediata</p>':'';
+  const ds=[
+    {n:'Dra. Valentina Rojas',r:'4.9',rev:127,dist:'1,2 km',addr:'Av. Providencia 1244, Piso 3',price:'$38.000',av:true,slot:'Mañana · 10:30 AM'},
+    {n:'Dr. Sebastián Morales',r:'4.8',rev:89,dist:'2,1 km',addr:'Pedro de Valdivia 520, Of. 12',price:'$35.000',av:true,slot:'Mañana · 14:00'},
+    {n:'Dra. Camila Fuentes',r:'4.7',rev:203,dist:'3,4 km',addr:'Ricardo Lyon 222, Las Condes',price:'$45.000',av:false,slot:'Jueves · 09:00'},
+  ];
+  let html=nota;
+  ds.forEach(d=>{html+=`<div class="dentist-card" onclick="book('${d.n}','${specName}','${d.addr}','${d.price}')"><div class="d-hd"><div><div class="d-name">${d.n}</div><div class="d-spec">${specName}</div></div><div class="d-price">${d.price}</div></div><div class="d-meta"><span class="stars">★ ${d.r}</span><span style="font-size:11.5px;color:var(--grey)">(${d.rev})</span><span class="d-tag ${d.av?'av':''}">${d.av?'✓ ':''} ${d.slot}</span><span style="font-size:11.5px;color:var(--grey)">📍 ${d.dist}</span></div></div>`;});
+  document.getElementById('dentList').innerHTML=html;
+}
+
+function book(n,esp,addr,price){
+  document.getElementById('aNom').textContent=n;
+  document.getElementById('aEsp').textContent=esp;
+  document.getElementById('aDr').textContent=addr;
+  document.getElementById('aPr').textContent=price+' la consulta';
+  go('sConfirm');
+}
+</script>
+</body>
+</html>
