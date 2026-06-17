@@ -18,3 +18,4 @@ Proyecto limpio, listo para publicar desde cero.
 6. git branch -M main
 7. git push -u origin main
 8. Importar el repo en Vercel y hacer Deploy
+# bucaly-web
