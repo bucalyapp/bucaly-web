@@ -10,6 +10,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Bucaly">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9B7R7NM11M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9B7R7NM11M');
+</script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -514,13 +522,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <p class="fb-sub">Estamos en beta y tu opinión define el rumbo de la app. Toma 1 minuto.</p>
   </div>
   <div class="fb-options">
-    <button class="fb-card fb-card-patient" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSfgAPAOf9zYjc7GHOK8v7W1ZxVCcYAOaHm1lCq7xQWphFTX7Q/viewform','_blank')">
+    <button class="fb-card fb-card-patient" onclick="if(typeof gtag==='function'){gtag('event','feedback_click',{tipo:'paciente'});} window.open('https://docs.google.com/forms/d/e/1FAIpQLSfgAPAOf9zYjc7GHOK8v7W1ZxVCcYAOaHm1lCq7xQWphFTX7Q/viewform','_blank')">
       <span class="fb-emoji">🙋</span>
       <span class="fb-card-title">Soy paciente</span>
       <span class="fb-card-desc">Cuéntanos cómo fue tu experiencia con el triaje</span>
       <span class="fb-card-cta">Dar mi opinión →</span>
     </button>
-    <button class="fb-card fb-card-dentist" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSenGrNAEVadPe15qlObbuqqaAJxK1_jgTUxv_aCHe8QSqMBMQ/viewform','_blank')">
+    <button class="fb-card fb-card-dentist" onclick="if(typeof gtag==='function'){gtag('event','feedback_click',{tipo:'dentista'});} window.open('https://docs.google.com/forms/d/e/1FAIpQLSenGrNAEVadPe15qlObbuqqaAJxK1_jgTUxv_aCHe8QSqMBMQ/viewform','_blank')">
       <span class="fb-emoji">🦷</span>
       <span class="fb-card-title">Soy dentista</span>
       <span class="fb-card-desc">Evalúa el potencial de Bucaly para tu clínica</span>
@@ -545,6 +553,9 @@ function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
   if(el){el.classList.add('active');window.scrollTo(0,0);}
+  if(typeof gtag==='function'){
+    gtag('event','screen_view',{screen_name:id,page_path:'/'+id});
+  }
 }
 function skipToSearch(){go('sDirect');}
 function directSearch(spec){ST.specName=spec;buildDentists(spec,'routine');go('sDentistas');}
@@ -598,6 +609,9 @@ function nextS1(){
   if(!v){alert('Por favor cuéntanos qué te está pasando.');return;}
   ST.sym=v;
   ST.rama=getRama(v);
+  if(typeof gtag==='function'){
+    gtag('event','triaje_inicio',{rama:ST.rama,sintoma_largo:v.length});
+  }
   go('s2');
 }
 
@@ -634,6 +648,9 @@ function nextS6a(){
 // ── ANÁLISIS ──────────────────────────────────────────────────────────────────
 function runAnalysis(tipo){
   ST.ramaFinal=tipo;
+  if(typeof gtag==='function'){
+    gtag('event','triaje_completado',{tipo_resultado:tipo});
+  }
   // Guardar factores ATM si aplica
   if(tipo==='atm'){
     const items=document.querySelectorAll('#factAtmList .check-item');
@@ -864,6 +881,9 @@ function book(n,esp,addr,price){
   document.getElementById('aEsp').textContent=esp;
   document.getElementById('aDr').textContent=addr;
   document.getElementById('aPr').textContent=price+' la consulta';
+  if(typeof gtag==='function'){
+    gtag('event','cita_agendada',{especialidad:esp,profesional:n});
+  }
   go('sConfirm');
 }
 </script>
