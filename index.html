@@ -737,8 +737,8 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <h1 class="entry-title">Bienvenido a Bucaly</h1>
   <p class="entry-sub">Triaje dental con IA — encuentra al especialista correcto en minutos</p>
   <div class="entry-cards">
-    <div class="entry-card highlight" onclick="go('sNewPatient')">
-      <div class="entry-card-ic">✨</div>
+    <div class="entry-card" onclick="go('sNewPatient')">
+      <div class="entry-card-ic">🙋</div>
       <div class="entry-card-body">
         <div class="entry-card-title">Primera vez aquí</div>
         <div class="entry-card-sub">Comienza tu triaje o crea tu perfil para guardar tu historial</div>
@@ -772,7 +772,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <h1 class="entry-title">¿Cómo quieres continuar?</h1>
   <p class="entry-sub">Elige según tu situación</p>
   <div class="entry-cards">
-    <div class="entry-card highlight" onclick="startAsGuest()">
+    <div class="entry-card" onclick="startAsGuest()">
       <div class="entry-card-ic">🚨</div>
       <div class="entry-card-body">
         <div class="entry-card-title">Triaje rápido sin registro</div>
@@ -854,6 +854,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 
 <!-- ══ WELCOME ══ -->
 <div class="screen" id="sWelcome">
+  <button class="back-ico" onclick="go('sNewPatient')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:rgba(255,255,255,.7);z-index:10;">←</button>
   <div class="w-float">
     <div class="w-logo">
       <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
