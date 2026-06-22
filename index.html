@@ -92,23 +92,23 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   flex-direction: column;
 }
 .sym-header {
-  background: var(--white); padding: 56px 20px 20px;
+  background: var(--white); padding: 52px 20px 12px;
   border-bottom: 1px solid var(--border);
 }
-.sym-header h2 { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 5px; }
-.sym-header p { font-size: 14px; color: var(--grey); }
-.sym-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 11px; align-content: start; }
+.sym-header h2 { font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 3px; }
+.sym-header p { font-size: 13px; color: var(--grey); }
+.sym-grid { flex: 1; overflow-y: auto; padding: 10px 12px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; }
 .sym-card {
-  background: var(--white); border: 2px solid var(--border); border-radius: 16px;
-  padding: 16px 12px; text-align: center; cursor: pointer; transition: all .18s;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--white); border: 2px solid var(--border); border-radius: 14px;
+  padding: 12px 10px; text-align: center; cursor: pointer; transition: all .18s;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
   -webkit-user-select: none; user-select: none;
 }
 .sym-card:active { transform: scale(.96); }
 .sym-card.sel { border-color: var(--teal); background: var(--teal-l); }
-.sym-card .ic { font-size: 32px; }
-.sym-card .lbl { font-size: 13px; font-weight: 600; color: var(--navy); line-height: 1.3; }
-.sym-card .sub { font-size: 11px; color: var(--grey); line-height: 1.35; }
+.sym-card .ic { font-size: 26px; }
+.sym-card .lbl { font-size: 12px; font-weight: 600; color: var(--navy); line-height: 1.25; }
+.sym-card .sub { font-size: 10.5px; color: var(--grey); line-height: 1.3; }
 .sym-extra { padding: 12px 16px 0; background: var(--bg); }
 .sym-extra-label { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
 .sym-extra-label span { font-weight: 400; color: var(--grey); }
@@ -140,7 +140,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   background: #FEE2E2; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer;
   font-family: 'Inter', sans-serif;
 }
-.sym-footer { padding: 12px 16px 32px; background: var(--bg); border-top: 1px solid var(--border); }
+.sym-footer { padding: 10px 12px 28px; background: var(--bg); border-top: 1px solid var(--border); }
 .btn-main {
   width: 100%; background: var(--teal); color: #fff; border: none;
   border-radius: 14px; padding: 17px; font-size: 16px; font-weight: 700;
@@ -402,11 +402,11 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   background: linear-gradient(135deg, #0B1F35, #0A3D38) !important;
   border-color: transparent !important;
   flex-direction: row !important; text-align: left !important;
-  padding: 18px 20px !important; gap: 14px !important;
+  padding: 14px 16px !important; gap: 12px !important;
 }
-.sym-card-ai .ic { font-size: 36px !important; flex-shrink: 0; }
-.sym-card-ai .lbl { color: #fff !important; font-size: 15px !important; }
-.sym-card-ai .sub { color: rgba(255,255,255,.6) !important; font-size: 12px !important; }
+.sym-card-ai .ic { font-size: 30px !important; flex-shrink: 0; }
+.sym-card-ai .lbl { color: #fff !important; font-size: 14px !important; }
+.sym-card-ai .sub { color: rgba(255,255,255,.6) !important; font-size: 11.5px !important; }
 .sym-card-ai:active { transform: scale(.98); }
 
 /* ─── CHAT SCREEN ─────────────────────────────────────── */
@@ -522,47 +522,34 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   </div>
   <div class="sym-grid" id="symGrid">
     <div class="sym-card" data-v="dolor_dental" data-rama="dental" onclick="selSym(this)">
-      <span class="ic">😣</span><span class="lbl">Dolor dental</span><span class="sub">Muela o diente</span>
+      <span class="ic">😣</span><span class="lbl">Dolor dental</span>
     </div>
     <div class="sym-card" data-v="hinchazon" data-rama="absceso" onclick="selSym(this)">
-      <span class="ic">😮</span><span class="lbl">Hinchazón</span><span class="sub">Cara, encía o cuello</span>
+      <span class="ic">😮</span><span class="lbl">Hinchazón</span>
     </div>
     <div class="sym-card" data-v="sangrado" data-rama="periodontal" onclick="selSym(this)">
-      <span class="ic">🩸</span><span class="lbl">Encía sangra</span><span class="sub">Al cepillar o sola</span>
+      <span class="ic">🩸</span><span class="lbl">Encía sangra</span>
     </div>
     <div class="sym-card" data-v="trauma" data-rama="trauma" onclick="selSym(this)">
-      <span class="ic">💥</span><span class="lbl">Golpe o trauma</span><span class="sub">Diente afectado</span>
+      <span class="ic">💥</span><span class="lbl">Golpe o trauma</span>
     </div>
     <div class="sym-card" data-v="diente_roto" data-rama="dental" onclick="selSym(this)">
-      <span class="ic">🦷</span><span class="lbl">Diente roto</span><span class="sub">Fractura o empaste caído</span>
+      <span class="ic">🦷</span><span class="lbl">Diente roto</span>
     </div>
     <div class="sym-card" data-v="mandibula" data-rama="atm" onclick="selSym(this)">
-      <span class="ic">😬</span><span class="lbl">Ruido / Dolor / Traba Mandibular</span><span class="sub">Clic, mandíbula o ATM</span>
+      <span class="ic">😬</span><span class="lbl">Ruido / Dolor Mandibular</span>
     </div>
     <div class="sym-card" data-v="implante" data-rama="implante" onclick="selSym(this)">
-      <span class="ic">✨</span><span class="lbl">Implante</span><span class="sub">Quiero un implante</span>
+      <span class="ic">✨</span><span class="lbl">Implante</span>
     </div>
     <div class="sym-card" data-v="blanqueamiento" data-rama="estetico" onclick="selSym(this)">
-      <span class="ic">⬜</span><span class="lbl">Blanqueamiento</span><span class="sub">Estética dental</span>
+      <span class="ic">⬜</span><span class="lbl">Blanqueamiento</span>
     </div>
     <div class="sym-card" data-v="preventivo" data-rama="preventivo" onclick="selSym(this)">
-      <span class="ic">🔍</span><span class="lbl">Chequeo general</span><span class="sub">Sin síntomas</span>
+      <span class="ic">🔍</span><span class="lbl">Chequeo general</span>
     </div>
     <div class="sym-card sym-card-ai" onclick="openChat()" style="grid-column:1/-1">
-      <span class="ic">🤖</span><span class="lbl">Conversa con Dr. IA</span><span class="sub">Descríbelo con tus palabras o agrega una foto — la IA te orienta</span>
-    </div>
-  </div>
-  <div class="sym-extra">
-    <p class="sym-extra-label">¿Quieres agregar más detalles? <span>(opcional)</span></p>
-    <textarea class="sym-textarea" id="symDesc" placeholder="Describe lo que sientes… ej: tengo un dolor punzante que empeora de noche"></textarea>
-    <label class="sym-photo-btn" for="symPhoto">
-      <span class="sym-photo-ic">📷</span>
-      <span class="sym-photo-text">Agregar foto para análisis con IA</span>
-      <input type="file" id="symPhoto" accept="image/*" capture="environment" onchange="handlePhoto(this)">
-    </label>
-    <div class="sym-photo-preview" id="photoPreview" style="display:none">
-      <img id="photoThumb" src="" alt="Foto adjunta">
-      <button class="sym-photo-remove" onclick="removePhoto()">✕ Quitar</button>
+      <span class="ic">👨‍⚕️</span><span class="lbl">Conversa con Dr. IA</span><span class="sub">Descríbelo con tus palabras o agrega una foto — la IA te orienta</span>
     </div>
   </div>
   <div class="sym-footer">
@@ -710,7 +697,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 <div class="screen" id="sChat">
   <div class="chat-topbar">
     <button class="chat-back" onclick="go('sSym')">←</button>
-    <div class="chat-avatar">🤖</div>
+    <div class="chat-avatar">👨‍⚕️</div>
     <div class="chat-info">
       <div class="chat-name">Dr. IA · Bucaly</div>
       <div class="chat-status">● En línea</div>
@@ -1322,7 +1309,7 @@ function addAiMsg(text, withBtn) {
   const msgs = document.getElementById('chatMessages');
   const wrap = document.createElement('div');
   wrap.className = 'msg ai';
-  wrap.innerHTML = `<div class="msg-av">🤖</div>
+  wrap.innerHTML = `<div class="msg-av">👨‍⚕️</div>
     <div>
       <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
       ${withBtn ? `<button class="chat-result-btn" onclick="showChatResult()">Ver mi orientación completa →</button>` : ''}
@@ -1335,7 +1322,7 @@ function addTyping() {
   const msgs = document.getElementById('chatMessages');
   const wrap = document.createElement('div');
   wrap.className = 'msg ai'; wrap.id = 'typingMsg';
-  wrap.innerHTML = `<div class="msg-av">🤖</div>
+  wrap.innerHTML = `<div class="msg-av">👨‍⚕️</div>
     <div class="msg-bubble"><div class="typing-dot"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
