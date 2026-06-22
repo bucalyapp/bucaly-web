@@ -60,8 +60,8 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   box-shadow: 0 6px 0 #005a50, 0 10px 0 rgba(0,50,44,.3), 0 22px 55px rgba(0,158,140,.6),
               inset 0 2px 0 rgba(255,255,255,.4), inset 0 -2px 4px rgba(0,0,0,.15);
   opacity: 0;
-  animation: splashPop .6s cubic-bezier(.34,1.56,.64,1) forwards,
-             splashPress .9s ease 1s forwards;
+  animation: splashPop .5s cubic-bezier(.34,1.56,.64,1) forwards,
+             splashPress .65s ease .7s forwards;
 }
 .splash-logo.tinder-right {
   animation: tinderSwipeRight .45s cubic-bezier(.55,.06,.68,.19) forwards !important;
@@ -69,7 +69,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .splash-name {
   font-family: 'Fraunces', serif; font-size: 46px; font-weight: 600;
   color: #fff; letter-spacing: -.02em; margin-top: 22px;
-  opacity: 0; animation: nameAppear .4s ease .5s forwards;
+  opacity: 0; animation: nameAppear .35s ease .4s forwards;
 }
 .splash-name.tinder-left {
   animation: tinderSwipeLeft .45s cubic-bezier(.55,.06,.68,.19) forwards !important;
@@ -940,21 +940,21 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   const logo   = splash.querySelector('.splash-logo');
   const name   = document.getElementById('splashName');
 
-  // ~1.9s: press ends → logo swipes RIGHT
+  // 1.35s: press ends → logo swipes RIGHT
   setTimeout(() => {
     logo.classList.add('tinder-right');
-  }, 1950);
+  }, 1350);
 
-  // 2.55s: Bucaly swipes LEFT
+  // 1.85s: Bucaly swipes LEFT
   setTimeout(() => {
     name.classList.add('tinder-left');
-  }, 2550);
+  }, 1850);
 
-  // 3.1s: fade out → welcome screen
+  // 2.35s: fade out → welcome screen
   setTimeout(() => {
     splash.classList.add('fade-out');
-    setTimeout(() => { splash.style.display = 'none'; }, 420);
-  }, 3100);
+    setTimeout(() => { splash.style.display = 'none'; }, 400);
+  }, 2350);
 })();
 
 // ════════════════════════════════════════════════════════
