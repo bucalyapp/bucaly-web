@@ -103,6 +103,85 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .screen { display: none; position: absolute; inset: 0; overflow: hidden; }
 .screen.active { display: flex; flex-direction: column; }
 
+/* ─── ENTRY / LOGIN ────────────────────────────────────── */
+#sEntry, #sNewPatient, #sLogin {
+  background: linear-gradient(160deg, #0B1F35 0%, #0D2B45 60%, #0A3D38 100%);
+  align-items: center; justify-content: center; padding: 40px 28px 56px;
+  text-align: center; flex-direction: column; gap: 0;
+}
+.entry-logo-sm {
+  width: 72px; height: 72px; border-radius: 20px;
+  background: linear-gradient(145deg, #00bfab 0%, #007d70 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 0 #005a50, 0 12px 30px rgba(0,158,140,.5);
+  margin-bottom: 18px; flex-shrink: 0;
+}
+.entry-title {
+  font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600;
+  color: #fff; letter-spacing: -.02em; margin-bottom: 8px; line-height: 1.2;
+}
+.entry-sub {
+  font-size: 14px; color: rgba(255,255,255,.55); margin-bottom: 40px; line-height: 1.6;
+}
+.entry-cards { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 360px; }
+.entry-card {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.13);
+  border-radius: 20px; padding: 22px 20px; text-align: left; cursor: pointer;
+  display: flex; align-items: center; gap: 16px;
+  transition: background .15s, transform .1s;
+}
+.entry-card:active { background: rgba(255,255,255,.13); transform: scale(.98); }
+.entry-card-ic { font-size: 32px; flex-shrink: 0; }
+.entry-card-body { flex: 1; }
+.entry-card-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.entry-card-sub   { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.5; }
+.entry-card-arrow { font-size: 18px; color: rgba(255,255,255,.4); flex-shrink: 0; }
+.entry-card.highlight {
+  background: var(--teal); border-color: transparent;
+  box-shadow: 0 4px 0 #005a50, 0 12px 30px rgba(0,158,140,.4);
+}
+.entry-card.highlight .entry-card-sub { color: rgba(255,255,255,.75); }
+.entry-card.highlight .entry-card-arrow { color: rgba(255,255,255,.7); }
+
+/* ─── LOGIN FORM ───────────────────────────────────────── */
+.login-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.login-field {
+  background: rgba(255,255,255,.09); border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 14px; padding: 16px 18px; font-size: 15px; color: #fff;
+  font-family: 'Inter', sans-serif; outline: none; width: 100%;
+}
+.login-field::placeholder { color: rgba(255,255,255,.4); }
+.login-field:focus { border-color: var(--teal); background: rgba(255,255,255,.12); }
+.btn-login {
+  width: 100%; background: var(--teal); color: #fff; border: none;
+  border-radius: 14px; padding: 17px; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 0 #005a50;
+}
+.btn-ghost {
+  background: none; border: none; color: rgba(255,255,255,.5); font-size: 13px;
+  cursor: pointer; font-family: 'Inter', sans-serif; padding: 10px; margin-top: 4px;
+}
+
+/* ─── GUEST FORM ───────────────────────────────────────── */
+#sGuestForm {
+  background: var(--bg); flex-direction: column; overflow-y: auto;
+}
+.gf-header {
+  background: var(--navy); padding: 56px 20px 24px; color: #fff; text-align: center;
+}
+.gf-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.gf-header p  { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.5; }
+.gf-body { padding: 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+.gf-label { font-size: 12px; font-weight: 700; color: var(--grey); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.gf-input {
+  width: 100%; background: #fff; border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 15px 16px; font-size: 15px; color: var(--navy);
+  font-family: 'Inter', sans-serif; outline: none;
+}
+.gf-input:focus { border-color: var(--teal); }
+.gf-footer { padding: 0 16px 40px; }
+
 /* ─── WELCOME ─────────────────────────────────────────── */
 #sWelcome {
   background: linear-gradient(160deg, #0B1F35 0%, #0D2B45 60%, #0A3D38 100%);
@@ -643,8 +722,138 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <div class="splash-name" id="splashName">Bucaly</div>
 </div>
 
+<!-- ══ ENTRY ══ -->
+<div class="screen active" id="sEntry">
+  <div class="entry-logo-sm">
+    <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="eg" cx="42%" cy="30%" r="55%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#e0f5f3"/></radialGradient>
+        <filter id="ef"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,50,44,0.4)"/></filter>
+      </defs>
+      <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="url(#eg)" filter="url(#ef)"/>
+      <ellipse cx="30" cy="19" rx="10" ry="6" fill="rgba(255,255,255,0.85)" transform="rotate(-30 30 19)"/>
+    </svg>
+  </div>
+  <h1 class="entry-title">Bienvenido a Bucaly</h1>
+  <p class="entry-sub">Triaje dental con IA — encuentra al especialista correcto en minutos</p>
+  <div class="entry-cards">
+    <div class="entry-card highlight" onclick="go('sNewPatient')">
+      <div class="entry-card-ic">✨</div>
+      <div class="entry-card-body">
+        <div class="entry-card-title">Primera vez aquí</div>
+        <div class="entry-card-sub">Comienza tu triaje o crea tu perfil para guardar tu historial</div>
+      </div>
+      <div class="entry-card-arrow">›</div>
+    </div>
+    <div class="entry-card" onclick="go('sLogin')">
+      <div class="entry-card-ic">👤</div>
+      <div class="entry-card-body">
+        <div class="entry-card-title">Ya soy paciente Bucaly</div>
+        <div class="entry-card-sub">Ingresa con tu correo para acceder a tu historial y citas</div>
+      </div>
+      <div class="entry-card-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NEW PATIENT ══ -->
+<div class="screen" id="sNewPatient">
+  <button class="back-ico" onclick="go('sEntry')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;z-index:10;">←</button>
+  <div class="entry-logo-sm" style="margin-top:90px">
+    <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="eg2" cx="42%" cy="30%" r="55%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#e0f5f3"/></radialGradient>
+        <filter id="ef2"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,50,44,0.4)"/></filter>
+      </defs>
+      <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="url(#eg2)" filter="url(#ef2)"/>
+      <ellipse cx="30" cy="19" rx="10" ry="6" fill="rgba(255,255,255,0.85)" transform="rotate(-30 30 19)"/>
+    </svg>
+  </div>
+  <h1 class="entry-title">¿Cómo quieres continuar?</h1>
+  <p class="entry-sub">Elige según tu situación</p>
+  <div class="entry-cards">
+    <div class="entry-card highlight" onclick="startAsGuest()">
+      <div class="entry-card-ic">🚨</div>
+      <div class="entry-card-body">
+        <div class="entry-card-title">Triaje rápido sin registro</div>
+        <div class="entry-card-sub">Para urgencias o si prefieres continuar sin cuenta. Pediremos tus datos al agendar.</div>
+      </div>
+      <div class="entry-card-arrow">›</div>
+    </div>
+    <div class="entry-card" onclick="go('sRegister')">
+      <div class="entry-card-ic">🪪</div>
+      <div class="entry-card-body">
+        <div class="entry-card-title">Crear mi perfil Bucaly</div>
+        <div class="entry-card-sub">Guarda tu historial, acelera próximas consultas y accede a beneficios exclusivos</div>
+      </div>
+      <div class="entry-card-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen" id="sLogin">
+  <button class="back-ico" onclick="go('sEntry')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;z-index:10;">←</button>
+  <div class="entry-logo-sm" style="margin-top:90px">
+    <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="eg3" cx="42%" cy="30%" r="55%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#e0f5f3"/></radialGradient>
+        <filter id="ef3"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="rgba(0,50,44,0.4)"/></filter>
+      </defs>
+      <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="url(#eg3)" filter="url(#ef3)"/>
+      <ellipse cx="30" cy="19" rx="10" ry="6" fill="rgba(255,255,255,0.85)" transform="rotate(-30 30 19)"/>
+    </svg>
+  </div>
+  <h1 class="entry-title">Ingresa a tu perfil</h1>
+  <p class="entry-sub">Accede a tu historial y citas anteriores</p>
+  <div class="login-form">
+    <input class="login-field" type="email" placeholder="Correo electrónico" id="loginEmail" autocomplete="email">
+    <input class="login-field" type="password" placeholder="Contraseña" id="loginPass" autocomplete="current-password">
+    <button class="btn-login" onclick="doLogin()">Ingresar →</button>
+    <button class="btn-ghost" onclick="go('sNewPatient')">¿Aún no tienes cuenta? Regístrate</button>
+  </div>
+</div>
+
+<!-- ══ REGISTER ══ -->
+<div class="screen" id="sRegister">
+  <div class="gf-header" style="background:linear-gradient(160deg,#0B1F35,#0A3D38)">
+    <button class="back-ico" onclick="go('sNewPatient')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;">←</button>
+    <h2 style="padding-top:8px">Crea tu perfil Bucaly</h2>
+    <p>Solo toma un momento</p>
+  </div>
+  <div class="gf-body">
+    <div><div class="gf-label">Nombre completo</div><input class="gf-input" type="text" placeholder="Juan Pérez" id="regNombre" autocomplete="name"></div>
+    <div><div class="gf-label">RUT</div><input class="gf-input" type="text" placeholder="12.345.678-9" id="regRut"></div>
+    <div><div class="gf-label">Teléfono</div><input class="gf-input" type="tel" placeholder="+56 9 1234 5678" id="regTel" autocomplete="tel"></div>
+    <div><div class="gf-label">Correo electrónico</div><input class="gf-input" type="email" placeholder="correo@ejemplo.com" id="regEmail" autocomplete="email"></div>
+    <div><div class="gf-label">Contraseña</div><input class="gf-input" type="password" placeholder="Mínimo 8 caracteres" id="regPass" autocomplete="new-password"></div>
+  </div>
+  <div class="gf-footer">
+    <button class="btn-primary" onclick="doRegister()">Crear perfil y comenzar triaje →</button>
+  </div>
+</div>
+
+<!-- ══ GUEST FORM ══ -->
+<div class="screen" id="sGuestForm">
+  <div class="gf-header">
+    <button class="back-ico" onclick="go('sResult')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;">←</button>
+    <h2 style="padding-top:8px">Un paso antes de agendar</h2>
+    <p>Necesitamos tus datos para confirmar tu hora con el especialista</p>
+  </div>
+  <div class="gf-body">
+    <div><div class="gf-label">Nombre completo</div><input class="gf-input" type="text" placeholder="Juan Pérez" id="gfNombre" autocomplete="name"></div>
+    <div><div class="gf-label">RUT</div><input class="gf-input" type="text" placeholder="12.345.678-9" id="gfRut"></div>
+    <div><div class="gf-label">Teléfono</div><input class="gf-input" type="tel" placeholder="+56 9 1234 5678" id="gfTel" autocomplete="tel"></div>
+    <div><div class="gf-label">Correo electrónico</div><input class="gf-input" type="email" placeholder="correo@ejemplo.com" id="gfEmail" autocomplete="email"></div>
+  </div>
+  <div class="gf-footer">
+    <button class="btn-primary" onclick="submitGuestForm()">Confirmar y ver especialistas →</button>
+    <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">🔒 Tus datos se usan solo para coordinar tu cita y no se comparten con terceros.</p>
+  </div>
+</div>
+
 <!-- ══ WELCOME ══ -->
-<div class="screen active" id="sWelcome">
+<div class="screen" id="sWelcome">
   <div class="w-float">
     <div class="w-logo">
       <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -809,7 +1018,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     </div>
   </div>
   <div class="result-footer">
-    <button class="btn-primary" onclick="go('sDentistas')">Ver dentistas disponibles →</button>
+    <button class="btn-primary" onclick="goToDentistas()">Ver dentistas disponibles →</button>
     <button class="btn-danger" id="btnEmerg" style="display:none" onclick="alert('Llama al 131 (SAMU) o ve al servicio de urgencias del hospital más cercano.')">🚨 Ir a urgencias ahora</button>
     <button class="btn-secondary" onclick="go('sWelcome')">Volver al inicio</button>
   </div>
@@ -1044,6 +1253,54 @@ function reserveParking(i) {
 
 function openWaze(query) {
   window.open(`https://waze.com/ul?q=${query}&navigate=yes`, '_blank');
+}
+
+// ════════════════════════════════════════════════════════
+//  USER SESSION
+// ════════════════════════════════════════════════════════
+const USER = { isGuest: true, nombre: '', email: '' };
+
+function startAsGuest() {
+  USER.isGuest = true;
+  go('sWelcome');
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if (!email || !pass) { alert('Ingresa tu correo y contraseña.'); return; }
+  // Mock login — in production connects to backend
+  USER.isGuest = false;
+  USER.email   = email;
+  USER.nombre  = email.split('@')[0];
+  go('sWelcome');
+}
+
+function doRegister() {
+  const nombre = document.getElementById('regNombre').value.trim();
+  const rut    = document.getElementById('regRut').value.trim();
+  const tel    = document.getElementById('regTel').value.trim();
+  const email  = document.getElementById('regEmail').value.trim();
+  const pass   = document.getElementById('regPass').value;
+  if (!nombre || !email || !pass) { alert('Completa nombre, correo y contraseña para continuar.'); return; }
+  USER.isGuest = false;
+  USER.nombre  = nombre;
+  USER.email   = email;
+  go('sWelcome');
+}
+
+function goToDentistas() {
+  if (USER.isGuest) { go('sGuestForm'); } else { go('sDentistas'); }
+}
+
+function submitGuestForm() {
+  const nombre = document.getElementById('gfNombre').value.trim();
+  const email  = document.getElementById('gfEmail').value.trim();
+  if (!nombre || !email) { alert('Ingresa al menos tu nombre y correo para continuar.'); return; }
+  USER.nombre  = nombre;
+  USER.email   = email;
+  USER.isGuest = false;
+  go('sDentistas');
 }
 
 // ════════════════════════════════════════════════════════
