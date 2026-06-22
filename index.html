@@ -60,10 +60,16 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   padding: 40px 28px 0;
 }
 .w-logo {
-  width: 180px; height: 180px; background: var(--teal); border-radius: 48px;
+  width: 155px; height: 155px; border-radius: 42px;
+  background: linear-gradient(145deg, #00bfab 0%, #007d70 100%);
   display: flex; align-items: center; justify-content: center; font-size: 44px;
   margin-bottom: 28px;
-  box-shadow: 0 24px 60px rgba(0,158,140,.55), 0 0 0 6px rgba(0,158,140,.18);
+  box-shadow:
+    0 20px 50px rgba(0,158,140,.55),
+    0 4px 0 rgba(0,80,72,.6),
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 0 -2px 4px rgba(0,0,0,.2);
+  position: relative;
 }
 .w-title {
   font-family: 'Fraunces', serif; font-size: 34px; font-weight: 600;
@@ -503,7 +509,12 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <div class="w-float">
     <div class="w-logo">
       <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <rect width="80" height="80" rx="20" fill="#009E8C"/>
+        <defs>
+          <linearGradient id="toothG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#d4f0ec"/>
+          </linearGradient>
+        </defs>
         <path d="
           M18 56
           C18 56 16 46 14 36
@@ -520,7 +531,8 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
           C34 44 32 48 30 54
           C28 60 26 64 23 64
           C20 64 18 60 18 56 Z
-        " fill="white"/>
+        " fill="url(#toothG)"/>
+        <path d="M22 14 C26 11 34 10 38 11 C34 12 27 14 22 18 Z" fill="rgba(255,255,255,0.55)"/>
       </svg>
     </div>
     <h1 class="w-title">Del síntoma al dentista<br><em>en minutos.</em></h1>
