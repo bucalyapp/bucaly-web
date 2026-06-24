@@ -381,18 +381,19 @@ async function loadData() {
       triages: triages.filter(t => t.patient_id === p.id)
     }));
 
-    // triajes anónimos (sin paciente registrado) → mostrar como fila anónima
+    // triajes anónimos → una fila por cada triaje con datos del invitado
     const anonTriages = triages.filter(t => !t.patient_id);
-    if (anonTriages.length > 0) {
+    anonTriages.forEach(t => {
       allPatients.push({
-        id: '__anon__',
-        nombre: 'Pacientes anónimos',
-        email: `${anonTriages.length} triaje(s) sin cuenta`,
-        rut: '—', telefono: '—',
-        created_at: anonTriages[0].created_at,
-        triages: anonTriages,
+        id: '__anon__' + t.id,
+        nombre: t.guest_nombre || 'Paciente anónimo',
+        email: t.guest_email || 'Sin correo',
+        rut: t.guest_rut || '—',
+        telefono: t.guest_telefono || '—',
+        created_at: t.created_at,
+        triages: [t],
       });
-    }
+    });
 
     updateStats(triages);
     renderTable();

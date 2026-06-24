@@ -4,7 +4,8 @@ const supabase = require('../lib/supabase');
 
 // POST /api/triages — guardar resultado de triaje
 router.post('/', async (req, res) => {
-  const { patient_id, symptom, answers, pain_level, urgency_level, specialist, diagnoses, description } = req.body;
+  const { patient_id, symptom, answers, pain_level, urgency_level, specialist, diagnoses, description,
+          guest_nombre, guest_rut, guest_telefono, guest_email } = req.body;
 
   if (!symptom || !urgency_level) return res.status(400).json({ error: 'Faltan campos obligatorios' });
 
@@ -19,6 +20,10 @@ router.post('/', async (req, res) => {
       specialist,
       diagnoses: diagnoses || [],
       description: description || '',
+      guest_nombre: guest_nombre || null,
+      guest_rut: guest_rut || null,
+      guest_telefono: guest_telefono || null,
+      guest_email: guest_email || null,
     })
     .select()
     .single();

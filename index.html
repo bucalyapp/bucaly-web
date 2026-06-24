@@ -1361,6 +1361,20 @@ async function submitGuestForm() {
   const email    = document.getElementById('gfEmail').value.trim();
   if (!nombre || !email) { alert('Ingresa al menos tu nombre y correo para continuar.'); return; }
   USER.nombre = nombre; USER.email = email;
+
+  // Guardar triaje pendiente con datos del invitado
+  if (window._pendingTriage) {
+    saveTriage({
+      ...window._pendingTriage,
+      patient_id: null,
+      guest_nombre: nombre,
+      guest_rut: rut,
+      guest_telefono: telefono,
+      guest_email: email,
+    });
+    window._pendingTriage = null;
+  }
+
   go('sDentistas');
 }
 
@@ -1814,8 +1828,8 @@ function buildResult(tipo) {
   // Build dentist list
   buildDentists(spec.name, urgency.cls.replace('u-', ''));
 
-  // Guardar triaje en la base de datos
-  saveTriage({
+  // Guardar triaje: inmediato si está logueado, pendiente si es invitado
+  const triageData = {
     symptom: ST.sym || 'otro',
     answers: ST.answers || {},
     pain_level: ST.dolor,
@@ -1823,7 +1837,12 @@ function buildResult(tipo) {
     specialist: spec.name,
     diagnoses: hips.map(h => h.name),
     description: ST.desc || '',
-  });
+  };
+  if (!USER.isGuest) {
+    saveTriage({ ...triageData, patient_id: USER.id });
+  } else {
+    window._pendingTriage = triageData;
+  }
 }
 
 async function saveTriage(data) {
@@ -1831,9 +1850,9 @@ async function saveTriage(data) {
     await fetch(`${API}/api/triages`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, patient_id: USER.id || null }),
+      body: JSON.stringify(data),
     });
-  } catch(e) { /* silent — no interrumpir la experiencia del usuario */ }
+  } catch(e) { /* silent */ }
 }
 
 // ════════════════════════════════════════════════════════
