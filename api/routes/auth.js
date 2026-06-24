@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
 const supabase = require('../lib/supabase');
 
 const sign = (user) => jwt.sign(
@@ -10,74 +9,92 @@ const sign = (user) => jwt.sign(
   { expiresIn: '30d' }
 );
 
+const validate = (fields, body) => {
+  const errors = [];
+  for (const [key, msg] of fields) {
+    if (!body[key] || String(body[key]).trim() === '') errors.push({ field: key, msg });
+  }
+  return errors;
+};
+
 // POST /api/auth/register
-router.post('/register', [
-  body('nombre').trim().notEmpty().withMessage('Nombre requerido'),
-  body('email').isEmail().withMessage('Email inválido'),
-  body('password').isLength({ min: 8 }).withMessage('Contraseña mínimo 8 caracteres'),
-  body('rut').trim().notEmpty().withMessage('RUT requerido'),
-  body('telefono').trim().notEmpty().withMessage('Teléfono requerido'),
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+router.post('/register', async (req, res) => {
+  try {
+    const { nombre, email, password, rut, telefono } = req.body || {};
 
-  const { nombre, email, password, rut, telefono } = req.body;
+    const errors = validate([
+      ['nombre', 'Nombre requerido'],
+      ['email', 'Email requerido'],
+      ['password', 'Contraseña requerida'],
+      ['rut', 'RUT requerido'],
+      ['telefono', 'Teléfono requerido'],
+    ], req.body || {});
 
-  const { data: existing } = await supabase
-    .from('patients')
-    .select('id')
-    .eq('email', email)
-    .single();
+    if (password && password.length < 8) errors.push({ field: 'password', msg: 'Contraseña mínimo 8 caracteres' });
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push({ field: 'email', msg: 'Email inválido' });
+    if (errors.length) return res.status(400).json({ errors });
 
-  if (existing) return res.status(409).json({ error: 'Ya existe una cuenta con ese email' });
+    const { data: existing } = await supabase
+      .from('patients').select('id').eq('email', email).single();
 
-  const password_hash = await bcrypt.hash(password, 12);
+    if (existing) return res.status(409).json({ error: 'Ya existe una cuenta con ese email' });
 
-  const { data: patient, error } = await supabase
-    .from('patients')
-    .insert({ nombre, email, password_hash, rut, telefono, role: 'patient' })
-    .select()
-    .single();
+    const password_hash = await bcrypt.hash(password, 10);
 
-  if (error) return res.status(500).json({ error: error.message });
+    const { data: patient, error } = await supabase
+      .from('patients')
+      .insert({ nombre: nombre.trim(), email, password_hash, rut: rut.trim(), telefono: telefono.trim(), role: 'patient' })
+      .select().single();
 
-  res.status(201).json({ token: sign(patient), user: { id: patient.id, nombre: patient.nombre, email: patient.email, role: patient.role } });
+    if (error) return res.status(500).json({ error: error.message });
+
+    res.status(201).json({
+      token: sign(patient),
+      user: { id: patient.id, nombre: patient.nombre, email: patient.email, role: patient.role }
+    });
+  } catch (e) {
+    console.error('register error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // POST /api/auth/login
-router.post('/login', [
-  body('email').isEmail(),
-  body('password').notEmpty(),
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !password) return res.status(400).json({ error: 'Email y contraseña requeridos' });
 
-  const { email, password } = req.body;
+    const { data: patient } = await supabase
+      .from('patients').select('*').eq('email', email).single();
 
-  const { data: patient } = await supabase
-    .from('patients')
-    .select('*')
-    .eq('email', email)
-    .single();
+    if (!patient) return res.status(401).json({ error: 'Credenciales incorrectas' });
 
-  if (!patient) return res.status(401).json({ error: 'Credenciales incorrectas' });
+    const valid = await bcrypt.compare(password, patient.password_hash);
+    if (!valid) return res.status(401).json({ error: 'Credenciales incorrectas' });
 
-  const valid = await bcrypt.compare(password, patient.password_hash);
-  if (!valid) return res.status(401).json({ error: 'Credenciales incorrectas' });
-
-  res.json({ token: sign(patient), user: { id: patient.id, nombre: patient.nombre, email: patient.email, role: patient.role } });
+    res.json({
+      token: sign(patient),
+      user: { id: patient.id, nombre: patient.nombre, email: patient.email, role: patient.role }
+    });
+  } catch (e) {
+    console.error('login error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // GET /api/auth/me
 router.get('/me', require('../middleware/auth'), async (req, res) => {
-  const { data: patient } = await supabase
-    .from('patients')
-    .select('id, nombre, email, rut, telefono, role, created_at')
-    .eq('id', req.user.id)
-    .single();
+  try {
+    const { data: patient } = await supabase
+      .from('patients')
+      .select('id, nombre, email, rut, telefono, role, created_at')
+      .eq('id', req.user.id).single();
 
-  if (!patient) return res.status(404).json({ error: 'Usuario no encontrado' });
-  res.json(patient);
+    if (!patient) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json(patient);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 module.exports = router;

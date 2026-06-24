@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env'), override: true });
 const express = require('express');
 const cors = require('cors');
 
@@ -26,4 +26,9 @@ app.use((err, _req, res, _next) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Bucaly API corriendo en puerto ${PORT}`));
+const supabase = require('./lib/supabase');
+app.listen(PORT, async () => {
+  console.log(`Bucaly API corriendo en puerto ${PORT}`);
+  const { error } = await supabase.from('patients').select('count');
+  console.log(error ? `Supabase error: ${error.message}` : 'Supabase conectado');
+});
