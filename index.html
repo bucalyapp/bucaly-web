@@ -1813,6 +1813,27 @@ function buildResult(tipo) {
 
   // Build dentist list
   buildDentists(spec.name, urgency.cls.replace('u-', ''));
+
+  // Guardar triaje en la base de datos
+  saveTriage({
+    symptom: ST.sym || 'otro',
+    answers: ST.answers || {},
+    pain_level: ST.dolor,
+    urgency_level: urgency.cls.replace('u-', ''),
+    specialist: spec.name,
+    diagnoses: hips.map(h => h.name),
+    description: ST.desc || '',
+  });
+}
+
+async function saveTriage(data) {
+  try {
+    await fetch(`${API}/api/triages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, patient_id: USER.id || null }),
+    });
+  } catch(e) { /* silent — no interrumpir la experiencia del usuario */ }
 }
 
 // ════════════════════════════════════════════════════════
