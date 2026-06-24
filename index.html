@@ -1421,7 +1421,7 @@ function removePhoto() {
 
 function startFlow() {
   if (!ST.sym) return;
-  ST.desc = document.getElementById('symDesc').value.trim();
+  ST.desc = (document.getElementById('symDesc') || {value:''}).value.trim();
   ST.answers = {};
   ST.dolor = null;
   if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
