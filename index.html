@@ -1160,10 +1160,13 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     name.classList.add('tinder-left');
   }, 1850);
 
-  // 2.35s: fade out → welcome screen
+  // 2.35s: fade out → pantalla inicial (saltando a sWelcome si hay sesión activa)
   setTimeout(() => {
     splash.classList.add('fade-out');
-    setTimeout(() => { splash.style.display = 'none'; }, 400);
+    setTimeout(() => {
+      splash.style.display = 'none';
+      if (loadSession()) go('sWelcome');
+    }, 400);
   }, 2350);
 })();
 
@@ -1259,48 +1262,105 @@ function openWaze(query) {
 // ════════════════════════════════════════════════════════
 //  USER SESSION
 // ════════════════════════════════════════════════════════
-const USER = { isGuest: true, nombre: '', email: '' };
+const API = 'https://api-production-37bd.up.railway.app';
+const USER = { isGuest: true, nombre: '', email: '', token: null, id: null };
+
+function saveSession(data) {
+  USER.isGuest = false;
+  USER.token   = data.token;
+  USER.id      = data.user.id;
+  USER.nombre  = data.user.nombre;
+  USER.email   = data.user.email;
+  localStorage.setItem('bucaly_token', data.token);
+  localStorage.setItem('bucaly_user', JSON.stringify(data.user));
+}
+
+function loadSession() {
+  const token = localStorage.getItem('bucaly_token');
+  const user  = localStorage.getItem('bucaly_user');
+  if (token && user) {
+    const u = JSON.parse(user);
+    USER.isGuest = false;
+    USER.token   = token;
+    USER.id      = u.id;
+    USER.nombre  = u.nombre;
+    USER.email   = u.email;
+    return true;
+  }
+  return false;
+}
+
+function logout() {
+  localStorage.removeItem('bucaly_token');
+  localStorage.removeItem('bucaly_user');
+  USER.isGuest = true; USER.token = null; USER.id = null; USER.nombre = ''; USER.email = '';
+  go('sEntry');
+}
 
 function startAsGuest() {
   USER.isGuest = true;
   go('sWelcome');
 }
 
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value;
   if (!email || !pass) { alert('Ingresa tu correo y contraseña.'); return; }
-  // Mock login — in production connects to backend
-  USER.isGuest = false;
-  USER.email   = email;
-  USER.nombre  = email.split('@')[0];
-  go('sWelcome');
+  const btn = document.querySelector('#sLogin .btn-login');
+  btn.disabled = true; btn.textContent = 'Ingresando...';
+  try {
+    const r = await fetch(`${API}/api/auth/login`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await r.json();
+    if (!r.ok) { alert(data.error || 'Error al ingresar'); return; }
+    saveSession(data);
+    go('sWelcome');
+  } catch(e) {
+    alert('No se pudo conectar al servidor.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Ingresar →';
+  }
 }
 
-function doRegister() {
+async function doRegister() {
   const nombre = document.getElementById('regNombre').value.trim();
   const rut    = document.getElementById('regRut').value.trim();
   const tel    = document.getElementById('regTel').value.trim();
   const email  = document.getElementById('regEmail').value.trim();
   const pass   = document.getElementById('regPass').value;
   if (!nombre || !email || !pass) { alert('Completa nombre, correo y contraseña para continuar.'); return; }
-  USER.isGuest = false;
-  USER.nombre  = nombre;
-  USER.email   = email;
-  go('sWelcome');
+  if (pass.length < 8) { alert('La contraseña debe tener al menos 8 caracteres.'); return; }
+  const btn = document.querySelector('#sRegister .btn-primary');
+  btn.disabled = true; btn.textContent = 'Creando perfil...';
+  try {
+    const r = await fetch(`${API}/api/auth/register`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, rut, telefono: tel, email, password: pass })
+    });
+    const data = await r.json();
+    if (!r.ok) { alert(data.error || 'Error al registrarse'); return; }
+    saveSession(data);
+    go('sWelcome');
+  } catch(e) {
+    alert('No se pudo conectar al servidor.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Crear perfil y comenzar triaje →';
+  }
 }
 
 function goToDentistas() {
   if (USER.isGuest) { go('sGuestForm'); } else { go('sDentistas'); }
 }
 
-function submitGuestForm() {
-  const nombre = document.getElementById('gfNombre').value.trim();
-  const email  = document.getElementById('gfEmail').value.trim();
+async function submitGuestForm() {
+  const nombre   = document.getElementById('gfNombre').value.trim();
+  const rut      = document.getElementById('gfRut')   ? document.getElementById('gfRut').value.trim() : '';
+  const telefono = document.getElementById('gfTel')   ? document.getElementById('gfTel').value.trim() : '';
+  const email    = document.getElementById('gfEmail').value.trim();
   if (!nombre || !email) { alert('Ingresa al menos tu nombre y correo para continuar.'); return; }
-  USER.nombre  = nombre;
-  USER.email   = email;
-  USER.isGuest = false;
+  USER.nombre = nombre; USER.email = email;
   go('sDentistas');
 }
 
