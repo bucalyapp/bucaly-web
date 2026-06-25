@@ -1367,10 +1367,10 @@ async function submitGuestForm() {
     saveTriage({
       ...window._pendingTriage,
       patient_id: null,
-      guest_nombre: nombre,
-      guest_rut: rut,
-      guest_telefono: telefono,
-      guest_email: email,
+      answers: {
+        ...(window._pendingTriage.answers || {}),
+        _guest: { nombre, rut, telefono, email },
+      },
     });
     window._pendingTriage = null;
   }

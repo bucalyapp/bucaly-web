@@ -384,12 +384,13 @@ async function loadData() {
     // triajes anónimos → una fila por cada triaje con datos del invitado
     const anonTriages = triages.filter(t => !t.patient_id);
     anonTriages.forEach(t => {
+      const g = t.answers?._guest || {};
       allPatients.push({
         id: '__anon__' + t.id,
-        nombre: t.guest_nombre || 'Paciente anónimo',
-        email: t.guest_email || 'Sin correo',
-        rut: t.guest_rut || '—',
-        telefono: t.guest_telefono || '—',
+        nombre: g.nombre || 'Paciente anónimo',
+        email: g.email || 'Sin correo',
+        rut: g.rut || '—',
+        telefono: g.telefono || '—',
         created_at: t.created_at,
         triages: [t],
       });
