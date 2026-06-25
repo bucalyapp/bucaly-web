@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Bucaly — Triaje Dental</title>
+<title>Bucaly — Pre-atención Dental</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#009E8C">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -735,24 +735,39 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     </svg>
   </div>
   <h1 class="entry-title">Bienvenido a Bucaly</h1>
-  <p class="entry-sub">Triaje dental con IA — encuentra al especialista correcto en minutos</p>
+  <p class="entry-sub">Pre-atención dental</p>
   <div class="entry-cards">
-    <div class="entry-card" onclick="go('sNewPatient')">
-      <div class="entry-card-ic">🙋</div>
+    <div class="entry-card highlight" onclick="go('sUrgenciaPreForm')">
       <div class="entry-card-body">
-        <div class="entry-card-title">Primera vez aquí</div>
-        <div class="entry-card-sub">Comienza tu triaje o crea tu perfil para guardar tu historial</div>
+        <div class="entry-card-title">¿Tienes una urgencia?</div>
+        <div class="entry-card-sub">Describe lo que sientes y te orientamos hacia el especialista correcto. Sin registro previo.</div>
       </div>
       <div class="entry-card-arrow">›</div>
     </div>
     <div class="entry-card" onclick="go('sLogin')">
-      <div class="entry-card-ic">👤</div>
       <div class="entry-card-body">
-        <div class="entry-card-title">Ya soy paciente Bucaly</div>
-        <div class="entry-card-sub">Ingresa con tu correo para acceder a tu historial y citas</div>
+        <div class="entry-card-title">Iniciar sesión</div>
+        <div class="entry-card-sub">Accede a tu historial y gestiona tus citas anteriores</div>
       </div>
       <div class="entry-card-arrow">›</div>
     </div>
+  </div>
+</div>
+
+<!-- ══ URGENCIA PRE-FORM ══ -->
+<div class="screen" id="sUrgenciaPreForm">
+  <div class="gf-header" style="background:linear-gradient(160deg,#0B1F35,#0A3D38)">
+    <button class="back-ico" onclick="go('sEntry')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;">←</button>
+    <h2 style="padding-top:8px">Antes de comenzar</h2>
+    <p>Necesitamos tu nombre y RUT para registrar tu pre-atención</p>
+  </div>
+  <div class="gf-body">
+    <div><div class="gf-label">Nombre completo</div><input class="gf-input" type="text" placeholder="Juan Pérez" id="urgNombre" autocomplete="name"></div>
+    <div><div class="gf-label">RUT</div><input class="gf-input" type="text" placeholder="12.345.678-9" id="urgRut"></div>
+  </div>
+  <div class="gf-footer">
+    <button class="btn-primary" onclick="startUrgencyFlow()">Continuar</button>
+    <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">Tus datos se usan solo para coordinar tu atención y no se comparten con terceros.</p>
   </div>
 </div>
 
@@ -837,18 +852,16 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 <div class="screen" id="sGuestForm">
   <div class="gf-header">
     <button class="back-ico" onclick="go('sResult')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;">←</button>
-    <h2 style="padding-top:8px">Un paso antes de agendar</h2>
-    <p>Necesitamos tus datos para confirmar tu hora con el especialista</p>
+    <h2 style="padding-top:8px">Casi listo</h2>
+    <p>¿Cómo te contactamos para confirmar tu hora?</p>
   </div>
   <div class="gf-body">
-    <div><div class="gf-label">Nombre completo</div><input class="gf-input" type="text" placeholder="Juan Pérez" id="gfNombre" autocomplete="name"></div>
-    <div><div class="gf-label">RUT</div><input class="gf-input" type="text" placeholder="12.345.678-9" id="gfRut"></div>
     <div><div class="gf-label">Teléfono</div><input class="gf-input" type="tel" placeholder="+56 9 1234 5678" id="gfTel" autocomplete="tel"></div>
     <div><div class="gf-label">Correo electrónico</div><input class="gf-input" type="email" placeholder="correo@ejemplo.com" id="gfEmail" autocomplete="email"></div>
   </div>
   <div class="gf-footer">
-    <button class="btn-primary" onclick="submitGuestForm()">Confirmar y ver especialistas →</button>
-    <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">🔒 Tus datos se usan solo para coordinar tu cita y no se comparten con terceros.</p>
+    <button class="btn-primary" onclick="submitGuestForm()">Ver clínicas disponibles</button>
+    <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">Tus datos se usan solo para coordinar tu cita y no se comparten con terceros.</p>
   </div>
 </div>
 
@@ -1294,7 +1307,19 @@ function logout() {
   localStorage.removeItem('bucaly_token');
   localStorage.removeItem('bucaly_user');
   USER.isGuest = true; USER.token = null; USER.id = null; USER.nombre = ''; USER.email = '';
+  window._urgencyMode = false; window._guestPreData = null;
   go('sEntry');
+}
+
+function startUrgencyFlow() {
+  const nombre = document.getElementById('urgNombre').value.trim();
+  const rut    = document.getElementById('urgRut').value.trim();
+  if (!nombre || !rut) { alert('Ingresa tu nombre y RUT para continuar.'); return; }
+  window._guestPreData = { nombre, rut };
+  window._urgencyMode  = true;
+  USER.isGuest = true;
+  USER.nombre  = nombre;
+  go('sWelcome');
 }
 
 function startAsGuest() {
@@ -1355,21 +1380,19 @@ function goToDentistas() {
 }
 
 async function submitGuestForm() {
-  const nombre   = document.getElementById('gfNombre').value.trim();
-  const rut      = document.getElementById('gfRut')   ? document.getElementById('gfRut').value.trim() : '';
   const telefono = document.getElementById('gfTel')   ? document.getElementById('gfTel').value.trim() : '';
   const email    = document.getElementById('gfEmail').value.trim();
-  if (!nombre || !email) { alert('Ingresa al menos tu nombre y correo para continuar.'); return; }
-  USER.nombre = nombre; USER.email = email;
+  if (!email) { alert('Ingresa tu correo para continuar.'); return; }
+  const pre = window._guestPreData || {};
+  USER.nombre = pre.nombre || ''; USER.email = email;
 
-  // Guardar triaje pendiente con datos del invitado
   if (window._pendingTriage) {
     saveTriage({
       ...window._pendingTriage,
       patient_id: null,
       answers: {
         ...(window._pendingTriage.answers || {}),
-        _guest: { nombre, rut, telefono, email },
+        _guest: { nombre: pre.nombre || '', rut: pre.rut || '', telefono, email },
       },
     });
     window._pendingTriage = null;
@@ -1859,21 +1882,23 @@ async function saveTriage(data) {
 //  DENTISTS DATA
 // ════════════════════════════════════════════════════════
 const DENTISTS = [
-  { name: 'Dra. Valentina Ríos', spec: 'Endodoncista', price: '$65.000', address: 'Providencia · Av. Nueva Providencia 1881', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '127', wait: 'Hoy' },
-  { name: 'Dr. Felipe Morales', spec: 'Odontólogo General', price: '$32.000', address: 'Las Condes · Av. Apoquindo 5300', stars: '⭐⭐⭐⭐⭐', rating: '4.8', reviews: '243', wait: 'Mañana' },
-  { name: 'Dra. Camila Espinoza', spec: 'Periodoncista', price: '$55.000', address: 'Santiago Centro · Alameda 1435', stars: '⭐⭐⭐⭐½', rating: '4.7', reviews: '89', wait: 'Mañana' },
-  { name: 'Dr. Rodrigo Castro', spec: 'Implantólogo · Cirujano Oral', price: '$80.000', address: 'Vitacura · Av. Vitacura 2870', stars: '⭐⭐⭐⭐⭐', rating: '5.0', reviews: '64', wait: 'Jueves' },
-  { name: 'Dra. Sofía Navarro', spec: 'Especialista en ATM / Gnatología', price: '$70.000', address: 'Ñuñoa · Irarrázaval 3440', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '52', wait: 'Viernes' },
-  { name: 'Dr. Martín López', spec: 'Odontólogo Estético', price: '$48.000', address: 'Las Condes · Isidora Goyenechea 2800', stars: '⭐⭐⭐⭐⭐', rating: '4.8', reviews: '178', wait: 'Hoy' },
-  { name: 'Dra. Ana Pérez', spec: 'Urgencias Dentales', price: '$42.000', address: 'Providencia · Condell 1031', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '310', wait: 'Ahora' },
+  { name: 'Dra. Valentina Ríos', spec: 'Endodoncista', price: '$65.000', address: 'Providencia · Av. Nueva Providencia 1881', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '127', wait: 'Hoy', urgencias: false },
+  { name: 'Dr. Felipe Morales', spec: 'Odontólogo General', price: '$32.000', address: 'Las Condes · Av. Apoquindo 5300', stars: '⭐⭐⭐⭐⭐', rating: '4.8', reviews: '243', wait: 'Mañana', urgencias: true },
+  { name: 'Dra. Camila Espinoza', spec: 'Periodoncista', price: '$55.000', address: 'Santiago Centro · Alameda 1435', stars: '⭐⭐⭐⭐½', rating: '4.7', reviews: '89', wait: 'Mañana', urgencias: false },
+  { name: 'Dr. Rodrigo Castro', spec: 'Implantólogo · Cirujano Oral', price: '$80.000', address: 'Vitacura · Av. Vitacura 2870', stars: '⭐⭐⭐⭐⭐', rating: '5.0', reviews: '64', wait: 'Jueves', urgencias: false },
+  { name: 'Dra. Sofía Navarro', spec: 'Especialista en ATM / Gnatología', price: '$70.000', address: 'Ñuñoa · Irarrázaval 3440', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '52', wait: 'Viernes', urgencias: false },
+  { name: 'Dr. Martín López', spec: 'Odontólogo Estético', price: '$48.000', address: 'Las Condes · Isidora Goyenechea 2800', stars: '⭐⭐⭐⭐⭐', rating: '4.8', reviews: '178', wait: 'Hoy', urgencias: false },
+  { name: 'Dra. Ana Pérez', spec: 'Urgencias Dentales', price: '$42.000', address: 'Providencia · Condell 1031', stars: '⭐⭐⭐⭐⭐', rating: '4.9', reviews: '310', wait: 'Ahora', urgencias: true },
 ];
 
 function buildDentists(specName, urgencyCls) {
   const list = document.getElementById('dentList');
   if (!list) return;
-  document.getElementById('dentTitle').textContent = 'Especialistas — ' + specName;
+  const onlyUrgencias = !!window._urgencyMode;
+  document.getElementById('dentTitle').textContent = onlyUrgencias ? 'Clínicas con atención de urgencia' : 'Especialistas — ' + specName;
   list.innerHTML = '';
-  DENTISTS.forEach(d => {
+  const filtered = onlyUrgencias ? DENTISTS.filter(d => d.urgencias) : DENTISTS;
+  filtered.forEach(d => {
     list.innerHTML += `
       <div class="dent-card" onclick="bookDentist('${d.name}','${d.spec}','${d.address}','${d.price}')">
         <div class="dent-top"><span class="dent-name">${d.name}</span><span class="dent-price">${d.price}</span></div>
