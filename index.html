@@ -1355,7 +1355,8 @@ function startUrgencyFlow() {
 
 function startAsGuest() {
   USER.isGuest = true;
-  go('sWelcome');
+  window._urgencyMode = true;
+  go('sSym');
 }
 
 async function doLogin() {
