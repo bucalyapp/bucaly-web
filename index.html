@@ -159,12 +159,20 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .entry-btn-label { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
 .entry-btn-hint  { font-size: 12px; color: rgba(255,255,255,.7); }
 .entry-btn-sec {
-  width: 100%; background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.2);
-  border-radius: 16px; padding: 17px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
-  font-size: 15px; font-weight: 600; color: rgba(255,255,255,.85);
-  transition: background .15s, transform .1s;
+  width: 100%; background: rgba(255,255,255,.95); border: none;
+  border-radius: 18px; padding: 22px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: -.02em;
+  box-shadow: 0 6px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,0,0,.2);
+  transition: transform .1s, box-shadow .1s;
 }
-.entry-btn-sec:active { background: rgba(255,255,255,.14); transform: scale(.98); }
+.entry-btn-sec:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0,0,0,.15), 0 6px 12px rgba(0,0,0,.15);
+}
+.entry-hint-text {
+  font-size: 12px; color: rgba(255,255,255,.4); text-align: center;
+  line-height: 1.6; max-width: 280px; margin-top: 6px;
+}
 
 /* ─── LOGIN FORM ───────────────────────────────────────── */
 .login-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
@@ -762,11 +770,11 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <div class="entry-btns">
     <button class="entry-btn-main" onclick="go('sUrgenciaPreForm')">
       <span class="entry-btn-label">Tengo una urgencia</span>
-      <span class="entry-btn-hint">Encuentra atención rápida sin cuenta</span>
     </button>
     <button class="entry-btn-sec" onclick="go('sLogin')">
       Iniciar sesión / Regístrate
     </button>
+    <p class="entry-hint-text">Si no tienes una urgencia, te recomendamos iniciar sesión o registrarte para una atención más personalizada.</p>
   </div>
 </div>
 
