@@ -378,7 +378,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .overlay-no  .overlay-badge { background: var(--red);   color: #fff; }
 
 .swipe-btns {
-  padding: 16px 28px 40px; display: flex; gap: 20px; justify-content: center; align-items: center;
+  padding: 12px 28px 8px; display: flex; gap: 20px; justify-content: center; align-items: center;
 }
 .btn-no, .btn-yes {
   width: 72px; height: 72px; border-radius: 50%; border: none; font-size: 28px;
@@ -390,6 +390,14 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .btn-no:active  { transform: scale(.9); }
 .btn-yes:active { transform: scale(.9); }
 .swipe-label { font-size: 13px; color: var(--grey); font-weight: 500; text-align: center; padding-bottom: 4px; }
+.btn-unsure {
+  display: block; width: 100%; max-width: 260px; margin: 10px auto 32px;
+  background: none; border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 12px; font-size: 13px; font-weight: 600; color: var(--grey);
+  cursor: pointer; font-family: 'Inter', sans-serif; letter-spacing: -.01em;
+  transition: background .15s;
+}
+.btn-unsure:active { background: var(--grey-l); }
 
 /* ─── PAIN SCREEN ─────────────────────────────────────── */
 #sPain {
@@ -985,6 +993,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     <button class="btn-no" onclick="answerCard(false)" title="No">✗</button>
     <button class="btn-yes" onclick="answerCard(true)" title="Sí">✓</button>
   </div>
+  <button class="btn-unsure" onclick="answerCard(null)">No estoy seguro</button>
 </div>
 
 <!-- ══ PAIN SCREEN ══ -->
@@ -1589,14 +1598,16 @@ function showCard(idx) {
 
 function answerCard(yes) {
   const q = FLOW[flowIdx];
-  ST.answers[q.key] = yes;
+  ST.answers[q.key] = yes; // null = no estoy seguro
 
   // Animate
   const card = document.getElementById('theCard');
-  const ov = yes ? card.querySelector('.overlay-yes') : card.querySelector('.overlay-no');
-  ov.style.opacity = 1;
+  const ov = yes === null
+    ? null
+    : yes ? card.querySelector('.overlay-yes') : card.querySelector('.overlay-no');
+  if (ov) ov.style.opacity = 1;
   card.style.transition = 'transform .35s ease, opacity .35s ease';
-  card.style.transform = yes ? 'translateX(120%) rotate(15deg)' : 'translateX(-120%) rotate(-15deg)';
+  card.style.transform = yes === null ? 'translateY(-60px)' : yes ? 'translateX(120%) rotate(15deg)' : 'translateX(-120%) rotate(-15deg)';
   card.style.opacity = '0';
 
   setTimeout(() => {
