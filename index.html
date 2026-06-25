@@ -760,7 +760,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <h1 class="entry-title">Bienvenido a Bucaly</h1>
   <p class="entry-sub">Pre-atención dental — simple y en un solo lugar</p>
   <div class="entry-btns">
-    <button class="entry-btn-main" onclick="go('sUrgenciaPreForm')">¿Tienes una urgencia?</button>
+    <button class="entry-btn-main" onclick="startAsGuest()">¿Tienes una urgencia?</button>
     <button class="entry-btn-sec" onclick="go('sLogin')">Iniciar sesión / Regístrate</button>
     <p class="entry-hint-text">Si no presentas una urgencia dental, te recomendamos iniciar sesión o registrarte para acceder a una atención más personalizada.</p>
   </div>
@@ -1071,6 +1071,25 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 </div>
 
 <!-- ══ CONFIRM ══ -->
+<!-- ══ BOOKING DATA ══ -->
+<div class="screen" id="sBookingData">
+  <div class="gf-header" style="background:linear-gradient(160deg,#0B1F35,#0A3D38)">
+    <button class="back-ico" onclick="go('sDentistas')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;color:#fff;">←</button>
+    <h2 style="padding-top:8px">Confirmar hora</h2>
+    <p>Solo necesitamos tus datos para reservar tu consulta</p>
+  </div>
+  <div class="gf-body">
+    <div><div class="gf-label">Nombre completo</div><input class="gf-input" type="text" placeholder="Juan Pérez" id="bdNombre" autocomplete="name"></div>
+    <div id="bdRutWrap"><div class="gf-label">RUT</div><input class="gf-input" type="text" placeholder="12.345.678-9" id="bdRut"></div>
+    <div id="bdNacWrap" style="display:none"><div class="gf-label">Nacionalidad</div><input class="gf-input" type="text" placeholder="Ej: Venezolana, Colombiana…" id="bdNac"></div>
+  </div>
+  <div class="gf-footer">
+    <button class="btn-primary" onclick="submitBooking()">Agendar hora</button>
+    <button id="btnExtranjero" onclick="toggleExtranjero()" style="width:100%;margin-top:10px;background:none;border:1.5px solid var(--border);border-radius:14px;padding:14px;font-size:14px;font-weight:600;color:var(--grey);cursor:pointer;font-family:'Inter',sans-serif;">¿Eres extranjero?</button>
+    <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">Tus datos se usan solo para coordinar tu cita y no se comparten con terceros.</p>
+  </div>
+</div>
+
 <div class="screen" id="sConfirm">
   <div class="confirm-hero">
     <div class="ic">✅</div>
@@ -1388,7 +1407,7 @@ async function doRegister() {
 }
 
 function goToDentistas() {
-  if (USER.isGuest) { go('sGuestForm'); } else { go('sDentistas'); }
+  go('sDentistas');
 }
 
 async function submitGuestForm() {
@@ -1929,6 +1948,38 @@ function bookDentist(name, spec, addr, price) {
   document.getElementById('cEsp').textContent = spec;
   document.getElementById('cDir').textContent = addr;
   document.getElementById('cPr').textContent = price;
+  window._pendingBook = { name, spec, addr, price };
+  if (USER.isGuest) {
+    go('sBookingData');
+  } else {
+    go('sConfirm');
+  }
+}
+
+function toggleExtranjero() {
+  const isExt = document.getElementById('bdRutWrap').style.display === 'none';
+  document.getElementById('bdRutWrap').style.display = isExt ? '' : 'none';
+  document.getElementById('bdNacWrap').style.display = isExt ? 'none' : '';
+  document.getElementById('btnExtranjero').textContent = isExt ? '¿Eres extranjero?' : '¿Tienes RUT chileno?';
+}
+
+async function submitBooking() {
+  const nombre = document.getElementById('bdNombre').value.trim();
+  const rut    = document.getElementById('bdRut')   ? document.getElementById('bdRut').value.trim() : '';
+  const nac    = document.getElementById('bdNac')   ? document.getElementById('bdNac').value.trim() : '';
+  if (!nombre) { alert('Ingresa tu nombre para continuar.'); return; }
+  USER.nombre = nombre;
+  if (window._pendingTriage) {
+    saveTriage({
+      ...window._pendingTriage,
+      patient_id: null,
+      answers: {
+        ...(window._pendingTriage.answers || {}),
+        _guest: { nombre, rut: rut || nac || '' },
+      },
+    });
+    window._pendingTriage = null;
+  }
   go('sConfirm');
 }
 
