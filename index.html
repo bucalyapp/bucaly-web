@@ -144,34 +144,26 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .entry-card.highlight .entry-card-arrow { color: rgba(255,255,255,.7); }
 
 /* ─── ENTRY BUTTONS (new) ─────────────────────────────── */
-.entry-btns { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 340px; }
+.entry-btns { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 340px; align-items: center; }
+.entry-btn-main, .entry-btn-sec {
+  width: 100%; border: none; border-radius: 18px;
+  padding: 20px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 18px; font-weight: 700; letter-spacing: -.02em;
+  transition: transform .1s, box-shadow .1s;
+}
 .entry-btn-main {
-  width: 100%; background: var(--teal); border: none; border-radius: 18px;
-  padding: 22px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
-  text-align: center; display: flex; flex-direction: column; gap: 5px;
-  box-shadow: 0 6px 0 #005a50, 0 14px 32px rgba(0,158,140,.45);
-  transition: transform .1s, box-shadow .1s;
+  background: var(--teal); color: #fff;
+  box-shadow: 0 6px 0 #005a50, 0 14px 32px rgba(0,158,140,.4);
 }
-.entry-btn-main:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 #005a50, 0 6px 14px rgba(0,158,140,.3);
-}
-.entry-btn-label { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
-.entry-btn-hint  { font-size: 12px; color: rgba(255,255,255,.7); }
+.entry-btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #005a50, 0 6px 14px rgba(0,158,140,.25); }
 .entry-btn-sec {
-  width: 100%; background: rgba(255,255,255,.95); border: none;
-  border-radius: 18px; padding: 22px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
-  font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: -.02em;
-  box-shadow: 0 6px 0 rgba(0,0,0,.18), 0 14px 28px rgba(0,0,0,.2);
-  transition: transform .1s, box-shadow .1s;
+  background: rgba(255,255,255,.95); color: var(--navy);
+  box-shadow: 0 6px 0 rgba(0,0,0,.2), 0 14px 28px rgba(0,0,0,.18);
 }
-.entry-btn-sec:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 rgba(0,0,0,.15), 0 6px 12px rgba(0,0,0,.15);
-}
+.entry-btn-sec:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.15), 0 6px 12px rgba(0,0,0,.12); }
 .entry-hint-text {
-  font-size: 12px; color: rgba(255,255,255,.4); text-align: center;
-  line-height: 1.6; max-width: 280px; margin-top: 6px;
+  font-size: 12px; color: rgba(255,255,255,.38); text-align: center;
+  line-height: 1.7; max-width: 260px; margin-top: 4px;
 }
 
 /* ─── LOGIN FORM ───────────────────────────────────────── */
@@ -768,13 +760,9 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <h1 class="entry-title">Bienvenido a Bucaly</h1>
   <p class="entry-sub">Pre-atención dental — simple y en un solo lugar</p>
   <div class="entry-btns">
-    <button class="entry-btn-main" onclick="go('sUrgenciaPreForm')">
-      <span class="entry-btn-label">Tengo una urgencia</span>
-    </button>
-    <button class="entry-btn-sec" onclick="go('sLogin')">
-      Iniciar sesión / Regístrate
-    </button>
-    <p class="entry-hint-text">Si no tienes una urgencia, te recomendamos iniciar sesión o registrarte para una atención más personalizada.</p>
+    <button class="entry-btn-main" onclick="go('sUrgenciaPreForm')">Tengo una urgencia</button>
+    <button class="entry-btn-sec" onclick="go('sLogin')">Iniciar sesión / Regístrate</button>
+    <p class="entry-hint-text">Sin urgencia, te recomendamos iniciar sesión o registrarte para una atención más personalizada.</p>
   </div>
 </div>
 
