@@ -143,6 +143,29 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .entry-card.highlight .entry-card-sub { color: rgba(255,255,255,.75); }
 .entry-card.highlight .entry-card-arrow { color: rgba(255,255,255,.7); }
 
+/* ─── ENTRY BUTTONS (new) ─────────────────────────────── */
+.entry-btns { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 340px; }
+.entry-btn-main {
+  width: 100%; background: var(--teal); border: none; border-radius: 18px;
+  padding: 22px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
+  text-align: center; display: flex; flex-direction: column; gap: 5px;
+  box-shadow: 0 6px 0 #005a50, 0 14px 32px rgba(0,158,140,.45);
+  transition: transform .1s, box-shadow .1s;
+}
+.entry-btn-main:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #005a50, 0 6px 14px rgba(0,158,140,.3);
+}
+.entry-btn-label { font-size: 19px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+.entry-btn-hint  { font-size: 12px; color: rgba(255,255,255,.7); }
+.entry-btn-sec {
+  width: 100%; background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.2);
+  border-radius: 16px; padding: 17px 24px; cursor: pointer; font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 600; color: rgba(255,255,255,.85);
+  transition: background .15s, transform .1s;
+}
+.entry-btn-sec:active { background: rgba(255,255,255,.14); transform: scale(.98); }
+
 /* ─── LOGIN FORM ───────────────────────────────────────── */
 .login-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .login-field {
@@ -736,21 +759,14 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   </div>
   <h1 class="entry-title">Bienvenido a Bucaly</h1>
   <p class="entry-sub">Pre-atención dental — simple y en un solo lugar</p>
-  <div class="entry-cards">
-    <div class="entry-card highlight" onclick="go('sUrgenciaPreForm')">
-      <div class="entry-card-body">
-        <div class="entry-card-title">¿Tienes una urgencia?</div>
-        <div class="entry-card-sub">Describe lo que sientes y te orientamos hacia el especialista correcto. Sin registro previo.</div>
-      </div>
-      <div class="entry-card-arrow">›</div>
-    </div>
-    <div class="entry-card" onclick="go('sLogin')">
-      <div class="entry-card-body">
-        <div class="entry-card-title">Iniciar sesión / Regístrate</div>
-        <div class="entry-card-sub">Accede a tu historial o crea una cuenta para gestionar tus citas</div>
-      </div>
-      <div class="entry-card-arrow">›</div>
-    </div>
+  <div class="entry-btns">
+    <button class="entry-btn-main" onclick="go('sUrgenciaPreForm')">
+      <span class="entry-btn-label">Tengo una urgencia</span>
+      <span class="entry-btn-hint">Encuentra atención rápida sin cuenta</span>
+    </button>
+    <button class="entry-btn-sec" onclick="go('sLogin')">
+      Iniciar sesión / Regístrate
+    </button>
   </div>
 </div>
 
