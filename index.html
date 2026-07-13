@@ -1529,40 +1529,47 @@ function buildSwipeFlow() {
 
   if (r === 'trauma') {
     FLOW = [
-      { key: 'avulsión', emoji: '😱', q: '¿El diente se salió completamente?', hint: 'Avulsión: la pieza ya no está en su lugar' },
-      { key: 'fractura',  emoji: '💔', q: '¿El diente está roto o astillado?', hint: 'Fractura visible de la corona' },
+      { key: 'tiempo_30min', emoji: '⏱️', q: '¿El accidente ocurrió hace menos de 30 minutos?', hint: 'El reimplante exitoso depende del tiempo — ventana IADT 2020: < 30–60 min' },
+      { key: 'avulsión',     emoji: '😱', q: '¿El diente se salió completamente de su lugar?', hint: 'Avulsión: la pieza ya no está en el hueso' },
+      { key: 'fractura',     emoji: '💔', q: '¿El diente está roto o astillado?', hint: 'Fractura visible de la corona o parte del diente' },
+      { key: 'luxacion',     emoji: '↕️', q: '¿El diente está en una posición diferente a la normal?', hint: 'Desplazado, más largo, más corto o inclinado tras el golpe' },
       ...commonAlarms
     ];
   } else if (r === 'atm') {
     FLOW = [
-      { key: 'clic',    emoji: '🦴', q: '¿Escuchas clic o chasquido al abrir la boca?', hint: 'Ruido articular en la zona frente al oído' },
-      { key: 'brux',    emoji: '😬', q: '¿Aprietas o rechinas los dientes?', hint: 'Especialmente de noche o bajo estrés' },
-      { key: 'estres',  emoji: '😤', q: '¿Has tenido mucho estrés o ansiedad?', hint: 'Períodos prolongados de tensión' },
-      { key: 'cefalea', emoji: '🤕', q: '¿Tienes dolores de cabeza frecuentes?', hint: 'Relacionados con la mandíbula o el cuello' },
+      { key: 'clic',            emoji: '🦴', q: '¿Escuchas clic o chasquido al abrir la boca?', hint: 'Ruido articular frente al oído, en la zona de la sien' },
+      { key: 'apertura_limit',  emoji: '😮', q: '¿Te cuesta abrir la boca completamente?', hint: 'Limitación o dolor al intentar abrir al máximo' },
+      { key: 'dolor_muscular',  emoji: '💪', q: '¿Sientes dolor en los músculos de la mejilla o la sien?', hint: 'Al palpar o al masticar — músculos masetero o temporal' },
+      { key: 'brux',            emoji: '😬', q: '¿Aprietas o rechinas los dientes?', hint: 'Especialmente de noche o bajo estrés — tu pareja o dentista te lo ha dicho' },
+      { key: 'estres',          emoji: '😤', q: '¿Has tenido mucho estrés o ansiedad últimamente?', hint: 'Períodos prolongados de tensión emocional o física' },
+      { key: 'cefalea',         emoji: '🤕', q: '¿Tienes dolores de cabeza frecuentes?', hint: 'Relacionados con la mandíbula, la sien o el cuello' },
       ...commonAlarms
     ];
   } else if (r === 'periodontal') {
     FLOW = [
-      { key: 'sangrado_esp', emoji: '🩸', q: '¿Te sangra la encía al cepillarte?', hint: 'Al mínimo contacto del cepillo' },
-      { key: 'movilidad',    emoji: '😨', q: '¿Sientes algún diente movedizo?', hint: 'Flojo o con mayor movimiento que antes' },
-      { key: 'retraccion',   emoji: '🫦', q: '¿Se te han recorrido las encías hacia arriba?', hint: 'Los cuellos de los dientes se ven más largos' },
+      { key: 'sangrado_cepillo',emoji: '🩸', q: '¿Te sangra la encía al cepillarte?', hint: 'Al mínimo contacto del cepillo o hilo dental' },
+      { key: 'sangrado_esp',    emoji: '🔴', q: '¿La encía sangra sin que la toques?', hint: 'Sangrado espontáneo — sin cepillar ni presionar' },
+      { key: 'movilidad',       emoji: '😨', q: '¿Sientes algún diente movedizo?', hint: 'Flojo o con mayor movimiento que antes' },
+      { key: 'retraccion',      emoji: '🫦', q: '¿Las encías se han retraído hacia arriba?', hint: 'Los cuellos de los dientes se ven más largos que antes' },
+      { key: 'halitosis',       emoji: '💨', q: '¿Tienes mal aliento persistente?', hint: 'Presente incluso después de cepillarte — puede indicar bolsa activa' },
       ...commonAlarms
     ];
   } else if (r === 'absceso') {
     FLOW = [
+      { key: 'endodoncia_prev', emoji: '🦷', q: '¿Ese diente tuvo endodoncia (tratamiento de conducto) antes?', hint: 'Un diente ya tratado con dolor activo puede tener absceso periapical' },
+      { key: 'pus',             emoji: '🤢', q: '¿Notas mal sabor o pus en la zona?', hint: 'Sabor salado o descarga amarillenta — fístula activa' },
+      { key: 'espontaneo',      emoji: '⚡', q: '¿El dolor aparece solo, sin que nada lo provoque?', hint: 'Pulsante o latente, incluso en reposo o de noche' },
       ...commonAlarms,
-      { key: 'pus',    emoji: '🤢', q: '¿Notas mal sabor o pus en la zona?', hint: 'Sabor salado o descarga amarillenta/blanca' },
-      { key: 'espontaneo', emoji: '⚡', q: '¿El dolor aparece solo, sin que nada lo provoque?', hint: 'Pulsante o latente, incluso en reposo' },
     ];
   } else {
     // dental / diente_roto
     FLOW = [
       { key: 'espontaneo',      emoji: '⚡', q: '¿El dolor aparece solo, sin tocarlo?', hint: 'Pulsa, late o está presente en reposo o de noche' },
       { key: 'frio_calor',      emoji: '🥶', q: '¿Sientes dolor con frío o calor?', hint: 'Al tomar agua fría, caliente o alimentos dulces' },
-      { key: 'dolor_prolongado',emoji: '⏳', q: '¿El dolor al frío o calor dura más de 30 segundos?', hint: 'Persiste después de retirar el estímulo' },
+      { key: 'dolor_prolongado',emoji: '⏳', q: '¿El dolor al frío o calor dura más de 30 segundos?', hint: 'Persiste después de retirar el estímulo — signo AAE de pulpitis irreversible' },
       { key: 'morder',          emoji: '😬', q: '¿Te duele al morder o presionar el diente?', hint: 'Sensibilidad a la masticación o percusión' },
       { key: 'caries_empaste',  emoji: '🔍', q: '¿Sabes si tienes caries o un empaste reciente?', hint: 'Caries conocida o restauración colocada recientemente' },
-      { key: 'tratado',         emoji: '🦷', q: '¿Ese diente fue tratado antes?', hint: 'Endodoncia, corona o poste previo' },
+      { key: 'tratado',         emoji: '🦷', q: '¿Ese diente fue tratado antes (endodoncia o corona)?', hint: 'Tratamiento de conducto, corona o poste previo' },
       ...commonAlarms
     ];
   }
@@ -1614,13 +1621,13 @@ function answerCard(yes) {
     card.style.transition = 'none';
     card.style.transform = '';
     card.style.opacity = '';
-    ov.style.opacity = 0;
+    if (ov) ov.style.opacity = 0;
 
     flowIdx++;
 
-    // Check for early emergency exit
+    // Check for early emergency exit — null-safe: solo true dispara emergencia
     const a = ST.answers;
-    const isEmergencia = (a.tragar || (a.hinchazón && a.fiebre));
+    const isEmergencia = a.tragar === true || (a.hinchazón === true && a.fiebre === true);
     if (isEmergencia && flowIdx >= 2) {
       runAnalysis('emergency'); return;
     }
@@ -1730,59 +1737,101 @@ function buildResult(tipo) {
   const d = ST.dolor || 0;
   let urgency, hips = [], spec;
 
-  if (tipo === 'emergency' || (a.tragar || (a.hinchazón && a.fiebre))) {
+  // null-safe: solo true dispara emergencia
+  if (tipo === 'emergency' || a.tragar === true || (a.hinchazón === true && a.fiebre === true)) {
     urgency = { cls: 'u-emergency', icon: '🚨', label: 'EMERGENCIA', title: 'Ve a urgencias hospitalarias ahora',
-      desc: 'Hinchazón con fiebre o dificultad para tragar puede indicar infección profunda con riesgo vital. No es para clínica dental.' };
+      desc: 'Hinchazón con fiebre o dificultad para tragar puede indicar infección profunda con riesgo vital. No acudas a clínica dental — ve directo a urgencias hospitalarias.' };
     hips = [
-      { dot: '#DC2626', name: 'Celulitis cervicofacial odontogénica', why: 'Extensión de infección dental. Requiere hospitalización y antibioterapia IV.', tag: 'hp-h', pt: 'Probable' },
-      { dot: '#EA580C', name: 'Angina de Ludwig', why: 'Infección bilateral del piso de boca — riesgo de obstrucción de vía aérea.', tag: 'hp-m', pt: 'Descartar urgente' },
+      { dot: '#DC2626', name: 'Celulitis cervicofacial odontogénica', why: 'Extensión de infección dental a espacios faciales profundos. Requiere hospitalización y antibioterapia IV.', tag: 'hp-h', pt: 'Probable' },
+      { dot: '#EA580C', name: 'Angina de Ludwig', why: 'Infección bilateral del piso de boca — riesgo de obstrucción de vía aérea. Mortalidad elevada sin tratamiento precoz.', tag: 'hp-m', pt: 'Descartar urgente' },
     ];
-    spec = { icon: '🏥', name: 'Urgencias Hospitalarias', desc: 'TAC cervical, antibioterapia IV y cirugía maxilofacial de urgencia.' };
+    spec = { icon: '🏥', name: 'Urgencias Hospitalarias', desc: 'TAC cervical, antibioterapia IV y evaluación por cirugía maxilofacial de urgencia.' };
     document.getElementById('btnEmerg').style.display = 'block';
   }
 
   else if (tipo === 'trauma') {
-    urgency = { cls: 'u-urgent', icon: '🔴', label: 'URGENTE', title: 'El traumatismo dental requiere atención en horas',
-      desc: a.avulsión ? 'Guardá el diente en leche fría, no toques la raíz. Ventana de reimplante: 30–60 min (IADT 2020).' : 'Las guías IADT 2020 recomiendan evaluación en las primeras horas tras el trauma.' };
-    hips = [
-      ...(a.avulsión ? [{ dot: '#DC2626', name: 'Avulsión dental', why: 'Pérdida total del diente. Emergencia con ventana de 30–60 min para reimplante.', tag: 'hp-h', pt: 'Confirmado' }] : []),
-      ...(a.fractura ? [{ dot: '#EA580C', name: 'Fractura coronaria', why: 'Fractura visible. El compromiso pulpar se evalúa con pruebas de vitalidad.', tag: 'hp-h', pt: 'Probable' }] : []),
-      { dot: '#B45309', name: 'Luxación dental', why: 'Desplazamiento sin pérdida. Requiere ferulización según IADT.', tag: 'hp-m', pt: 'Posible' },
-    ];
-    spec = { icon: '🦷', name: 'Odontólogo General / Urgencias', desc: 'Clasificación IADT, pruebas de vitalidad, radiografía periapical y ferulización o reimplante.' };
+    // Avulsión + tiempo > 30 min → emergencia hospitalaria por pronóstico
+    const avulsionTardia = a.avulsión === true && a.tiempo_30min === false;
+    if (avulsionTardia) {
+      urgency = { cls: 'u-emergency', icon: '🚨', label: 'EMERGENCIA', title: 'Avulsión con más de 30 minutos — ve a urgencias',
+        desc: 'Pasados 30 min el pronóstico de reimplante es desfavorable. El hospital puede evaluar si la raíz es viable. No toques la raíz; guarda el diente en leche o suero fisiológico (IADT 2020).' };
+      hips = [
+        { dot: '#DC2626', name: 'Avulsión dental tardía', why: 'Necrosis del ligamento periodontal probable. Reimplante decorativo posible, pero con riesgo de reabsorción.', tag: 'hp-h', pt: 'Confirmado' },
+      ];
+      spec = { icon: '🏥', name: 'Urgencias Hospitalarias', desc: 'Evaluación de viabilidad radicular y decisión de reimplante o implante diferido.' };
+      document.getElementById('btnEmerg').style.display = 'block';
+    } else {
+      urgency = { cls: 'u-urgent', icon: '🔴', label: 'URGENTE', title: 'El traumatismo dental requiere atención en horas',
+        desc: a.avulsión === true ? 'Guarda el diente en leche fría o suero sin tocar la raíz. Ventana de reimplante: 30–60 min (IADT 2020).' : 'Las guías IADT 2020 recomiendan evaluación en las primeras horas tras el trauma.' };
+      hips = [
+        ...(a.avulsión === true  ? [{ dot: '#DC2626', name: 'Avulsión dental', why: 'Pérdida total del diente. Emergencia con ventana de 30–60 min para reimplante exitoso.', tag: 'hp-h', pt: 'Confirmado' }] : []),
+        ...(a.fractura === true  ? [{ dot: '#EA580C', name: 'Fractura coronaria', why: 'Fractura visible de corona. El compromiso pulpar se evalúa con pruebas de vitalidad.', tag: 'hp-h', pt: 'Probable' }] : []),
+        ...(a.luxacion === true  ? [{ dot: '#B45309', name: 'Luxación dental', why: 'Desplazamiento sin pérdida del diente. Requiere reposición y ferulización flexible según IADT.', tag: 'hp-h', pt: 'Probable' }] : []),
+        { dot: '#6B7280', name: 'Contusión / Concusión dental', why: 'Golpe sin desplazamiento visible. Puede haber sensibilidad transitoria. Seguimiento radiográfico obligatorio.', tag: 'hp-m', pt: 'Posible' },
+      ];
+      spec = { icon: '🦷', name: 'Odontólogo General / Urgencias', desc: 'Clasificación IADT, pruebas de vitalidad, radiografía periapical y ferulización o reimplante según protocolo.' };
+    }
   }
 
   else if (tipo === 'atm') {
-    urgency = { cls: 'u-soon', icon: '🟡', label: 'PRONTO', title: 'Orientación hacia trastorno temporomandibular',
-      desc: 'Los TTM son la 2ª causa de dolor orofacial crónico. Requieren evaluación con criterios DC/TMD 2018.' };
+    // Apertura limitada = signo de disco sin reducción (closed lock) → más urgente
+    const closedLock = a.apertura_limit === true;
+    urgency = { cls: closedLock ? 'u-urgent' : 'u-soon', icon: closedLock ? '🔴' : '🟡',
+      label: closedLock ? 'URGENTE' : 'PRONTO', title: closedLock ? 'Limitación de apertura — evaluación rápida' : 'Orientación hacia trastorno temporomandibular',
+      desc: closedLock
+        ? 'La limitación severa de apertura puede indicar disco articular bloqueado (closed lock). Requiere evaluación especializada urgente para evitar daño articular irreversible (DC/TMD 2018).'
+        : 'Los TTM son la 2ª causa de dolor orofacial crónico. Requieren evaluación con criterios DC/TMD 2018.' };
     hips = [
-      ...(a.clic ? [{ dot: '#B45309', name: 'Desplazamiento del disco articular', why: 'El clic al abrir/cerrar es signo cardinal. Puede ser con o sin reducción. DC/TMD Eje I.', tag: 'hp-h', pt: 'Probable' }] : []),
-      ...(a.brux ? [{ dot: '#B45309', name: 'Mialgia masticatoria por bruxismo', why: 'Sobrecarga muscular por apretamiento nocturno. Peor al despertar. DC/TMD: trastorno muscular.', tag: 'hp-h', pt: 'Probable' }] : []),
-      { dot: '#6B7280', name: 'Artralgia temporomandibular', why: 'Dolor articular puro. Requiere diferenciación con artritis sistémica.', tag: 'hp-m', pt: 'Posible' },
+      ...(a.clic === true         ? [{ dot: '#B45309', name: 'Desplazamiento del disco articular con reducción', why: 'Clic al abrir/cerrar = disco que se sale y vuelve. DC/TMD Eje I Grupo I. Puede progresar a closed lock.', tag: 'hp-h', pt: 'Probable' }] : []),
+      ...(closedLock              ? [{ dot: '#DC2626', name: 'Desplazamiento del disco sin reducción (closed lock)', why: 'Disco bloqueado sin reducción. Limitación de apertura < 35 mm. DC/TMD Eje I Grupo II. Requiere evaluación urgente.', tag: 'hp-h', pt: 'A descartar' }] : []),
+      ...(a.dolor_muscular === true? [{ dot: '#EA580C', name: 'Mialgia masticatoria', why: 'Dolor en masetero o músculo temporal. DC/TMD: trastorno muscular — diferente al disco articular. Tratamiento distinto.', tag: 'hp-h', pt: 'Probable' }] : []),
+      ...(a.brux === true         ? [{ dot: '#B45309', name: 'Bruxismo del sueño / vigilia', why: 'Sobrecarga muscular y articular. Peor al despertar. DC/TMD: factor de riesgo para TTM y desgaste dentario.', tag: 'hp-m', pt: 'Probable' }] : []),
+      { dot: '#6B7280', name: 'Artralgia temporomandibular', why: 'Dolor articular puro en movimiento o reposo. Requiere diferenciación con artritis sistémica (AR, gota).', tag: 'hp-m', pt: 'Posible' },
     ];
-    spec = { icon: '😬', name: 'Especialista en ATM / Gnatología', desc: 'Evaluación DC/TMD: medición de apertura, palpación, auscultación. Tratamiento: placa oclusal, fisioterapia orofacial, manejo del bruxismo.' };
+    spec = { icon: '😬', name: 'Especialista en ATM / Gnatología', desc: 'Evaluación DC/TMD: medición de apertura, palpación muscular y articular, auscultación. Tratamiento: placa oclusal, fisioterapia orofacial y manejo del bruxismo.' };
   }
 
   else if (tipo === 'periodontal') {
-    const avanzado = a.movilidad;
-    urgency = { cls: avanzado ? 'u-soon' : 'u-routine', icon: avanzado ? '🟡' : '🟢',
-      label: avanzado ? 'PRONTO' : 'RUTINA', title: avanzado ? 'Posible periodontitis avanzada' : 'Evaluación periodontal recomendada',
-      desc: 'El sangrado o movilidad puede indicar gingivitis (reversible) o periodontitis (pérdida ósea irreversible). Solo el sondaje lo clasifica según AAP/EFP 2017.' };
+    // Criterios AAP/EFP 2017 — null-safe
+    const movilidad   = a.movilidad === true;
+    const sangEsp     = a.sangrado_esp === true;
+    const retraccion  = a.retraccion === true;
+    const halitosis   = a.halitosis === true;
+    // Periodontitis avanzada: movilidad O (retracción + sangrado espontáneo)
+    const avanzado    = movilidad || (retraccion && sangEsp);
+    // Urgente: movilidad + sangrado espontáneo juntos
+    const urgente     = movilidad && sangEsp;
+    const nivel       = urgente ? 'u-urgent' : avanzado ? 'u-soon' : 'u-routine';
+    const icono       = urgente ? '🔴' : avanzado ? '🟡' : '🟢';
+    const etiqueta    = urgente ? 'URGENTE' : avanzado ? 'PRONTO' : 'RUTINA';
+    urgency = { cls: nivel, icon: icono, label: etiqueta,
+      title: urgente ? 'Periodontitis activa con movilidad — atención esta semana' : avanzado ? 'Posible periodontitis avanzada' : 'Evaluación periodontal recomendada',
+      desc: 'El sangrado, movilidad o retracción puede indicar gingivitis (reversible) o periodontitis (pérdida ósea irreversible). Solo el sondaje periodontal completo lo clasifica según AAP/EFP 2017.' };
     hips = [
-      ...(avanzado ? [{ dot: '#DC2626', name: 'Periodontitis Estadio III–IV', why: 'Movilidad indica pérdida de hueso de soporte. Irreversible si no se trata. AAP/EFP 2017.', tag: 'hp-h', pt: 'A evaluar' }] : []),
-      { dot: avanzado ? '#DC2626' : '#166534', name: avanzado ? 'Periodontitis activa' : 'Gingivitis por biofilm', why: avanzado ? 'Bolsas periodontales con pérdida ósea.' : 'Inflamación reversible. Sin pérdida ósea. Tratable con higiene profesional.', tag: 'hp-m', pt: 'Posible' },
+      ...(urgente   ? [{ dot: '#DC2626', name: 'Periodontitis Estadio III–IV grado B/C', why: 'Movilidad + sangrado espontáneo indica enfermedad activa con pérdida de soporte óseo. AAP/EFP 2017: requiere tratamiento inmediato.', tag: 'hp-h', pt: 'Compatible' }] : []),
+      ...(avanzado && !urgente ? [{ dot: '#DC2626', name: 'Periodontitis Estadio II–III', why: 'Retracción con sangrado o movilidad indica pérdida de inserción clínica. Irreversible sin tratamiento periodontal.', tag: 'hp-h', pt: 'A evaluar' }] : []),
+      ...(!avanzado ? [{ dot: '#166534', name: 'Gingivitis por biofilm dental', why: 'Inflamación gingival reversible sin pérdida ósea. Responde a higiene profesional y domiciliaria.', tag: 'hp-m', pt: 'Probable' }] : []),
+      ...(halitosis ? [{ dot: '#B45309', name: 'Bolsa periodontal activa', why: 'Halitosis persistente sugiere bolsa con flora anaerobia activa. Confirmar con sondaje (≥ 4 mm).', tag: 'hp-m', pt: 'Posible' }] : []),
     ];
-    spec = { icon: '🩸', name: avanzado ? 'Periodoncista' : 'Odontólogo General / Higienista', desc: avanzado ? 'Sondaje completo, radiografías y clasificación AAP/EFP 2017. Posible cirugía periodontal.' : 'Profilaxis, instrucción de higiene y sondaje básico.' };
+    spec = { icon: '🩸', name: urgente || avanzado ? 'Periodoncista' : 'Odontólogo General / Higienista',
+      desc: urgente || avanzado
+        ? 'Sondaje periodontal completo de 6 puntos, radiografías periapicales y clasificación AAP/EFP 2017. Raspado y alisado radicular; posible cirugía periodontal.'
+        : 'Profilaxis profesional, instrucción de higiene y sondaje básico de screening.' };
   }
 
   else if (tipo === 'absceso') {
+    // Discriminar periapical vs periodontal con endodoncia previa
+    const periapical  = a.endodoncia_prev === true || a.espontaneo === true;
+    const perioAbsc   = a.pus === true && a.endodoncia_prev !== true;
     urgency = { cls: 'u-urgent', icon: '🔴', label: 'URGENTE', title: 'Posible absceso dental — atención rápida',
-      desc: 'La hinchazón con pus o dolor espontáneo intenso sugiere infección activa. Requiere evaluación y drenaje.' };
+      desc: 'Infección activa que puede progresar rápidamente. No tome antibióticos sin evaluación clínica — el drenaje es el tratamiento definitivo.' };
     hips = [
-      { dot: '#DC2626', name: 'Absceso periapical', why: 'Infección en el ápice del diente. Origen pulpar. Requiere endodoncia o extracción.', tag: 'hp-h', pt: 'Probable' },
-      { dot: '#EA580C', name: 'Absceso periodontal', why: 'Colección en bolsa periodontal. El más frecuente en adultos (Medscape 2024).', tag: 'hp-m', pt: 'Posible' },
+      ...(periapical ? [{ dot: '#DC2626', name: 'Absceso periapical agudo', why: 'Infección en el ápice del diente. Origen pulpar necrótico. Requiere endodoncia de urgencia o extracción.', tag: 'hp-h', pt: periapical ? 'Probable' : 'Posible' }] : []),
+      ...(perioAbsc  ? [{ dot: '#EA580C', name: 'Absceso periodontal agudo', why: 'Colección purulenta en bolsa periodontal. Más frecuente en adultos con periodontitis. Requiere drenaje y raspado.', tag: 'hp-h', pt: 'Probable' }] : []),
+      ...(!periapical && !perioAbsc ? [{ dot: '#DC2626', name: 'Absceso de origen a determinar', why: 'El examen clínico con sondaje, percusión y pruebas de vitalidad diferenciará el origen pulpar del periodontal.', tag: 'hp-h', pt: 'Por evaluar' }] : []),
+      { dot: '#B45309', name: 'Celulitis odontogénica incipiente', why: 'Si hay hinchazón difusa sin fluctuancia puede indicar extensión a tejidos blandos. Monitorear fiebre y trismo.', tag: 'hp-m', pt: 'A vigilar' },
     ];
-    spec = { icon: '🦷', name: 'Odontólogo General / Urgencias', desc: 'Drenaje, antibioterapia y tratamiento definitivo (endodoncia o extracción según el caso).' };
+    spec = { icon: '🦷', name: 'Odontólogo General / Urgencias', desc: 'Drenaje quirúrgico, pruebas de vitalidad y radiografía periapical. Antibioterapia solo como coadyuvante. Tratamiento definitivo: endodoncia o extracción.' };
   }
 
   else if (tipo === 'estetico') {
@@ -1807,43 +1856,74 @@ function buildResult(tipo) {
   }
 
   else {
-    // dental genérico
-    const severo = d >= 7; const moderado = d >= 4;
-    const espontaneo = a.espontaneo;
-    const linger = a.dolor_prolongado;
+    // dental genérico — null-safe: === true / === false / null (incierto)
+    const severo     = d >= 7;
+    const moderado   = d >= 4;
+    const espontaneo = a.espontaneo === true;
+    const linger     = a.dolor_prolongado === true;
+    // Si el paciente no está seguro sobre dolor espontáneo o prolongado, escalar a PRONTO (no ignorar)
+    const incierto   = a.espontaneo === null || a.dolor_prolongado === null;
+    const frio       = a.frio_calor === true;
+    const morder     = a.morder === true;
+    const tratado    = a.tratado === true;
 
     if (espontaneo || linger) {
+      // Pulpitis irreversible: dolor espontáneo O que persiste > 30 s (AAE)
       urgency = { cls: severo ? 'u-urgent' : 'u-soon', icon: severo ? '🔴' : '🟡',
-        label: severo ? 'URGENTE' : 'PRONTO', title: severo ? 'Posible pulpitis irreversible — evaluación rápida' : 'Dolor que sugiere irritación pulpar',
-        desc: 'El dolor ' + (espontaneo ? 'espontáneo y pulsante' : 'que persiste más de 30 segundos tras estímulo') + ' es compatible con inflamación pulpar avanzada según clasificación AAE.' };
+        label: severo ? 'URGENTE' : 'PRONTO',
+        title: severo ? 'Posible pulpitis irreversible — evaluación rápida' : 'Dolor que sugiere irritación pulpar avanzada',
+        desc: 'El dolor ' + (espontaneo ? 'espontáneo y pulsante' : 'que persiste más de 30 segundos tras el estímulo') + ' es compatible con pulpitis irreversible según clasificación AAE. No esperes más de 24–48 h.' };
       hips = [
-        { dot: '#DC2626', name: 'Pulpitis irreversible sintomática', why: 'Inflamación pulpar que posiblemente no puede recuperarse. Solo el examen clínico lo confirma.', tag: severo ? 'hp-h' : 'hp-m', pt: severo ? 'Compatible' : 'Posible' },
-        { dot: '#EA580C', name: 'Periodontitis apical sintomática', why: 'Inflamación del ligamento apical. Puede coexistir. Genera sensibilidad a la percusión.', tag: 'hp-m', pt: 'Posible' },
-        ...(a.tratado ? [{ dot: '#1D4ED8', name: 'Fractura radicular vertical', why: 'En dientes con endodoncia o postes. Diagnóstico con TAC cone beam.', tag: 'hp-l', pt: 'A descartar' }] : []),
+        { dot: '#DC2626', name: 'Pulpitis irreversible sintomática', why: 'Inflamación pulpar que no puede recuperarse espontáneamente. El tratamiento es endodoncia o extracción.', tag: severo ? 'hp-h' : 'hp-m', pt: severo ? 'Compatible' : 'Probable' },
+        { dot: '#EA580C', name: 'Periodontitis apical sintomática', why: 'Inflamación del ligamento periapical. Puede coexistir con la pulpitis. Genera dolor a la percusión.', tag: 'hp-m', pt: 'Posible' },
+        ...(tratado ? [{ dot: '#1D4ED8', name: 'Fractura radicular vertical', why: 'En dientes con endodoncia o poste. Dolor persistente en diente tratado. Diagnóstico con TAC cone beam.', tag: 'hp-l', pt: 'A descartar' }] : []),
       ];
-      spec = { icon: '🔬', name: 'Endodoncista / Odontólogo General', desc: 'Pruebas de vitalidad (Endo-Ice, percusión, palpación) y radiografía periapical. Puede requerir tratamiento de conducto.' };
-    } else if (a.frio_calor && !linger) {
-      urgency = { cls: 'u-routine', icon: '🟢', label: 'RUTINA', title: 'Dolor breve al frío — evaluación esta semana',
-        desc: 'El dolor que cede rápido al retirar el estímulo es compatible con pulpitis reversible o hipersensibilidad dentinaria. Tratable con intervención oportuna.' };
+      spec = { icon: '🔬', name: 'Endodoncista', desc: 'Pruebas de vitalidad (Endo-Ice, calor, percusión, palpación apical) y radiografía periapical. Posible tratamiento de conducto de urgencia.' };
+
+    } else if (incierto && (frio || morder || moderado)) {
+      // Paciente no está seguro sobre el síntoma más crítico → escalar a PRONTO conservadoramente
+      urgency = { cls: 'u-soon', icon: '🟡', label: 'PRONTO',
+        title: 'Incertidumbre diagnóstica — evaluación esta semana',
+        desc: 'No pudimos descartar pulpitis. Cuando hay dudas, la evaluación precoz protege la vitalidad del diente. El examen clínico resolverá el diagnóstico.' };
       hips = [
-        { dot: '#166534', name: 'Pulpitis reversible', why: 'Inflamación que puede resolverse. Pronóstico favorable con intervención precoz.', tag: 'hp-h', pt: 'Compatible' },
-        { dot: '#B45309', name: 'Hipersensibilidad dentinaria', why: 'Dentina expuesta. Pulpa sana. Muy prevalente y tratable.', tag: 'hp-m', pt: 'Posible' },
+        { dot: '#B45309', name: 'Pulpitis reversible / Hipersensibilidad', why: 'Inflamación pulpar leve o dentina expuesta. Tratable sin endodoncia si se actúa a tiempo.', tag: 'hp-m', pt: 'Posible' },
+        { dot: '#EA580C', name: 'Pulpitis irreversible temprana', why: 'No descartada por respuesta incierta. Requiere pruebas de vitalidad para confirmación.', tag: 'hp-m', pt: 'A descartar' },
       ];
-      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Pruebas de frío, calor, percusión y sondaje. Diferencial entre pulpitis reversible e hipersensibilidad.' };
-    } else if (a.morder) {
-      urgency = { cls: 'u-soon', icon: '🟡', label: 'PRONTO', title: 'Dolor al morder — varias hipótesis posibles',
-        desc: 'El dolor a la percusión es inespecífico. Solo el examen clínico con radiografías determina el origen.' };
+      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Pruebas de vitalidad, percusión y radiografía periapical para descartar compromiso pulpar.' };
+
+    } else if (frio && !linger) {
+      // Frío breve que cede → pulpitis reversible o hipersensibilidad (AAE)
+      urgency = { cls: 'u-routine', icon: '🟢', label: 'RUTINA',
+        title: 'Dolor breve al frío — evaluación esta semana',
+        desc: 'El dolor que cede dentro de los 30 segundos de retirar el estímulo es compatible con pulpitis reversible o hipersensibilidad dentinaria. Tratable con intervención oportuna.' };
       hips = [
-        { dot: '#B45309', name: 'Periodontitis apical sintomática', why: 'Inflamación del ligamento apical. Signo cardinal: dolor a la percusión.', tag: 'hp-h', pt: 'Frecuente' },
-        { dot: '#DC2626', name: 'Síndrome del diente fisurado', why: 'Fisura invisible. Dolor agudo al morder en cierta dirección. Requiere transiluminación.', tag: 'hp-m', pt: 'Posible' },
-        ...(a.tratado ? [{ dot: '#EA580C', name: 'Fractura radicular vertical', why: 'En dientes con endodoncia. Diagnóstico con TAC cone beam.', tag: 'hp-l', pt: 'A descartar' }] : []),
+        { dot: '#166534', name: 'Pulpitis reversible', why: 'Inflamación pulpar que puede resolverse con tratamiento. Pronóstico favorable si se actúa antes de que progrese.', tag: 'hp-h', pt: 'Compatible' },
+        { dot: '#B45309', name: 'Hipersensibilidad dentinaria', why: 'Dentina expuesta por recesión o desgaste. Pulpa sana. Muy prevalente y tratable con barnices o adhesivos.', tag: 'hp-m', pt: 'Posible' },
       ];
-      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Percusión, test con Tooth Slooth, sondaje y radiografía. Posible TAC cone beam si se sospecha fractura.' };
+      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Pruebas de frío, calor y percusión. Diferencial entre pulpitis reversible e hipersensibilidad dentinaria.' };
+
+    } else if (morder) {
+      // Dolor a la masticación o percusión (AAE: periodontitis apical o fisura)
+      urgency = { cls: 'u-soon', icon: '🟡', label: 'PRONTO',
+        title: 'Dolor al morder — varias hipótesis posibles',
+        desc: 'La sensibilidad a la percusión o masticación puede indicar inflamación apical o fisura dental. Solo el examen clínico con radiografías lo determina.' };
+      hips = [
+        { dot: '#B45309', name: 'Periodontitis apical sintomática', why: 'Inflamación del ligamento periodontal apical. Signo cardinal: dolor reproducible a la percusión vertical.', tag: 'hp-h', pt: 'Frecuente' },
+        { dot: '#DC2626', name: 'Síndrome del diente fisurado', why: 'Fisura no visible. Dolor agudo y localizado al morder en cierta dirección. Requiere transiluminación y test con Tooth Slooth.', tag: 'hp-m', pt: 'Posible' },
+        ...(tratado ? [{ dot: '#EA580C', name: 'Fractura radicular vertical', why: 'En dientes con endodoncia o poste. Dolor difuso y bolsa estrecha. Diagnóstico con TAC cone beam.', tag: 'hp-l', pt: 'A descartar' }] : []),
+      ];
+      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Percusión vertical y horizontal, test con Tooth Slooth, sondaje y radiografía periapical. Posible TAC cone beam si se sospecha fractura radicular.' };
+
     } else {
-      urgency = { cls: d >= 5 ? 'u-soon' : 'u-routine', icon: d >= 5 ? '🟡' : '🟢', label: d >= 5 ? 'PRONTO' : 'RUTINA',
-        title: 'Evaluación odontológica recomendada', desc: 'Las respuestas no apuntan a un patrón específico. El examen clínico con radiografías es necesario.' };
-      hips = [{ dot: '#6B7280', name: 'Condición no especificada', why: 'El examen clínico con radiografías determinará el diagnóstico.', tag: 'hp-l', pt: 'Por evaluar' }];
-      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Evaluación completa con historia clínica, examen oral y radiografías.' };
+      // Sin patrón claro — escalar por dolor
+      urgency = { cls: d >= 5 ? 'u-soon' : 'u-routine', icon: d >= 5 ? '🟡' : '🟢',
+        label: d >= 5 ? 'PRONTO' : 'RUTINA',
+        title: d >= 5 ? 'Dolor sin patrón claro — evaluación esta semana' : 'Evaluación odontológica recomendada',
+        desc: 'Las respuestas no permiten identificar un patrón específico. El examen clínico con radiografías establecerá el diagnóstico.' };
+      hips = [
+        { dot: '#6B7280', name: 'Condición a determinar clínicamente', why: 'Sin síntomas guía claros. Historia, examen oral y radiografías son necesarios para el diagnóstico.', tag: 'hp-l', pt: 'Por evaluar' },
+      ];
+      spec = { icon: '🦷', name: 'Odontólogo General', desc: 'Evaluación completa con historia clínica, examen oral y radiografías periapicales.' };
     }
   }
 
