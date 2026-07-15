@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bucaly-v27';
+const CACHE_NAME = 'bucaly-v28';
 const urlsToCache = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', event => {
