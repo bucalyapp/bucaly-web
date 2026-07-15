@@ -1097,6 +1097,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   </div>
   <button class="btn-start" onclick="go('sSym')">Iniciar triaje gratuito →</button>
   <button class="btn-skip" onclick="go('sDirect')">Ya sé lo que necesito — buscar dentista</button>
+  <button class="btn-skip" id="btnPortal" style="display:none;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:10px 20px;margin-top:4px" onclick="openPortal()">Mi Portal →</button>
 </div>
 
 <!-- ══ SYMPTOM PICKER ══ -->
@@ -1389,7 +1390,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     splash.classList.add('fade-out');
     setTimeout(() => {
       splash.style.display = 'none';
-      if (loadSession()) openPortal();
+      if (loadSession()) go('sWelcome');
     }, 400);
   }, 2350);
 })();
@@ -1553,7 +1554,7 @@ async function doLogin() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al ingresar'); return; }
     saveSession(data);
-    openPortal();
+    go('sWelcome');
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -1579,7 +1580,7 @@ async function doRegister() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al registrarse'); return; }
     saveSession(data);
-    openPortal();
+    go('sWelcome');
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -1632,6 +1633,10 @@ function go(id) {
   const el = document.getElementById(id);
   if (el) { el.classList.add('active'); el.scrollTop = 0; }
   if (typeof gtag === 'function') gtag('event', 'screen_view', { screen_name: id });
+  if (id === 'sWelcome') {
+    const btn = document.getElementById('btnPortal');
+    if (btn) btn.style.display = !USER.isGuest ? 'block' : 'none';
+  }
 }
 
 // ════════════════════════════════════════════════════════
