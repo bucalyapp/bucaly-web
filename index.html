@@ -728,93 +728,97 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 }
 
 /* ─── PORTAL PACIENTE ──────────────────────────────────── */
-#sPortal { background: var(--bg); flex-direction: column; overflow: hidden; }
-.portal-topbar {
+#sPortal, #sPortalCitas, #sPortalChat, #sPortalPerfil {
+  background: var(--bg); flex-direction: column; overflow: hidden;
+}
+.p-topbar {
+  background: linear-gradient(160deg,#0B1F35 0%,#0A3D38 100%);
+  padding: 52px 20px 28px; flex-shrink: 0;
+}
+.p-topbar-greeting { font-size: 13px; color: rgba(255,255,255,.5); font-weight: 500; letter-spacing: .01em; }
+.p-topbar-name { font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -.03em; margin-top: 3px; }
+.p-sub-topbar {
   background: var(--navy); padding: 52px 20px 16px;
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  display: flex; align-items: center; gap: 14px; flex-shrink: 0;
 }
-.portal-topbar-title { font-size: 13px; color: rgba(255,255,255,.5); font-weight: 500; }
-.portal-topbar-name  { font-size: 20px; font-weight: 700; color: #fff; margin-top: 2px; }
-.portal-topbar-logo  { width: 38px; height: 38px; border-radius: 10px;
-  background: linear-gradient(145deg,#00bfab,#007d70);
-  display:flex; align-items:center; justify-content:center;
-  box-shadow: 0 3px 0 #005a50; cursor:pointer; }
-.portal-tabs { display: flex; background: var(--navy); padding: 0 16px 0; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
-.portal-tab  { flex: 1; text-align: center; padding: 12px 0 10px; font-size: 12px; font-weight: 600;
-  color: rgba(255,255,255,.4); cursor: pointer; border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s; }
-.portal-tab.active { color: #5EEAD4; border-bottom-color: #5EEAD4; }
-.portal-content { flex: 1; overflow-y: auto; }
-.portal-panel { display: none; padding: 16px; }
-.portal-panel.active { display: block; }
+.p-sub-back  { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; padding: 0; line-height: 1; }
+.p-sub-title { font-size: 18px; font-weight: 700; color: #fff; }
+.p-scroll { flex: 1; overflow-y: auto; padding: 20px 16px 48px; }
+.p-lbl {
+  font-size: 11px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; letter-spacing: .07em; margin: 24px 0 10px;
+}
+.p-lbl:first-child { margin-top: 0; }
+.p-card {
+  background: #fff; border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 18px 18px; display: flex; align-items: center; gap: 16px;
+  cursor: pointer; margin-bottom: 10px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.p-card:active { transform: scale(.97); box-shadow: 0 2px 10px rgba(0,0,0,.07); }
+.p-card-ic {
+  width: 50px; height: 50px; border-radius: 15px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.p-card-body { flex: 1; min-width: 0; }
+.p-card-title { font-size: 15px; font-weight: 700; color: var(--navy); }
+.p-card-sub   { font-size: 12px; color: var(--grey); margin-top: 2px; line-height: 1.45; }
+.p-card-arr   { font-size: 22px; color: #D1D5DB; flex-shrink: 0; font-weight: 300; }
+.p-card.primary {
+  background: var(--teal); border-color: transparent;
+  box-shadow: 0 5px 0 #005a50, 0 12px 28px rgba(0,158,140,.35);
+}
+.p-card.primary .p-card-title { color: #fff; }
+.p-card.primary .p-card-sub   { color: rgba(255,255,255,.72); }
+.p-card.primary .p-card-arr   { color: rgba(255,255,255,.45); }
+.p-card.danger { border-color: #FECACA; }
+.p-card.danger .p-card-title { color: #DC2626; }
 
+/* Appointment cards */
 .appt-card {
-  background: #fff; border: 1px solid var(--border); border-radius: 18px;
-  padding: 16px; margin-bottom: 12px;
-  display: flex; gap: 14px; align-items: flex-start;
+  background: #fff; border: 1.5px solid var(--border); border-radius: 18px;
+  padding: 16px 18px; margin-bottom: 10px;
 }
-.appt-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-.appt-body { flex: 1; }
-.appt-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
-.appt-sub   { font-size: 12px; color: var(--grey); line-height: 1.5; }
-.appt-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px;
-  border-radius: 20px; margin-top: 6px; }
-.appt-badge.prox  { background: #DCFCE7; color: #166534; }
-.appt-badge.pend  { background: #FEF9C3; color: #854D0E; }
-.appt-badge.comp  { background: var(--grey-l); color: var(--grey); }
-.appt-bell { background: none; border: 1px solid var(--border); border-radius: 10px;
-  padding: 6px 8px; font-size: 16px; cursor: pointer; flex-shrink: 0;
-  transition: background .15s; }
-.appt-bell.on { background: #DCFCE7; border-color: #22C55E; }
-.appt-bell:active { transform: scale(.9); }
-.portal-empty { text-align: center; padding: 48px 24px; color: var(--grey); }
-.portal-empty-ic { font-size: 48px; margin-bottom: 12px; }
-.portal-empty p { font-size: 14px; line-height: 1.6; }
-.portal-section-hd { font-size: 11px; font-weight: 700; color: var(--grey);
-  text-transform: uppercase; letter-spacing: .06em; margin: 20px 0 10px; }
-.portal-new-btn { width: 100%; background: var(--teal); color: #fff; border: none;
-  border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 700;
-  cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 16px;
-  box-shadow: 0 4px 0 #005a50; }
+.appt-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.appt-name  { font-size: 15px; font-weight: 700; color: var(--navy); }
+.appt-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.appt-badge.prox { background: #DCFCE7; color: #166534; }
+.appt-badge.pend { background: #FEF9C3; color: #854D0E; }
+.appt-badge.comp { background: var(--grey-l); color: var(--grey); }
+.appt-spec  { font-size: 12px; color: var(--grey); margin-bottom: 4px; }
+.appt-date  { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+.appt-addr  { font-size: 12px; color: var(--grey); }
+.appt-foot  { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.appt-bell  { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--grey); font-weight: 500; background: none; border: 1.5px solid var(--border); border-radius: 10px; padding: 7px 12px; cursor: pointer; font-family: 'Inter', sans-serif; }
+.appt-bell.on { background: #DCFCE7; border-color: #86EFAC; color: #166534; }
 
-/* Portal Chat */
-.pchat-wrap  { display: flex; flex-direction: column; height: 100%; }
+/* Chat */
 .pchat-msgs  { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-.pchat-bubble { max-width: 82%; padding: 12px 15px; border-radius: 18px;
-  font-size: 14px; line-height: 1.55; }
-.pchat-bubble.ai  { background: #fff; border: 1px solid var(--border); color: var(--navy);
-  border-bottom-left-radius: 4px; align-self: flex-start; }
-.pchat-bubble.dent { background: #E0F2FE; border: 1px solid #BAE6FD; color: #0C4A6E;
-  border-bottom-left-radius: 4px; align-self: flex-start; }
-.pchat-bubble.user { background: var(--teal); color: #fff;
-  border-bottom-right-radius: 4px; align-self: flex-end; }
-.pchat-sender { font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: .7; }
-.pchat-bar { padding: 10px 16px 30px; background: #fff; border-top: 1px solid var(--border);
-  display: flex; gap: 8px; flex-shrink: 0; }
-.pchat-input { flex: 1; background: var(--grey-l); border: none; border-radius: 22px;
-  padding: 12px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
-.pchat-send { width: 44px; height: 44px; border-radius: 50%; background: var(--teal);
-  border: none; color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0; }
-.pchat-disclaimer { font-size: 11px; color: var(--grey); text-align: center;
-  padding: 6px 20px 0; line-height: 1.5; }
+.pchat-bubble { max-width: 82%; padding: 12px 15px; border-radius: 18px; font-size: 14px; line-height: 1.55; }
+.pchat-bubble.ai   { background: #fff; border: 1.5px solid var(--border); color: var(--navy); border-bottom-left-radius: 4px; align-self: flex-start; }
+.pchat-bubble.dent { background: #E0F2FE; border: 1.5px solid #BAE6FD; color: #0C4A6E; border-bottom-left-radius: 4px; align-self: flex-start; }
+.pchat-bubble.user { background: var(--teal); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+.pchat-sender { font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: .65; }
+.pchat-bar { padding: 10px 16px 34px; background: #fff; border-top: 1.5px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+.pchat-input { flex: 1; background: var(--grey-l); border: none; border-radius: 22px; padding: 12px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.pchat-send { width: 44px; height: 44px; border-radius: 50%; background: var(--teal); border: none; color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0; box-shadow: 0 3px 0 #005a50; }
+.pchat-note { font-size: 11px; color: var(--grey); text-align: center; padding: 8px 20px 2px; line-height: 1.5; flex-shrink: 0; }
 
-/* Portal Perfil */
-.profile-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 12px; }
-.profile-row  { display: flex; align-items: center; gap: 12px; padding: 10px 0;
-  border-bottom: 1px solid var(--border); }
-.profile-row:last-child { border-bottom: none; }
-.profile-row-ic   { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
-.profile-row-body { flex: 1; }
-.profile-row-label { font-size: 11px; color: var(--grey); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-.profile-row-val   { font-size: 14px; color: var(--navy); font-weight: 500; margin-top: 1px; }
-.notif-toggle { width: 44px; height: 26px; border-radius: 13px; border: none; cursor: pointer;
+/* Perfil toggle */
+.notif-toggle { width: 46px; height: 27px; border-radius: 14px; border: none; cursor: pointer;
   position: relative; transition: background .2s; flex-shrink: 0; }
-.notif-toggle::after { content: ''; position: absolute; width: 20px; height: 20px;
-  background: #fff; border-radius: 50%; top: 3px; left: 3px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
-.notif-toggle.on { background: var(--teal); }
-.notif-toggle.on::after { transform: translateX(18px); }
+.notif-toggle::after { content:''; position:absolute; width:21px; height:21px; background:#fff;
+  border-radius:50%; top:3px; left:3px; box-shadow:0 1px 4px rgba(0,0,0,.2); transition:transform .2s; }
+.notif-toggle.on  { background: var(--teal); }
+.notif-toggle.on::after  { transform: translateX(19px); }
 .notif-toggle.off { background: #D1D5DB; }
+.pf-row { display:flex; align-items:center; gap:14px; padding:15px 0; border-bottom:1px solid var(--border); }
+.pf-row:last-child { border-bottom:none; }
+.pf-ic   { font-size:20px; width:28px; text-align:center; flex-shrink:0; }
+.pf-body { flex:1; }
+.pf-lbl  { font-size:11px; color:var(--grey); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+.pf-val  { font-size:14px; color:var(--navy); font-weight:500; margin-top:2px; }
+.pf-card { background:#fff; border:1.5px solid var(--border); border-radius:18px; padding:4px 18px; margin-bottom:12px; }
 </style>
 </head>
 <body>
@@ -975,84 +979,151 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 </div>
 
 <!-- ══ PORTAL PACIENTE ══ -->
+<!-- ══ PORTAL HOME ══ -->
 <div class="screen" id="sPortal">
-  <div class="portal-topbar">
-    <div>
-      <div class="portal-topbar-title">Bienvenido de vuelta</div>
-      <div class="portal-topbar-name" id="portalNombre">—</div>
+  <div class="p-topbar">
+    <div class="p-topbar-greeting">Hola de nuevo</div>
+    <div class="p-topbar-name" id="portalNombre">—</div>
+  </div>
+  <div class="p-scroll">
+    <div class="p-card primary" onclick="go('sSym')">
+      <div class="p-card-ic" style="background:rgba(255,255,255,.15)">
+        <svg viewBox="0 0 80 80" width="26" height="26" xmlns="http://www.w3.org/2000/svg"><path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="#fff"/></svg>
+      </div>
+      <div class="p-card-body">
+        <div class="p-card-title">Iniciar triaje</div>
+        <div class="p-card-sub">Evalúa tus síntomas · encuentra el especialista correcto</div>
+      </div>
+      <div class="p-card-arr">›</div>
     </div>
-    <div class="portal-topbar-logo" onclick="go('sWelcome')">
-      <svg viewBox="0 0 80 80" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="#fff" opacity=".9"/>
-      </svg>
+
+    <div class="p-lbl">Mis citas</div>
+    <div class="p-card" onclick="go('sPortalCitas')">
+      <div class="p-card-ic" style="background:#EFF6FF">📅</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Ver mis citas</div>
+        <div class="p-card-sub">Próximas consultas e historial</div>
+      </div>
+      <div class="p-card-arr">›</div>
+    </div>
+    <div class="p-card" onclick="go('sDentistas')">
+      <div class="p-card-ic" style="background:#F0FDF4">🔍</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Reservar hora</div>
+        <div class="p-card-sub">Busca y agenda con un especialista</div>
+      </div>
+      <div class="p-card-arr">›</div>
+    </div>
+
+    <div class="p-lbl">Atención</div>
+    <div class="p-card" onclick="go('sPortalChat')">
+      <div class="p-card-ic" style="background:#F0F9FF">💬</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Chat con Dr. IA</div>
+        <div class="p-card-sub">Consulta síntomas y cuidados · en urgencias tu dentista puede responder</div>
+      </div>
+      <div class="p-card-arr">›</div>
+    </div>
+
+    <div class="p-lbl">Mi cuenta</div>
+    <div class="p-card" onclick="go('sPortalPerfil')">
+      <div class="p-card-ic" style="background:#FFF7ED">👤</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Perfil y notificaciones</div>
+        <div class="p-card-sub">Datos personales, recordatorios y configuración</div>
+      </div>
+      <div class="p-card-arr">›</div>
+    </div>
+    <div class="p-card danger" onclick="logout()">
+      <div class="p-card-ic" style="background:#FEF2F2">🚪</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Cerrar sesión</div>
+        <div class="p-card-sub">Salir de tu cuenta Bucaly</div>
+      </div>
+      <div class="p-card-arr" style="color:#FECACA">›</div>
     </div>
   </div>
-  <div class="portal-tabs">
-    <div class="portal-tab active" onclick="portalTab('citas',this)">Mis citas</div>
-    <div class="portal-tab" onclick="portalTab('chat',this)">Chat</div>
-    <div class="portal-tab" onclick="portalTab('perfil',this)">Perfil</div>
+</div>
+
+<!-- ══ PORTAL: MIS CITAS ══ -->
+<div class="screen" id="sPortalCitas">
+  <div class="p-sub-topbar">
+    <button class="p-sub-back" onclick="go('sPortal')">←</button>
+    <div class="p-sub-title">Mis citas</div>
   </div>
-  <div class="portal-content">
-
-    <!-- Tab: Mis Citas -->
-    <div class="portal-panel active" id="ptCitas">
-      <button class="portal-new-btn" onclick="go('sWelcome')">+ Agendar nueva cita</button>
-      <div class="portal-section-hd">Próximas citas</div>
-      <div id="apptList"></div>
-      <div class="portal-section-hd" style="margin-top:24px">Historial</div>
-      <div id="apptHistory"></div>
-    </div>
-
-    <!-- Tab: Chat Dr. IA -->
-    <div class="portal-panel" id="ptChat" style="padding:0;display:none;flex-direction:column;height:100%">
-      <p class="pchat-disclaimer">Dr. IA responde tus consultas. En urgencias, un dentista puede unirse a la conversación.</p>
-      <div class="pchat-msgs" id="pchatMsgs"></div>
-      <div class="pchat-bar">
-        <input class="pchat-input" id="pchatInput" placeholder="Escribe tu consulta…" onkeydown="if(event.key==='Enter')sendPortalMsg()">
-        <button class="pchat-send" onclick="sendPortalMsg()">↑</button>
+  <div class="p-scroll">
+    <div class="p-card primary" onclick="go('sDentistas')" style="margin-bottom:20px">
+      <div class="p-card-ic" style="background:rgba(255,255,255,.15)">🔍</div>
+      <div class="p-card-body">
+        <div class="p-card-title">Reservar nueva hora</div>
+        <div class="p-card-sub">Busca un especialista y agenda</div>
       </div>
+      <div class="p-card-arr">›</div>
     </div>
+    <div class="p-lbl">Próximas citas</div>
+    <div id="apptList"></div>
+    <div class="p-lbl" style="margin-top:20px">Historial</div>
+    <div id="apptHistory"></div>
+  </div>
+</div>
 
-    <!-- Tab: Perfil -->
-    <div class="portal-panel" id="ptPerfil" style="display:none">
-      <div class="portal-section-hd" style="margin-top:4px">Mi cuenta</div>
-      <div class="profile-card">
-        <div class="profile-row">
-          <div class="profile-row-ic">👤</div>
-          <div class="profile-row-body">
-            <div class="profile-row-label">Nombre</div>
-            <div class="profile-row-val" id="pfNombre">—</div>
-          </div>
-        </div>
-        <div class="profile-row">
-          <div class="profile-row-ic">✉️</div>
-          <div class="profile-row-body">
-            <div class="profile-row-label">Correo</div>
-            <div class="profile-row-val" id="pfEmail">—</div>
-          </div>
-        </div>
-        <div class="profile-row">
-          <div class="profile-row-ic">🔔</div>
-          <div class="profile-row-body">
-            <div class="profile-row-label">Recordatorios de citas</div>
-            <div class="profile-row-val" style="font-size:12px;color:var(--grey)">Notificaciones push</div>
-          </div>
-          <button class="notif-toggle off" id="notifToggle" onclick="toggleNotif(this)"></button>
-        </div>
-        <div class="profile-row">
-          <div class="profile-row-ic">🔔</div>
-          <div class="profile-row-body">
-            <div class="profile-row-label">Próximo control</div>
-            <div class="profile-row-val" style="font-size:12px;color:var(--grey)">Aviso 48 h antes</div>
-          </div>
-          <button class="notif-toggle off" id="controlToggle" onclick="toggleNotif(this)"></button>
+<!-- ══ PORTAL: CHAT DR. IA ══ -->
+<div class="screen" id="sPortalChat">
+  <div class="p-sub-topbar">
+    <button class="p-sub-back" onclick="go('sPortal')">←</button>
+    <div class="p-sub-title">Chat con Dr. IA</div>
+  </div>
+  <p class="pchat-note">Dr. IA responde tus consultas. En urgencias, tu dentista puede unirse.</p>
+  <div class="pchat-msgs" id="pchatMsgs"></div>
+  <div class="pchat-bar">
+    <input class="pchat-input" id="pchatInput" placeholder="Escribe tu consulta…" onkeydown="if(event.key==='Enter')sendPortalMsg()">
+    <button class="pchat-send" onclick="sendPortalMsg()">↑</button>
+  </div>
+</div>
+
+<!-- ══ PORTAL: PERFIL ══ -->
+<div class="screen" id="sPortalPerfil">
+  <div class="p-sub-topbar">
+    <button class="p-sub-back" onclick="go('sPortal')">←</button>
+    <div class="p-sub-title">Perfil</div>
+  </div>
+  <div class="p-scroll">
+    <div class="p-lbl" style="margin-top:4px">Mi cuenta</div>
+    <div class="pf-card">
+      <div class="pf-row">
+        <div class="pf-ic">👤</div>
+        <div class="pf-body">
+          <div class="pf-lbl">Nombre</div>
+          <div class="pf-val" id="pfNombre">—</div>
         </div>
       </div>
-      <div class="portal-section-hd">Triaje rápido</div>
-      <button class="portal-new-btn" onclick="go('sSym')" style="background:var(--navy);box-shadow:0 4px 0 #040d17">Iniciar nueva pre-atención</button>
-      <button class="portal-new-btn" onclick="logout()" style="background:#EF4444;box-shadow:0 4px 0 #991B1B;margin-top:4px">Cerrar sesión</button>
+      <div class="pf-row">
+        <div class="pf-ic">✉️</div>
+        <div class="pf-body">
+          <div class="pf-lbl">Correo</div>
+          <div class="pf-val" id="pfEmail">—</div>
+        </div>
+      </div>
     </div>
-
+    <div class="p-lbl">Notificaciones</div>
+    <div class="pf-card">
+      <div class="pf-row">
+        <div class="pf-ic">🔔</div>
+        <div class="pf-body">
+          <div class="pf-lbl">Recordatorios de citas</div>
+          <div class="pf-val" style="font-size:12px;color:var(--grey)">Notificaciones push</div>
+        </div>
+        <button class="notif-toggle off" id="notifToggle" onclick="toggleNotif(this)"></button>
+      </div>
+      <div class="pf-row">
+        <div class="pf-ic">🗓</div>
+        <div class="pf-body">
+          <div class="pf-lbl">Próximo control</div>
+          <div class="pf-val" style="font-size:12px;color:var(--grey)">Aviso 48 h antes</div>
+        </div>
+        <button class="notif-toggle off" id="controlToggle" onclick="toggleNotif(this)"></button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1095,7 +1166,6 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       <span class="w-pill">💳 Cuotas</span>
     </div>
   </div>
-  <button class="btn-start" id="btnPortal" style="display:none;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);box-shadow:none;margin-bottom:0" onclick="openPortal()">Mi Portal</button>
   <button class="btn-start" onclick="go('sSym')">Iniciar triaje gratuito →</button>
   <button class="btn-skip" onclick="go('sDirect')">Ya sé lo que necesito — buscar dentista</button>
 </div>
@@ -1390,7 +1460,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     splash.classList.add('fade-out');
     setTimeout(() => {
       splash.style.display = 'none';
-      if (loadSession()) go('sWelcome');
+      if (loadSession()) openPortal(); else go('sEntry');
     }, 400);
   }, 2350);
 })();
@@ -1554,7 +1624,7 @@ async function doLogin() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al ingresar'); return; }
     saveSession(data);
-    go('sWelcome');
+    openPortal();
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -1580,7 +1650,7 @@ async function doRegister() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al registrarse'); return; }
     saveSession(data);
-    go('sWelcome');
+    openPortal();
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -1633,10 +1703,6 @@ function go(id) {
   const el = document.getElementById(id);
   if (el) { el.classList.add('active'); el.scrollTop = 0; }
   if (typeof gtag === 'function') gtag('event', 'screen_view', { screen_name: id });
-  if (id === 'sWelcome') {
-    const btn = document.getElementById('btnPortal');
-    if (btn) btn.style.display = !USER.isGuest ? 'block' : 'none';
-  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -2583,18 +2649,23 @@ function renderAppts() {
 }
 
 function renderApptCards(list) {
-  if (!list.length) return '<div class="portal-empty"><div class="portal-empty-ic">📅</div><p>Sin citas registradas</p></div>';
-  const labels = { prox: 'Próxima', pend: 'Pendiente de confirmar', comp: 'Completada' };
+  if (!list.length) return '<div style="text-align:center;padding:40px 20px;color:var(--grey);font-size:14px">Sin citas registradas</div>';
+  const labels = { prox: 'Próxima', pend: 'Pendiente', comp: 'Completada' };
   return list.map(a => `
     <div class="appt-card">
-      <div class="appt-dot" style="background:${a.status==='prox'?'#22C55E':a.status==='pend'?'#F59E0B':'#9CA3AF'}"></div>
-      <div class="appt-body">
-        <div class="appt-title">${a.dentist}</div>
-        <div class="appt-sub">${a.spec} · ${a.date}</div>
-        <div class="appt-sub">${a.addr}</div>
+      <div class="appt-head">
+        <div class="appt-name">${a.dentist}</div>
         <span class="appt-badge ${a.status}">${labels[a.status]}</span>
       </div>
-      ${a.status !== 'comp' ? `<button class="appt-bell ${a.notif?'on':''}" onclick="toggleApptNotif(${a.id},this)" title="Notificación">${a.notif?'🔔':'🔕'}</button>` : ''}
+      <div class="appt-spec">${a.spec}</div>
+      <div class="appt-date">${a.date}</div>
+      <div class="appt-addr">${a.addr}</div>
+      ${a.status !== 'comp' ? `
+      <div class="appt-foot">
+        <button class="appt-bell ${a.notif?'on':''}" onclick="toggleApptNotif(${a.id},this)">
+          ${a.notif?'🔔':'🔕'} ${a.notif?'Recordatorio activo':'Activar recordatorio'}
+        </button>
+      </div>` : ''}
     </div>`).join('');
 }
 
