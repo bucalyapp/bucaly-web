@@ -1173,7 +1173,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 <!-- ══ SYMPTOM PICKER ══ -->
 <div class="screen" id="sSym">
   <div class="sym-header">
-    <button class="back-ico" onclick="go('sWelcome')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
+    <button class="back-ico" onclick="goHome()" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
     <h2 style="padding-left:36px">¿Qué te pasa?</h2>
     <p style="padding-left:36px">Toca lo que mejor describe tu situación</p>
   </div>
@@ -1297,14 +1297,14 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <div class="result-footer">
     <button class="btn-primary" onclick="goToDentistas()">Ver dentistas disponibles →</button>
     <button class="btn-danger" id="btnEmerg" style="display:none" onclick="alert('Llama al 131 (SAMU) o ve al servicio de urgencias del hospital más cercano.')">🚨 Ir a urgencias ahora</button>
-    <button class="btn-secondary" onclick="go('sWelcome')">Volver al inicio</button>
+    <button class="btn-secondary" onclick="goHome()">Volver al inicio</button>
   </div>
 </div>
 
 <!-- ══ DIRECT SEARCH ══ -->
 <div class="screen" id="sDirect">
   <div class="dent-header">
-    <button class="back-ico" onclick="go('sWelcome')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
+    <button class="back-ico" onclick="goHome()" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
     <h2 style="padding-left:36px">¿Qué especialista buscas?</h2>
     <p style="padding-left:36px">Selecciona la especialidad</p>
   </div>
@@ -1433,7 +1433,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       <div class="fb-card-cta">Dar mi opinión →</div>
     </button>
   </div>
-  <button class="btn-skip" onclick="go('sWelcome')">Saltar y volver al inicio</button>
+  <button class="btn-skip" onclick="goHome()">Saltar y volver al inicio</button>
 </div>
 
 <script>
@@ -1698,6 +1698,10 @@ const ST = {
 // ════════════════════════════════════════════════════════
 //  NAVIGATION
 // ════════════════════════════════════════════════════════
+function goHome() {
+  if (!USER.isGuest) { openPortal(); } else { go('sWelcome'); }
+}
+
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
