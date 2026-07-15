@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Bucaly — Panel Dentista</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1F35">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,600;1,600&display=swap');
+
+:root {
+  --teal: #009E8C; --teal-d: #007A6E; --teal-l: #E4F5F3;
+  --navy: #0B1F35; --red: #EF4444; --green: #22C55E;
+  --gold: #F59E0B; --grey: #6B7280; --grey-l: #F3F4F6;
+  --border: #E5E7EB; --white: #fff; --bg: #F8F9FA;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); }
+
+/* ── LOGIN ── */
+#loginWrap {
+  min-height: 100vh; background: linear-gradient(160deg,#0B1F35 0%,#0D2B45 60%,#0A3D38 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px 28px;
+}
+.login-logo {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: linear-gradient(145deg,#00bfab,#007d70);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 5px 0 #005a50, 0 14px 32px rgba(0,158,140,.5);
+  margin-bottom: 20px;
+}
+.login-title { font-family: 'Fraunces', serif; font-size: 28px; color: #fff; margin-bottom: 6px; }
+.login-sub   { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 36px; }
+.lf { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 360px; }
+.lf input {
+  background: rgba(255,255,255,.09); border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 14px; padding: 16px 18px; font-size: 15px; color: #fff;
+  font-family: 'Inter', sans-serif; outline: none; width: 100%;
+}
+.lf input::placeholder { color: rgba(255,255,255,.4); }
+.lf input:focus { border-color: var(--teal); }
+.lf button {
+  width: 100%; background: var(--teal); color: #fff; border: none;
+  border-radius: 14px; padding: 17px; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; box-shadow: 0 4px 0 #005a50;
+}
+.login-err { color: #FCA5A5; font-size: 13px; text-align: center; margin-top: 6px; display: none; }
+
+/* ── DASHBOARD ── */
+#dashWrap { display: none; flex-direction: column; min-height: 100vh; }
+
+.dash-topbar {
+  background: var(--navy); padding: 52px 20px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dash-topbar-left h2 { font-size: 11px; color: rgba(255,255,255,.45); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.dash-topbar-left h1 { font-size: 20px; font-weight: 700; color: #fff; margin-top: 2px; }
+.dash-topbar-right { display: flex; align-items: center; gap: 10px; }
+.dash-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--teal); color: #fff; font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 0 #005a50;
+}
+.btn-logout {
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.7); border-radius: 10px; padding: 7px 12px;
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+}
+
+/* ── NAV ── */
+.dash-nav {
+  background: var(--navy); display: flex; border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 0 16px; overflow-x: auto; scrollbar-width: none;
+}
+.dash-nav::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex-shrink: 0; padding: 11px 16px 9px; font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,.4); cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: color .15s, border-color .15s;
+}
+.nav-tab.active { color: #5EEAD4; border-bottom-color: #5EEAD4; }
+
+/* ── CONTENT ── */
+.dash-content { flex: 1; overflow-y: auto; padding: 20px 16px 40px; }
+.dash-panel { display: none; }
+.dash-panel.active { display: block; }
+
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+.stat-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 14px 12px;
+  text-align: center;
+}
+.stat-val  { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
+.stat-lbl  { font-size: 11px; color: var(--grey); font-weight: 500; margin-top: 4px; line-height: 1.3; }
+
+/* Section headers */
+.sec-hd { font-size: 11px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; letter-spacing: .06em; margin: 20px 0 10px; }
+
+/* Schedule */
+.schedule-wrap { background: #fff; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 12px; }
+.schedule-day-hd { background: var(--navy); color: #fff; font-size: 13px; font-weight: 700;
+  padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+.schedule-day-hd span { font-size: 11px; color: rgba(255,255,255,.5); font-weight: 500; }
+.slot { display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+  border-bottom: 1px solid var(--border); }
+.slot:last-child { border-bottom: none; }
+.slot-time { font-size: 12px; font-weight: 700; color: var(--grey); width: 44px; flex-shrink: 0; }
+.slot-bar  { flex: 1; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; }
+.slot-bar.busy { background: #FEE2E2; color: #991B1B; }
+.slot-bar.free { background: #DCFCE7; color: #166534; cursor: pointer; }
+.slot-bar.free:hover { background: #BBF7D0; }
+.slot-bar.block { background: var(--grey-l); color: var(--grey); }
+.slot-patient { font-size: 11px; font-weight: 400; margin-top: 2px; opacity: .75; }
+
+/* Patient list */
+.pat-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
+  padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+}
+.pat-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--teal-l);
+  color: var(--teal-d); font-weight: 700; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.pat-body { flex: 1; }
+.pat-name { font-size: 14px; font-weight: 700; color: var(--navy); }
+.pat-sub  { font-size: 12px; color: var(--grey); margin-top: 2px; }
+.pat-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; margin-top: 4px; }
+.pat-badge.urgente { background: #FEE2E2; color: #991B1B; }
+.pat-badge.pronto  { background: #FEF9C3; color: #854D0E; }
+.pat-badge.rutina  { background: #DCFCE7; color: #166534; }
+.pat-actions { display: flex; gap: 6px; }
+.btn-chat-sm, .btn-ver-sm {
+  border: none; border-radius: 10px; padding: 7px 12px; font-size: 12px;
+  font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+}
+.btn-chat-sm { background: var(--teal-l); color: var(--teal-d); }
+.btn-ver-sm  { background: var(--grey-l); color: var(--grey); }
+
+/* Chat dentista */
+.dchat-list { display: flex; flex-direction: column; gap: 10px; }
+.dchat-item {
+  background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px;
+  cursor: pointer; transition: border-color .15s;
+}
+.dchat-item:hover { border-color: var(--teal); }
+.dchat-item.unread { border-left: 3px solid var(--red); }
+.dchat-patient { font-size: 14px; font-weight: 700; color: var(--navy); }
+.dchat-last    { font-size: 12px; color: var(--grey); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dchat-meta    { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.dchat-time    { font-size: 11px; color: var(--grey); }
+.dchat-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+
+/* Chat window */
+.chat-win {
+  display: none; position: fixed; inset: 0; background: var(--bg);
+  flex-direction: column; z-index: 1000;
+}
+.chat-win.open { display: flex; }
+.cw-topbar {
+  background: var(--navy); padding: 52px 16px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.cw-back { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; padding: 0 4px; }
+.cw-patient-name { font-size: 16px; font-weight: 700; color: #fff; }
+.cw-patient-sub  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.cw-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.cw-bubble { max-width: 82%; padding: 12px 15px; border-radius: 18px; font-size: 14px; line-height: 1.55; }
+.cw-bubble.ai   { background: #E0F2FE; border: 1px solid #BAE6FD; color: #0C4A6E; border-bottom-left-radius: 4px; align-self: flex-start; }
+.cw-bubble.pat  { background: var(--grey-l); color: var(--navy); border-bottom-left-radius: 4px; align-self: flex-start; }
+.cw-bubble.dent { background: var(--teal); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
+.cw-sender { font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: .65; }
+.cw-bar { padding: 10px 16px 30px; background: #fff; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.cw-input { flex: 1; background: var(--grey-l); border: none; border-radius: 22px; padding: 12px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.cw-send { width: 44px; height: 44px; border-radius: 50%; background: var(--teal); border: none; color: #fff; font-size: 18px; cursor: pointer; }
+
+/* Hours manager */
+.hours-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.hour-chip {
+  border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 6px;
+  text-align: center; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: var(--navy); background: #fff; transition: all .15s;
+}
+.hour-chip.busy  { background: #FEE2E2; border-color: #FECACA; color: #991B1B; }
+.hour-chip.free  { background: #DCFCE7; border-color: #BBF7D0; color: #166534; }
+.hours-legend { display: flex; gap: 16px; margin-bottom: 16px; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--grey); }
+.leg-dot  { width: 10px; height: 10px; border-radius: 3px; }
+.save-hours-btn {
+  width: 100%; background: var(--teal); color: #fff; border: none;
+  border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; box-shadow: 0 4px 0 #005a50;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginWrap">
+  <div class="login-logo">
+    <svg viewBox="0 0 80 80" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="#fff" opacity=".9"/>
+      <ellipse cx="30" cy="19" rx="10" ry="6" fill="rgba(255,255,255,0.85)" transform="rotate(-30 30 19)"/>
+    </svg>
+  </div>
+  <h1 class="login-title">Panel Dentista</h1>
+  <p class="login-sub">Bucaly — Acceso profesional</p>
+  <div class="lf">
+    <input type="email" id="dEmail" placeholder="Correo electrónico" autocomplete="email">
+    <input type="password" id="dPass" placeholder="Contraseña" autocomplete="current-password">
+    <button onclick="doLogin()">Ingresar</button>
+    <p class="login-err" id="loginErr">Correo o contraseña incorrectos.</p>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashWrap">
+  <div class="dash-topbar">
+    <div class="dash-topbar-left">
+      <h2>Panel profesional</h2>
+      <h1 id="dentName">Dr. —</h1>
+    </div>
+    <div class="dash-topbar-right">
+      <div class="dash-avatar" id="dentAvatar">D</div>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="dash-nav">
+    <div class="nav-tab active" onclick="showTab('agenda',this)">Agenda</div>
+    <div class="nav-tab" onclick="showTab('pacientes',this)">Pacientes</div>
+    <div class="nav-tab" onclick="showTab('horas',this)">Mis horas</div>
+    <div class="nav-tab" onclick="showTab('chat',this)">Chat</div>
+  </div>
+
+  <div class="dash-content">
+
+    <!-- ── AGENDA ── -->
+    <div class="dash-panel active" id="pAgenda">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val">4</div><div class="stat-lbl">Citas hoy</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)">3</div><div class="stat-lbl">Horas libres</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)">1</div><div class="stat-lbl">Urgencias</div></div>
+      </div>
+
+      <div class="sec-hd">Hoy — <span id="todayDate"></span></div>
+      <div class="schedule-wrap">
+        <div class="schedule-day-hd">Agenda del día <span id="slotCount"></span></div>
+        <div id="slotList"></div>
+      </div>
+    </div>
+
+    <!-- ── PACIENTES ── -->
+    <div class="dash-panel" id="pPacientes">
+      <div class="sec-hd">Pacientes activos</div>
+      <div id="patList"></div>
+    </div>
+
+    <!-- ── MIS HORAS ── -->
+    <div class="dash-panel" id="pHoras">
+      <div class="sec-hd">Configura tu disponibilidad</div>
+      <p style="font-size:13px;color:var(--grey);margin-bottom:16px;line-height:1.6">Toca las horas para marcarlas como disponibles o bloqueadas. Los pacientes solo verán las horas libres.</p>
+      <div class="hours-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#DCFCE7;border:1.5px solid #BBF7D0"></div> Libre</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#FEE2E2;border:1.5px solid #FECACA"></div> Ocupada</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--grey-l);border:1.5px solid var(--border)"></div> Bloqueada</div>
+      </div>
+      <div class="hours-grid" id="hoursGrid"></div>
+      <button class="save-hours-btn" onclick="saveHours()">Guardar disponibilidad</button>
+    </div>
+
+    <!-- ── CHAT ── -->
+    <div class="dash-panel" id="pChat">
+      <div class="sec-hd">Mensajes de pacientes</div>
+      <div class="dchat-list" id="chatList"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ CHAT WINDOW ══ -->
+<div class="chat-win" id="chatWin">
+  <div class="cw-topbar">
+    <button class="cw-back" onclick="closeChat()">←</button>
+    <div>
+      <div class="cw-patient-name" id="cwName">—</div>
+      <div class="cw-patient-sub" id="cwSub">—</div>
+    </div>
+  </div>
+  <div class="cw-msgs" id="cwMsgs"></div>
+  <div class="cw-bar">
+    <input class="cw-input" id="cwInput" placeholder="Escribe tu respuesta…" onkeydown="if(event.key==='Enter')sendDentMsg()">
+    <button class="cw-send" onclick="sendDentMsg()">↑</button>
+  </div>
+</div>
+
+<script>
+const API = 'https://api-production-37bd.up.railway.app';
+let DENT = { token: null, nombre: '', email: '', role: '' };
+
+// ── LOGIN ──
+async function doLogin() {
+  const email = document.getElementById('dEmail').value.trim();
+  const pass  = document.getElementById('dPass').value;
+  const err   = document.getElementById('loginErr');
+  err.style.display = 'none';
+  if (!email || !pass) { err.textContent = 'Ingresa tu correo y contraseña.'; err.style.display = 'block'; return; }
+  try {
+    const r    = await fetch(`${API}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) });
+    const data = await r.json();
+    if (!r.ok) { err.textContent = data.error || 'Credenciales incorrectas.'; err.style.display = 'block'; return; }
+    if (!['dentist','admin'].includes(data.user.role)) { err.textContent = 'Esta cuenta no tiene acceso al panel de dentista.'; err.style.display = 'block'; return; }
+    DENT.token  = data.token;
+    DENT.nombre = data.user.nombre;
+    DENT.email  = data.user.email;
+    DENT.role   = data.user.role;
+    localStorage.setItem('bucaly_dent', JSON.stringify(DENT));
+    showDash();
+  } catch(e) { err.textContent = 'No se pudo conectar al servidor.'; err.style.display = 'block'; }
+}
+
+function doLogout() {
+  DENT = { token: null, nombre: '', email: '', role: '' };
+  localStorage.removeItem('bucaly_dent');
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('dashWrap').style.display  = 'none';
+}
+
+function showDash() {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('dashWrap').style.display  = 'flex';
+  document.getElementById('dentName').textContent    = DENT.nombre || 'Dentista';
+  document.getElementById('dentAvatar').textContent  = (DENT.nombre || 'D')[0].toUpperCase();
+  const today = new Date();
+  document.getElementById('todayDate').textContent = today.toLocaleDateString('es-CL', { weekday:'long', day:'numeric', month:'long' });
+  buildSlots();
+  buildPatients();
+  buildHours();
+  buildChatList();
+}
+
+// ── TABS ──
+function showTab(name, el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('p' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+}
+
+// ── AGENDA ──
+const SLOTS = [
+  { time: '08:30', status: 'busy',  patient: 'María González',  motivo: 'Extracción molar 3' },
+  { time: '09:30', status: 'busy',  patient: 'Carlos Muñoz',    motivo: 'Urgencia — dolor agudo' },
+  { time: '10:30', status: 'free',  patient: null, motivo: null },
+  { time: '11:30', status: 'busy',  patient: 'Ana Rojas',       motivo: 'Control post endodoncia' },
+  { time: '12:30', status: 'block', patient: null, motivo: 'Almuerzo' },
+  { time: '14:00', status: 'busy',  patient: 'Pedro Soto',      motivo: 'Obturación clase II' },
+  { time: '15:00', status: 'free',  patient: null, motivo: null },
+  { time: '16:00', status: 'free',  patient: null, motivo: null },
+  { time: '17:00', status: 'block', patient: null, motivo: 'Reunión clínica' },
+];
+
+function buildSlots() {
+  const busy = SLOTS.filter(s => s.status === 'busy').length;
+  const free = SLOTS.filter(s => s.status === 'free').length;
+  document.getElementById('slotCount').textContent = `${busy} ocupadas · ${free} libres`;
+  document.getElementById('slotList').innerHTML = SLOTS.map(s => `
+    <div class="slot">
+      <div class="slot-time">${s.time}</div>
+      <div class="slot-bar ${s.status}">
+        ${s.status === 'busy'  ? `${s.patient}<div class="slot-patient">${s.motivo}</div>` : ''}
+        ${s.status === 'free'  ? 'Hora disponible' : ''}
+        ${s.status === 'block' ? s.motivo || 'Bloqueada' : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ── PACIENTES ──
+const PATIENTS = [
+  { id: 1, name: 'María González', rut: '12.345.678-9', motivo: 'Dolor post extracción', badge: 'urgente', chat: [
+    { role: 'pat', text: 'Tengo mucho dolor desde la extracción de ayer, ¿es normal?' },
+    { role: 'ai',  text: 'Algo de molestia es esperable las primeras 24–48 h. Si el dolor aumenta o hay fiebre, el dentista debería evaluarte.' },
+  ]},
+  { id: 2, name: 'Carlos Muñoz',   rut: '9.876.543-2',  motivo: 'Control endodoncia', badge: 'pronto', chat: [
+    { role: 'pat', text: 'El diente que me trataron sigue sensible al morder' },
+    { role: 'ai',  text: 'La sensibilidad post endodoncia puede durar algunos días. Si persiste más de una semana, avisa a tu dentista.' },
+  ]},
+  { id: 3, name: 'Ana Rojas',      rut: '15.432.100-K', motivo: 'Chequeo de rutina',  badge: 'rutina',  chat: [] },
+];
+
+function buildPatients() {
+  document.getElementById('patList').innerHTML = PATIENTS.map(p => `
+    <div class="pat-card">
+      <div class="pat-avatar">${p.name[0]}</div>
+      <div class="pat-body">
+        <div class="pat-name">${p.name}</div>
+        <div class="pat-sub">${p.rut} · ${p.motivo}</div>
+        <span class="pat-badge ${p.badge}">${p.badge === 'urgente' ? 'Urgente' : p.badge === 'pronto' ? 'Pronto' : 'Rutina'}</span>
+      </div>
+      <div class="pat-actions">
+        ${p.chat.length ? `<button class="btn-chat-sm" onclick="openChat(${p.id})">Chat</button>` : ''}
+        <button class="btn-ver-sm" onclick="alert('Ficha de ${p.name}')">Ver</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── HORAS ──
+const ALL_HOURS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+let hourState = {};
+
+function buildHours() {
+  ALL_HOURS.forEach(h => { hourState[h] = hourState[h] || 'free'; });
+  // Pre-mark some as busy from schedule
+  SLOTS.filter(s => s.status === 'busy').forEach(s => { if(hourState[s.time] !== undefined) hourState[s.time] = 'busy'; });
+  SLOTS.filter(s => s.status === 'block').forEach(s => { if(hourState[s.time] !== undefined) hourState[s.time] = 'block'; });
+  renderHours();
+}
+
+function renderHours() {
+  document.getElementById('hoursGrid').innerHTML = ALL_HOURS.map(h => `
+    <div class="hour-chip ${hourState[h]}" onclick="cycleHour('${h}',this)">${h}</div>`).join('');
+}
+
+function cycleHour(h, el) {
+  const next = { free: 'busy', busy: 'block', block: 'free' };
+  hourState[h] = next[hourState[h]] || 'free';
+  el.className = 'hour-chip ' + hourState[h];
+}
+
+function saveHours() {
+  const free  = Object.entries(hourState).filter(([,v]) => v === 'free').length;
+  const busy  = Object.entries(hourState).filter(([,v]) => v === 'busy').length;
+  const block = Object.entries(hourState).filter(([,v]) => v === 'block').length;
+  alert(`Disponibilidad guardada:\n✅ ${free} horas libres\n🔴 ${busy} horas ocupadas\n⛔ ${block} horas bloqueadas`);
+}
+
+// ── CHAT LIST ──
+function buildChatList() {
+  const patsWithChat = PATIENTS.filter(p => p.chat.length);
+  document.getElementById('chatList').innerHTML = patsWithChat.map(p => {
+    const last = p.chat[p.chat.length - 1];
+    return `<div class="dchat-item ${p.badge === 'urgente' ? 'unread' : ''}" onclick="openChat(${p.id})">
+      <div class="dchat-meta">
+        <div class="dchat-patient">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="dchat-time">hace 12 min</div>
+          ${p.badge === 'urgente' ? '<div class="dchat-unread-dot"></div>' : ''}
+        </div>
+      </div>
+      <div class="dchat-last">${last.role === 'ai' ? 'Dr. IA: ' : ''}${last.text}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── CHAT WINDOW ──
+let activeChatId = null;
+
+function openChat(patId) {
+  const p = PATIENTS.find(x => x.id === patId);
+  if (!p) return;
+  activeChatId = patId;
+  document.getElementById('cwName').textContent = p.name;
+  document.getElementById('cwSub').textContent  = p.rut + ' · ' + p.motivo;
+  renderChatWin(p.chat);
+  document.getElementById('chatWin').classList.add('open');
+}
+
+function closeChat() {
+  document.getElementById('chatWin').classList.remove('open');
+  activeChatId = null;
+}
+
+function renderChatWin(msgs) {
+  const senders = { ai: 'Dr. IA', pat: 'Paciente', dent: DENT.nombre || 'Tú' };
+  document.getElementById('cwMsgs').innerHTML = msgs.map(m => `
+    <div class="cw-bubble ${m.role}">
+      <div class="cw-sender">${senders[m.role]}</div>
+      ${m.text}
+    </div>`).join('');
+  document.getElementById('cwMsgs').scrollTop = 9999;
+}
+
+function sendDentMsg() {
+  const input = document.getElementById('cwInput');
+  const text  = input.value.trim();
+  if (!text || activeChatId === null) return;
+  input.value = '';
+  const p = PATIENTS.find(x => x.id === activeChatId);
+  if (!p) return;
+  p.chat.push({ role: 'dent', text });
+  renderChatWin(p.chat);
+  buildChatList();
+}
+
+// ── INIT ──
+(function init() {
+  const stored = localStorage.getItem('bucaly_dent');
+  if (stored) {
+    try {
+      const d = JSON.parse(stored);
+      if (d.token) { DENT = d; showDash(); return; }
+    } catch(e) {}
+  }
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('dashWrap').style.display  = 'none';
+})();
+</script>
+</body>
+</html>

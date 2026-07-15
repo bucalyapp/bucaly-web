@@ -726,6 +726,95 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   background: #FEE2E2; border: none; border-radius: 20px; padding: 4px 12px; cursor: pointer;
   font-family: 'Inter', sans-serif;
 }
+
+/* ─── PORTAL PACIENTE ──────────────────────────────────── */
+#sPortal { background: var(--bg); flex-direction: column; overflow: hidden; }
+.portal-topbar {
+  background: var(--navy); padding: 52px 20px 16px;
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.portal-topbar-title { font-size: 13px; color: rgba(255,255,255,.5); font-weight: 500; }
+.portal-topbar-name  { font-size: 20px; font-weight: 700; color: #fff; margin-top: 2px; }
+.portal-topbar-logo  { width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(145deg,#00bfab,#007d70);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 3px 0 #005a50; cursor:pointer; }
+.portal-tabs { display: flex; background: var(--navy); padding: 0 16px 0; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.portal-tab  { flex: 1; text-align: center; padding: 12px 0 10px; font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,.4); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s; }
+.portal-tab.active { color: #5EEAD4; border-bottom-color: #5EEAD4; }
+.portal-content { flex: 1; overflow-y: auto; }
+.portal-panel { display: none; padding: 16px; }
+.portal-panel.active { display: block; }
+
+.appt-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 18px;
+  padding: 16px; margin-bottom: 12px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.appt-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.appt-body { flex: 1; }
+.appt-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.appt-sub   { font-size: 12px; color: var(--grey); line-height: 1.5; }
+.appt-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px;
+  border-radius: 20px; margin-top: 6px; }
+.appt-badge.prox  { background: #DCFCE7; color: #166534; }
+.appt-badge.pend  { background: #FEF9C3; color: #854D0E; }
+.appt-badge.comp  { background: var(--grey-l); color: var(--grey); }
+.appt-bell { background: none; border: 1px solid var(--border); border-radius: 10px;
+  padding: 6px 8px; font-size: 16px; cursor: pointer; flex-shrink: 0;
+  transition: background .15s; }
+.appt-bell.on { background: #DCFCE7; border-color: #22C55E; }
+.appt-bell:active { transform: scale(.9); }
+.portal-empty { text-align: center; padding: 48px 24px; color: var(--grey); }
+.portal-empty-ic { font-size: 48px; margin-bottom: 12px; }
+.portal-empty p { font-size: 14px; line-height: 1.6; }
+.portal-section-hd { font-size: 11px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; letter-spacing: .06em; margin: 20px 0 10px; }
+.portal-new-btn { width: 100%; background: var(--teal); color: #fff; border: none;
+  border-radius: 16px; padding: 16px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 16px;
+  box-shadow: 0 4px 0 #005a50; }
+
+/* Portal Chat */
+.pchat-wrap  { display: flex; flex-direction: column; height: 100%; }
+.pchat-msgs  { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.pchat-bubble { max-width: 82%; padding: 12px 15px; border-radius: 18px;
+  font-size: 14px; line-height: 1.55; }
+.pchat-bubble.ai  { background: #fff; border: 1px solid var(--border); color: var(--navy);
+  border-bottom-left-radius: 4px; align-self: flex-start; }
+.pchat-bubble.dent { background: #E0F2FE; border: 1px solid #BAE6FD; color: #0C4A6E;
+  border-bottom-left-radius: 4px; align-self: flex-start; }
+.pchat-bubble.user { background: var(--teal); color: #fff;
+  border-bottom-right-radius: 4px; align-self: flex-end; }
+.pchat-sender { font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: .7; }
+.pchat-bar { padding: 10px 16px 30px; background: #fff; border-top: 1px solid var(--border);
+  display: flex; gap: 8px; flex-shrink: 0; }
+.pchat-input { flex: 1; background: var(--grey-l); border: none; border-radius: 22px;
+  padding: 12px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none; }
+.pchat-send { width: 44px; height: 44px; border-radius: 50%; background: var(--teal);
+  border: none; color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0; }
+.pchat-disclaimer { font-size: 11px; color: var(--grey); text-align: center;
+  padding: 6px 20px 0; line-height: 1.5; }
+
+/* Portal Perfil */
+.profile-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 12px; }
+.profile-row  { display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); }
+.profile-row:last-child { border-bottom: none; }
+.profile-row-ic   { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+.profile-row-body { flex: 1; }
+.profile-row-label { font-size: 11px; color: var(--grey); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.profile-row-val   { font-size: 14px; color: var(--navy); font-weight: 500; margin-top: 1px; }
+.notif-toggle { width: 44px; height: 26px; border-radius: 13px; border: none; cursor: pointer;
+  position: relative; transition: background .2s; flex-shrink: 0; }
+.notif-toggle::after { content: ''; position: absolute; width: 20px; height: 20px;
+  background: #fff; border-radius: 50%; top: 3px; left: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+.notif-toggle.on { background: var(--teal); }
+.notif-toggle.on::after { transform: translateX(18px); }
+.notif-toggle.off { background: #D1D5DB; }
 </style>
 </head>
 <body>
@@ -882,6 +971,88 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   <div class="gf-footer">
     <button class="btn-primary" onclick="submitGuestForm()">Ver clínicas disponibles</button>
     <p style="font-size:11px;color:var(--grey);text-align:center;margin-top:12px;line-height:1.6">Tus datos se usan solo para coordinar tu cita y no se comparten con terceros.</p>
+  </div>
+</div>
+
+<!-- ══ PORTAL PACIENTE ══ -->
+<div class="screen" id="sPortal">
+  <div class="portal-topbar">
+    <div>
+      <div class="portal-topbar-title">Bienvenido de vuelta</div>
+      <div class="portal-topbar-name" id="portalNombre">—</div>
+    </div>
+    <div class="portal-topbar-logo" onclick="go('sWelcome')">
+      <svg viewBox="0 0 80 80" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 56 C18 56 16 46 14 36 C12 26 12 18 18 14 C22 10 28 10 32 10 C36 10 40 10 40 10 C40 10 44 10 48 10 C52 10 58 10 62 14 C68 18 68 26 66 36 C64 46 62 56 62 56 C62 60 60 64 57 64 C54 64 52 60 50 54 C48 48 46 44 40 44 C34 44 32 48 30 54 C28 60 26 64 23 64 C20 64 18 60 18 56 Z" fill="#fff" opacity=".9"/>
+      </svg>
+    </div>
+  </div>
+  <div class="portal-tabs">
+    <div class="portal-tab active" onclick="portalTab('citas',this)">Mis citas</div>
+    <div class="portal-tab" onclick="portalTab('chat',this)">Chat</div>
+    <div class="portal-tab" onclick="portalTab('perfil',this)">Perfil</div>
+  </div>
+  <div class="portal-content">
+
+    <!-- Tab: Mis Citas -->
+    <div class="portal-panel active" id="ptCitas">
+      <button class="portal-new-btn" onclick="go('sWelcome')">+ Agendar nueva cita</button>
+      <div class="portal-section-hd">Próximas citas</div>
+      <div id="apptList"></div>
+      <div class="portal-section-hd" style="margin-top:24px">Historial</div>
+      <div id="apptHistory"></div>
+    </div>
+
+    <!-- Tab: Chat Dr. IA -->
+    <div class="portal-panel" id="ptChat" style="padding:0;display:none;flex-direction:column;height:100%">
+      <p class="pchat-disclaimer">Dr. IA responde tus consultas. En urgencias, un dentista puede unirse a la conversación.</p>
+      <div class="pchat-msgs" id="pchatMsgs"></div>
+      <div class="pchat-bar">
+        <input class="pchat-input" id="pchatInput" placeholder="Escribe tu consulta…" onkeydown="if(event.key==='Enter')sendPortalMsg()">
+        <button class="pchat-send" onclick="sendPortalMsg()">↑</button>
+      </div>
+    </div>
+
+    <!-- Tab: Perfil -->
+    <div class="portal-panel" id="ptPerfil" style="display:none">
+      <div class="portal-section-hd" style="margin-top:4px">Mi cuenta</div>
+      <div class="profile-card">
+        <div class="profile-row">
+          <div class="profile-row-ic">👤</div>
+          <div class="profile-row-body">
+            <div class="profile-row-label">Nombre</div>
+            <div class="profile-row-val" id="pfNombre">—</div>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-ic">✉️</div>
+          <div class="profile-row-body">
+            <div class="profile-row-label">Correo</div>
+            <div class="profile-row-val" id="pfEmail">—</div>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-ic">🔔</div>
+          <div class="profile-row-body">
+            <div class="profile-row-label">Recordatorios de citas</div>
+            <div class="profile-row-val" style="font-size:12px;color:var(--grey)">Notificaciones push</div>
+          </div>
+          <button class="notif-toggle off" id="notifToggle" onclick="toggleNotif(this)"></button>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-ic">🔔</div>
+          <div class="profile-row-body">
+            <div class="profile-row-label">Próximo control</div>
+            <div class="profile-row-val" style="font-size:12px;color:var(--grey)">Aviso 48 h antes</div>
+          </div>
+          <button class="notif-toggle off" id="controlToggle" onclick="toggleNotif(this)"></button>
+        </div>
+      </div>
+      <div class="portal-section-hd">Triaje rápido</div>
+      <button class="portal-new-btn" onclick="go('sSym')" style="background:var(--navy);box-shadow:0 4px 0 #040d17">Iniciar nueva pre-atención</button>
+      <button class="portal-new-btn" onclick="logout()" style="background:#EF4444;box-shadow:0 4px 0 #991B1B;margin-top:4px">Cerrar sesión</button>
+    </div>
+
   </div>
 </div>
 
@@ -1218,7 +1389,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     splash.classList.add('fade-out');
     setTimeout(() => {
       splash.style.display = 'none';
-      if (loadSession()) go('sWelcome');
+      if (loadSession()) openPortal();
     }, 400);
   }, 2350);
 })();
@@ -1382,7 +1553,7 @@ async function doLogin() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al ingresar'); return; }
     saveSession(data);
-    go('sWelcome');
+    openPortal();
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -1408,7 +1579,7 @@ async function doRegister() {
     const data = await r.json();
     if (!r.ok) { alert(data.error || 'Error al registrarse'); return; }
     saveSession(data);
-    go('sWelcome');
+    openPortal();
   } catch(e) {
     alert('No se pudo conectar al servidor.');
   } finally {
@@ -2379,6 +2550,142 @@ function showChatResult() {
   ST.dolor = 6;
 
   runAnalysis(tipo);
+}
+
+// ════════════════════════════════════════════════════════
+//  PORTAL PACIENTE
+// ════════════════════════════════════════════════════════
+const MOCK_APPTS = [
+  { id: 1, dentist: 'Dra. Valentina Ríos', spec: 'Endodoncista', date: 'Lunes 21 Jul · 10:30', addr: 'Providencia · Av. Nueva Providencia 1881', status: 'prox', notif: false },
+  { id: 2, dentist: 'Dr. Felipe Morales',  spec: 'Odontólogo General', date: 'Miércoles 6 Ago · 09:00', addr: 'Las Condes · Av. Apoquindo 5300', status: 'pend', notif: true },
+];
+const MOCK_HIST = [
+  { id: 3, dentist: 'Dra. Ana Pérez', spec: 'Urgencias Dentales', date: 'Viernes 4 Jul · 15:00', addr: 'Providencia · Condell 1031', status: 'comp', notif: false },
+];
+
+function openPortal() {
+  document.getElementById('portalNombre').textContent = USER.nombre || 'Paciente';
+  document.getElementById('pfNombre').textContent     = USER.nombre || '—';
+  document.getElementById('pfEmail').textContent      = USER.email  || '—';
+  renderAppts();
+  initPortalChat();
+  go('sPortal');
+}
+
+function renderAppts() {
+  document.getElementById('apptList').innerHTML    = renderApptCards(MOCK_APPTS);
+  document.getElementById('apptHistory').innerHTML = renderApptCards(MOCK_HIST);
+}
+
+function renderApptCards(list) {
+  if (!list.length) return '<div class="portal-empty"><div class="portal-empty-ic">📅</div><p>Sin citas registradas</p></div>';
+  const labels = { prox: 'Próxima', pend: 'Pendiente de confirmar', comp: 'Completada' };
+  return list.map(a => `
+    <div class="appt-card">
+      <div class="appt-dot" style="background:${a.status==='prox'?'#22C55E':a.status==='pend'?'#F59E0B':'#9CA3AF'}"></div>
+      <div class="appt-body">
+        <div class="appt-title">${a.dentist}</div>
+        <div class="appt-sub">${a.spec} · ${a.date}</div>
+        <div class="appt-sub">${a.addr}</div>
+        <span class="appt-badge ${a.status}">${labels[a.status]}</span>
+      </div>
+      ${a.status !== 'comp' ? `<button class="appt-bell ${a.notif?'on':''}" onclick="toggleApptNotif(${a.id},this)" title="Notificación">${a.notif?'🔔':'🔕'}</button>` : ''}
+    </div>`).join('');
+}
+
+function toggleApptNotif(id, btn) {
+  const a = [...MOCK_APPTS, ...MOCK_HIST].find(x => x.id === id);
+  if (!a) return;
+  if (!a.notif) {
+    requestNotifPermission(() => {
+      a.notif = true; btn.classList.add('on'); btn.textContent = '🔔';
+    });
+  } else {
+    a.notif = false; btn.classList.remove('on'); btn.textContent = '🔕';
+  }
+}
+
+function portalTab(name, el) {
+  document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.portal-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const panel = document.getElementById('pt' + name.charAt(0).toUpperCase() + name.slice(1));
+  panel.style.display = name === 'chat' ? 'flex' : 'block';
+  panel.classList.add('active');
+  if (name === 'chat') initPortalChat();
+}
+
+function toggleNotif(btn) {
+  const on = btn.classList.contains('on');
+  if (!on) {
+    requestNotifPermission(() => { btn.classList.remove('off'); btn.classList.add('on'); });
+  } else {
+    btn.classList.remove('on'); btn.classList.add('off');
+  }
+}
+
+function requestNotifPermission(cb) {
+  if (!('Notification' in window)) { alert('Tu navegador no soporta notificaciones.'); return; }
+  if (Notification.permission === 'granted') { cb(); return; }
+  Notification.requestPermission().then(p => { if (p === 'granted') cb(); });
+}
+
+// Portal Chat
+const PORTAL_CHAT_AI = [
+  { role: 'ai', text: 'Hola ' + (USER.nombre || '') + ', soy Dr. IA. Puedo orientarte sobre síntomas, cuidados post-operatorios y recordatorios. ¿En qué puedo ayudarte?' },
+];
+let portalChatHistory = [];
+let portalChatInit = false;
+
+function initPortalChat() {
+  if (portalChatInit) return;
+  portalChatInit = true;
+  portalChatHistory = [{ role: 'ai', text: 'Hola ' + (USER.nombre || '') + ', soy Dr. IA. Puedo orientarte sobre síntomas, cuidados post-operatorios y dudas generales. ¿En qué puedo ayudarte?' }];
+  renderPortalChat();
+}
+
+function renderPortalChat() {
+  const msgs = document.getElementById('pchatMsgs');
+  if (!msgs) return;
+  msgs.innerHTML = portalChatHistory.map(m => {
+    const cls   = m.role === 'user' ? 'user' : m.role === 'dent' ? 'dent' : 'ai';
+    const sender = m.role === 'dent' ? '<div class="pchat-sender">Dr. Tratante</div>' : m.role === 'ai' ? '<div class="pchat-sender">Dr. IA</div>' : '';
+    return `<div class="pchat-bubble ${cls}">${sender}${m.text}</div>`;
+  }).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+const PORTAL_AI_RESPONSES = [
+  { re: /dolor|duele|molest/i,   r: 'Si el dolor es intenso o no cede con analgésicos comunes, te recomiendo contactar a tu dentista tratante. ¿El dolor es constante o aparece solo con ciertos estímulos?' },
+  { re: /sangr/i,                r: 'El sangrado leve post-operatorio es normal en las primeras 24 h. Si es abundante o no cede con presión suave, contacta a tu clínica de inmediato.' },
+  { re: /fiebre|temperatura/i,   r: 'Fiebre después de un procedimiento dental puede indicar infección. Si supera los 38°C y persiste más de 24 h, busca atención de urgencia.' },
+  { re: /hora|cita|reserva/i,    r: 'Puedes ver tus citas en la pestaña "Mis citas". Para agendar una nueva, presiona "+ Agendar nueva cita".' },
+  { re: /medicamento|antibiótico|ibuprofeno|paracetamol/i, r: 'Los medicamentos siempre deben indicarlos el profesional tratante. No tome antibióticos sin receta — la resistencia bacteriana es un problema real.' },
+];
+
+function sendPortalMsg() {
+  const input = document.getElementById('pchatInput');
+  const text  = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  portalChatHistory.push({ role: 'user', text });
+  renderPortalChat();
+
+  // Check if should escalate to dentist (urgency keywords)
+  const urgente = /emergencia|urgencia|no puedo|no aguanto|accidente|golpe|fractura|sangrado fuerte/i.test(text);
+  setTimeout(() => {
+    if (urgente) {
+      portalChatHistory.push({ role: 'ai', text: 'Esto podría requerir atención urgente. He notificado a tu dentista tratante para que revise tu mensaje. Por favor, si el dolor es severo, llama directamente a la clínica o ve a urgencias.' });
+      setTimeout(() => {
+        portalChatHistory.push({ role: 'dent', text: 'Hola, vi tu mensaje. Cuéntame más sobre lo que está pasando para orientarte correctamente.' });
+        renderPortalChat();
+      }, 3500);
+    } else {
+      const match = PORTAL_AI_RESPONSES.find(x => x.re.test(text));
+      portalChatHistory.push({ role: 'ai', text: match ? match.r : 'Entiendo tu consulta. Para darte una orientación precisa, recuerda que soy una IA y no reemplazo el diagnóstico de tu dentista. ¿Hay algo más específico que quieras saber?' });
+    }
+    renderPortalChat();
+  }, 900);
 }
 
 // ════════════════════════════════════════════════════════
