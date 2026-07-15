@@ -1006,7 +1006,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       </div>
       <div class="p-card-arr">›</div>
     </div>
-    <div class="p-card" onclick="go('sDentistas')">
+    <div class="p-card" onclick="window._dentBack='portal';go('sDentistas')">
       <div class="p-card-ic" style="background:#F0FDF4">🔍</div>
       <div class="p-card-body">
         <div class="p-card-title">Reservar hora</div>
@@ -1052,7 +1052,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     <div class="p-sub-title">Mis citas</div>
   </div>
   <div class="p-scroll">
-    <div class="p-card primary" onclick="go('sDentistas')" style="margin-bottom:20px">
+    <div class="p-card primary" onclick="window._dentBack='portal';go('sDentistas')" style="margin-bottom:20px">
       <div class="p-card-ic" style="background:rgba(255,255,255,.15)">🔍</div>
       <div class="p-card-body">
         <div class="p-card-title">Reservar nueva hora</div>
@@ -1314,7 +1314,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 <!-- ══ DENTISTAS ══ -->
 <div class="screen" id="sDentistas">
   <div class="dent-header">
-    <button class="back-ico" onclick="go('sResult')" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
+    <button class="back-ico" onclick="dentBack()" style="position:absolute;top:56px;left:20px;background:transparent;box-shadow:none;font-size:22px;">←</button>
     <h2 style="padding-left:36px" id="dentTitle">Especialistas disponibles</h2>
     <p style="padding-left:36px">Santiago · Ordenados por disponibilidad</p>
   </div>
@@ -1658,7 +1658,15 @@ async function doRegister() {
   }
 }
 
+function dentBack() {
+  const dest = window._dentBack || 'sResult';
+  if (dest === 'portal') { openPortal(); }
+  else if (dest === 'sDirect') { go('sDirect'); }
+  else { go(dest); }
+}
+
 function goToDentistas() {
+  window._dentBack = 'sResult';
   go('sDentistas');
 }
 
@@ -1681,6 +1689,7 @@ async function submitGuestForm() {
     window._pendingTriage = null;
   }
 
+  window._dentBack = 'sResult';
   go('sDentistas');
 }
 
@@ -2364,8 +2373,7 @@ function directGo(specName) {
         </div>
       </div>`;
   });
-  // Override back button to go to sDirect
-  document.getElementById('dentTitle').closest('.dent-header').querySelector('.back-ico').onclick = () => go('sDirect');
+  window._dentBack = 'sDirect';
   go('sDentistas');
 }
 
