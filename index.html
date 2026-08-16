@@ -2006,7 +2006,10 @@ async function ldSubmit() {
       body: JSON.stringify({ name, email, role: ldRol }),
     });
     if (r.status === 409) throw new Error('Este email ya está registrado');
-    if (!r.ok) throw new Error('Error al registrar');
+    if (!r.ok) {
+      const body = await r.json().catch(() => ({}));
+      throw new Error(body.message || body.error || `Error ${r.status}`);
+    }
     document.getElementById('ldForm').style.display = 'none';
     const sc = document.getElementById('ldSuccess');
     sc.style.display = 'flex';
