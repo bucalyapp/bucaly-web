@@ -12,6 +12,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/patients', require('./routes/patients'));
 app.use('/api/triages', require('./routes/triages'));
 app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/analyze', require('./routes/analyze'));
+app.use('/api/waitlist', require('./routes/waitlist'));
 
 // Health check
 app.get('/health', (_, res) => res.json({ status: 'ok', version: '1.0.0' }));

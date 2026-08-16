@@ -103,6 +103,121 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .screen { display: none; position: absolute; inset: 0; overflow: hidden; }
 .screen.active { display: flex; flex-direction: column; }
 
+/* ─── LANDING PRE-LAUNCH ──────────────────────────────── */
+#sLanding {
+  background: #070E1A;
+  flex-direction: column; align-items: center;
+  overflow-y: auto; overflow-x: hidden;
+}
+.ld-glow {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(45,212,191,0.13) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 85% 95%, rgba(139,92,246,0.10) 0%, transparent 55%);
+  animation: ldBreathe 8s ease-in-out infinite;
+}
+@keyframes ldBreathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.04)} }
+@media(prefers-reduced-motion:reduce){.ld-glow{animation:none}}
+.ld-wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 440px;
+  padding: 0 20px 60px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.ld-logo-bar { display:flex;align-items:center;gap:10px;padding:36px 0 0; }
+.ld-logo-tooth {
+  width:40px;height:40px;
+  background:linear-gradient(135deg,#1A8C80,#2DD4BF);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 0 24px rgba(45,212,191,.35);
+}
+.ld-logo-name { font-size:22px;font-weight:800;letter-spacing:-.04em;color:#EFF6FF; }
+.ld-badge {
+  margin-top:20px;
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(45,212,191,.10);border:1px solid rgba(45,212,191,.25);
+  border-radius:100px;padding:6px 14px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;color:#2DD4BF;text-transform:uppercase;
+}
+.ld-badge-dot { width:7px;height:7px;border-radius:50%;background:#2DD4BF;animation:ldPulse 2s ease-in-out infinite;flex-shrink:0; }
+@keyframes ldPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+.ld-title {
+  margin-top:18px;
+  font-size:clamp(30px,8vw,40px);font-weight:800;letter-spacing:-.04em;
+  line-height:1.08;text-wrap:balance;text-align:center;color:#EFF6FF;
+}
+.ld-title em {
+  font-style:normal;
+  background:linear-gradient(90deg,#2DD4BF,#7DD3FA);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.ld-sub {
+  margin-top:12px;font-size:14px;line-height:1.6;color:#94A3B8;
+  text-align:center;max-width:320px;
+}
+.ld-rol-label { margin-top:36px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#64748B;align-self:flex-start; }
+.ld-tabs { margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%; }
+.ld-tab {
+  height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border-radius:16px;border:2px solid rgba(255,255,255,.07);background:#0D1B2E;
+  cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;
+}
+.ld-tab .lt-ic { font-size:22px; }
+.ld-tab .lt-lbl { font-size:13px;font-weight:700;color:#64748B;transition:color .2s; }
+.ld-tab.ldt-pac { border-color:#2DD4BF;background:rgba(45,212,191,.10);box-shadow:0 0 20px rgba(45,212,191,.12); }
+.ld-tab.ldt-pac .lt-lbl { color:#2DD4BF; }
+.ld-tab.ldt-doc { border-color:#8B5CF6;background:rgba(139,92,246,.14);box-shadow:0 0 20px rgba(139,92,246,.18); }
+.ld-tab.ldt-doc .lt-lbl { color:#8B5CF6; }
+.ld-benefits { margin-top:16px;width:100%;display:flex;flex-direction:column;gap:8px;min-height:192px; }
+.ld-benefit {
+  display:flex;align-items:flex-start;gap:12px;
+  background:#0D1B2E;border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:12px 14px;
+  animation:ldFadeUp .22s ease both;
+}
+@keyframes ldFadeUp { from{opacity:0;transform:translateY(7px)} to{opacity:1;transform:translateY(0)} }
+.ld-benefit .lb-ic { font-size:19px;flex-shrink:0;margin-top:1px; }
+.ld-benefit .lb-title { font-size:13px;font-weight:700;color:#EFF6FF;line-height:1.3; }
+.ld-benefit .lb-desc { font-size:12px;color:#94A3B8;line-height:1.45;margin-top:2px; }
+.ld-divider { margin-top:28px;width:100%;display:flex;align-items:center;gap:12px; }
+.ld-divider hr { flex:1;border:none;border-top:1px solid rgba(255,255,255,.07); }
+.ld-divider span { font-size:12px;color:#64748B;white-space:nowrap; }
+.ld-form { margin-top:18px;width:100%;background:#0D1B2E;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px 18px;display:flex;flex-direction:column;gap:12px; }
+.ld-inp {
+  width:100%;background:#070E1A;border:1.5px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:13px 15px;font-size:15px;color:#EFF6FF;
+  font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;
+}
+.ld-inp::placeholder { color:#2D4155; }
+.ld-inp:focus { border-color:#2DD4BF; }
+.ld-inp.ld-inp-doc:focus { border-color:#8B5CF6; }
+.ld-btn-submit {
+  width:100%;padding:16px;border:none;border-radius:14px;
+  font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;
+  letter-spacing:-.01em;transition:opacity .15s,transform .1s;
+}
+.ld-btn-submit:active { transform:scale(.98);opacity:.9; }
+.ld-btn-pac { background:linear-gradient(135deg,#1A8C80,#2DD4BF);color:#fff; }
+.ld-btn-doc { background:linear-gradient(135deg,#5B21B6,#8B5CF6);color:#fff; }
+.ld-err { font-size:12px;color:#F87171;text-align:center;display:none; }
+.ld-success { display:none;flex-direction:column;align-items:center;text-align:center;padding:28px 0;gap:10px; }
+.ld-success-ic { font-size:50px; }
+.ld-success-title { font-size:23px;font-weight:800;letter-spacing:-.03em;color:#EFF6FF; }
+.ld-success-sub { font-size:14px;color:#94A3B8;line-height:1.6;max-width:290px; }
+.ld-beta-sep { margin-top:24px;width:100%;display:flex;align-items:center;gap:12px; }
+.ld-beta-sep hr { flex:1;border:none;border-top:1px solid rgba(255,255,255,.07); }
+.ld-beta-sep span { font-size:11px;color:#64748B;white-space:nowrap; }
+.ld-beta-btn {
+  margin-top:14px;width:100%;padding:15px;
+  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:14px;color:#94A3B8;font-size:15px;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:all .18s;
+}
+.ld-beta-btn:hover,.ld-beta-btn:active { background:rgba(255,255,255,.09);color:#EFF6FF; }
+.ld-count { margin-top:16px;text-align:center;font-size:12.5px;color:#64748B; }
+.ld-count strong { color:#94A3B8;font-weight:700; }
+.ld-footer { margin-top:36px;font-size:11.5px;color:#374151;text-align:center;line-height:1.6; }
+
 /* ─── ENTRY / LOGIN ────────────────────────────────────── */
 #sEntry, #sNewPatient, #sLogin {
   background: linear-gradient(160deg, #0B1F35 0%, #0D2B45 60%, #0A3D38 100%);
@@ -642,6 +757,53 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .sym-card-ai .sub { color: rgba(255,255,255,.6) !important; font-size: 11.5px !important; }
 .sym-card-ai:active { transform: scale(.98); }
 
+.sym-card-photo {
+  background: linear-gradient(135deg, #5B21B6, #7C3AED) !important;
+  border-color: transparent !important;
+  flex-direction: column !important; text-align: center !important;
+  padding: 14px 16px !important; gap: 4px !important;
+  cursor: pointer;
+}
+.sym-card-photo .ic { font-size: 28px !important; flex-shrink: 0; }
+.sym-card-photo .lbl { color: #fff !important; font-size: 12px !important; font-weight: 700 !important; }
+.sym-card-photo .sub { color: rgba(255,255,255,.7) !important; font-size: 10px !important; }
+.sym-card-photo:active { transform: scale(.96); }
+/* Estado con foto */
+.sym-card-photo.has-photo {
+  flex-direction: row !important; text-align: left !important;
+  padding: 10px 14px !important; gap: 10px !important;
+  grid-column: 1/-1;
+}
+.sym-card-photo.has-photo .photo-thumb {
+  width: 54px; height: 54px; object-fit: cover; border-radius: 10px; flex-shrink: 0; border: 2px solid rgba(255,255,255,.3);
+}
+.sym-card-photo.has-photo .photo-info { flex: 1; min-width: 0; }
+.sym-card-photo.has-photo .photo-info .lbl { font-size: 13px !important; text-align: left !important; }
+.sym-card-photo.has-photo .photo-info .sub { font-size: 11px !important; text-align: left !important; }
+.sym-photo-remove-card {
+  background: rgba(255,255,255,.2); border: none; border-radius: 20px; color: #fff;
+  font-size: 11px; font-weight: 700; padding: 5px 11px; cursor: pointer;
+  font-family: 'Inter', sans-serif; flex-shrink: 0;
+}
+/* Card resultado IA en grid */
+.sym-ai-result-card {
+  grid-column: 1/-1;
+  background: var(--white); border: 2px solid #7C3AED; border-radius: 14px;
+  padding: 14px 15px; display: flex; flex-direction: column; gap: 8px;
+}
+.sym-ai-result-card .ai-header { display: flex; align-items: center; gap: 8px; }
+.sym-ai-result-card .ai-badge {
+  margin-left: auto; font-size: 11px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+}
+.sym-ai-result-card .ai-text {
+  font-size: 12.5px; color: var(--navy); line-height: 1.55;
+  white-space: pre-wrap; max-height: 200px; overflow-y: auto;
+}
+.sym-ai-result-card .ai-disclaimer {
+  font-size: 10.5px; color: var(--grey); font-style: italic; margin: 0;
+}
+
 /* ─── CHAT SCREEN ─────────────────────────────────────── */
 #sChat {
   background: #F0F2F5; flex-direction: column;
@@ -847,7 +1009,51 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 </div>
 
 <!-- ══ ENTRY ══ -->
-<div class="screen active" id="sEntry">
+<div class="screen active" id="sLanding">
+  <div class="ld-glow"></div>
+  <div class="ld-wrap">
+    <div class="ld-logo-bar">
+      <div class="ld-logo-tooth">🦷</div>
+      <span class="ld-logo-name">Bucaly</span>
+    </div>
+    <div class="ld-badge"><span class="ld-badge-dot"></span>Próximamente</div>
+    <h1 class="ld-title">La atención dental<br><em>que merecías.</em><br>Llega pronto.</h1>
+    <p class="ld-sub">Triaje dental inteligente, en minutos. Regístrate y sé parte del lanzamiento exclusivo — con beneficios reales.</p>
+
+    <p class="ld-rol-label">Soy…</p>
+    <div class="ld-tabs">
+      <div class="ld-tab ldt-pac" id="ldTabPac" onclick="ldSetRol('paciente')">
+        <span class="lt-ic">🙋</span><span class="lt-lbl">Paciente</span>
+      </div>
+      <div class="ld-tab" id="ldTabDoc" onclick="ldSetRol('dentista')">
+        <span class="lt-ic">🦷</span><span class="lt-lbl">Dentista</span>
+      </div>
+    </div>
+    <div class="ld-benefits" id="ldBenefits"></div>
+
+    <div class="ld-divider"><hr><span>Inscríbete y ten acceso a la beta</span><hr></div>
+
+    <div class="ld-form" id="ldForm">
+      <input class="ld-inp" id="ldName"  type="text"  placeholder="Tu nombre" autocomplete="given-name">
+      <input class="ld-inp" id="ldEmail" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" inputmode="email">
+      <button class="ld-btn-submit ld-btn-pac" id="ldBtnSubmit" onclick="ldSubmit()">Reservar mi lugar →</button>
+      <p class="ld-err" id="ldErr"></p>
+    </div>
+
+    <div class="ld-success" id="ldSuccess">
+      <div class="ld-success-ic">🎉</div>
+      <p class="ld-success-title">¡Estás dentro!</p>
+      <p class="ld-success-sub" id="ldSuccessMsg">Te avisaremos cuando Bucaly esté listo. Eres parte de algo que va a cambiar la odontología.</p>
+      <button class="ld-btn-submit ld-btn-pac" id="ldBtnApp" style="margin-top:8px" onclick="go('sEntry')">Probar la app →</button>
+    </div>
+
+    <p class="ld-count" id="ldCount">Únete a <strong id="ldCountNum">…</strong> personas que ya reservaron</p>
+
+    <p class="ld-footer">Bucaly · Chile 🇨🇱 · Tu información nunca será compartida.</p>
+  </div>
+</div>
+
+<div class="screen" id="sEntry">
   <div class="entry-logo-sm">
     <svg viewBox="0 0 80 80" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -1208,6 +1414,35 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     <div class="sym-card sym-card-ai" onclick="openChat()" style="grid-column:1/-1">
       <span class="ic">👨‍⚕️</span><span class="lbl">Conversa con Dr. IA</span><span class="sub">Descríbelo con tus palabras o agrega una foto — la IA te orienta</span>
     </div>
+
+    <!-- Card foto IA — estado sin foto -->
+    <div class="sym-card sym-card-photo" id="photoCard" onclick="document.getElementById('symPhoto').click()" style="grid-column:1/-1">
+      <span class="ic">📷</span>
+      <span class="lbl">Analizar foto con IA</span>
+      <span class="sub">Diagnóstico presuntivo con evidencia científica</span>
+      <input type="file" id="symPhoto" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+    </div>
+
+    <!-- Card foto IA — estado con foto (oculto hasta que se suba) -->
+    <div class="sym-card sym-card-photo has-photo" id="photoCardFilled" style="display:none">
+      <img class="photo-thumb" id="photoThumb" src="" alt="foto">
+      <div class="photo-info">
+        <span class="lbl">📷 Foto adjunta</span>
+        <span class="sub" id="photoCardSub">Analizando con IA…</span>
+      </div>
+      <button class="sym-photo-remove-card" onclick="removePhoto(event)">Quitar</button>
+    </div>
+
+    <!-- Resultado análisis IA -->
+    <div class="sym-ai-result-card" id="symAiResult" style="display:none">
+      <div class="ai-header">
+        <span style="font-size:18px">🤖</span>
+        <span style="font-size:13px;font-weight:700;color:#7C3AED">Análisis IA Presuntivo</span>
+        <span class="ai-badge" id="symAiUrgency"></span>
+      </div>
+      <div class="ai-text" id="symAiText"></div>
+      <p class="ai-disclaimer">Análisis orientativo. No reemplaza la evaluación clínica presencial.</p>
+    </div>
   </div>
   <div class="sym-footer">
     <button class="btn-main" id="btnSymNext" onclick="startFlow()">Continuar →</button>
@@ -1460,7 +1695,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     splash.classList.add('fade-out');
     setTimeout(() => {
       splash.style.display = 'none';
-      if (loadSession()) openPortal(); else go('sEntry');
+      if (loadSession()) openPortal(); else go('sLanding');
     }, 400);
   }, 2350);
 })();
@@ -1711,6 +1946,97 @@ function goHome() {
   if (!USER.isGuest) { openPortal(); } else { go('sWelcome'); }
 }
 
+// ════════════════════════════════════════════════════════
+//  LANDING PRE-LAUNCH
+// ════════════════════════════════════════════════════════
+const LD_SB_URL  = 'https://sgilnlyodlrhnemepsnb.supabase.co';
+const LD_SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnaWxubHlvZGxyaG5lbWVwc25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyODczMDMsImV4cCI6MjA5Nzg2MzMwM30.0IxZsFVecfuEZgIiibqBNUp6I7Cb3vnDK-M6mmvaTF8';
+const LD_BENEFITS = {
+  paciente: [
+    { ic:'⚡', title:'Acceso anticipado gratuito', desc:'Entra a Bucaly antes que nadie, sin costo.' },
+    { ic:'🤖', title:'Triaje dental con IA', desc:'Identifica tu problema en minutos desde tu celular.' },
+    { ic:'📅', title:'Prioridad en agenda', desc:'Preferencia para reservar con dentistas verificados.' },
+    { ic:'💎', title:'Beneficios exclusivos', desc:'Descuentos y ventajas solo para early adopters.' },
+  ],
+  dentista: [
+    { ic:'🏆', title:'Perfil verificado desde el día uno', desc:'Aparece entre los primeros dentistas de la plataforma.' },
+    { ic:'👥', title:'Sin comisión los primeros 3 meses', desc:'Recibe pacientes derivados sin costo durante el lanzamiento.' },
+    { ic:'🤖', title:'IA diagnóstica incluida', desc:'Análisis de imágenes y triaje inteligente para tu consulta.' },
+    { ic:'📊', title:'Panel de gestión simplificado', desc:'Agenda, historial y pacientes en un solo lugar.' },
+  ],
+};
+let ldRol = 'paciente';
+
+function ldSetRol(rol) {
+  ldRol = rol;
+  const isPac = rol === 'paciente';
+  document.getElementById('ldTabPac').className = 'ld-tab' + (isPac ? ' ldt-pac' : '');
+  document.getElementById('ldTabDoc').className = 'ld-tab' + (!isPac ? ' ldt-doc' : '');
+  const btn = document.getElementById('ldBtnSubmit');
+  btn.className = 'ld-btn-submit ' + (isPac ? 'ld-btn-pac' : 'ld-btn-doc');
+  document.getElementById('ldEmail').className = 'ld-inp' + (!isPac ? ' ld-inp-doc' : '');
+  ldRenderBenefits(rol);
+}
+
+function ldRenderBenefits(rol) {
+  const c = document.getElementById('ldBenefits');
+  c.innerHTML = '';
+  LD_BENEFITS[rol].forEach((b, i) => {
+    const el = document.createElement('div');
+    el.className = 'ld-benefit';
+    el.style.animationDelay = (i * 45) + 'ms';
+    el.innerHTML = `<span class="lb-ic">${b.ic}</span><div><p class="lb-title">${b.title}</p><p class="lb-desc">${b.desc}</p></div>`;
+    c.appendChild(el);
+  });
+}
+
+async function ldSubmit() {
+  const name  = document.getElementById('ldName').value.trim();
+  const email = document.getElementById('ldEmail').value.trim();
+  const btn   = document.getElementById('ldBtnSubmit');
+  const err   = document.getElementById('ldErr');
+  err.style.display = 'none';
+  if (!name)  { err.textContent = 'Ingresa tu nombre'; err.style.display = 'block'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Ingresa un correo válido'; err.style.display = 'block'; return; }
+  btn.textContent = 'Guardando…'; btn.disabled = true;
+  try {
+    const r = await fetch(`${LD_SB_URL}/rest/v1/waitlist`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey':LD_SB_ANON, 'Authorization':'Bearer '+LD_SB_ANON, 'Prefer':'return=minimal' },
+      body: JSON.stringify({ name, email, role: ldRol }),
+    });
+    if (r.status === 409) throw new Error('Este email ya está registrado');
+    if (!r.ok) throw new Error('Error al registrar');
+    document.getElementById('ldForm').style.display = 'none';
+    const sc = document.getElementById('ldSuccess');
+    sc.style.display = 'flex';
+    if (ldRol === 'dentista') {
+      document.getElementById('ldSuccessMsg').textContent = 'Te contactaremos pronto para verificar tu perfil y darte acceso prioritario.';
+      document.getElementById('ldBtnApp').className = 'ld-btn-submit ld-btn-doc';
+    }
+    ldLoadCount();
+  } catch(e) {
+    err.textContent = e.message || 'Sin conexión. Intenta de nuevo.';
+    err.style.display = 'block';
+    btn.textContent = 'Reservar mi lugar →'; btn.disabled = false;
+  }
+}
+
+async function ldLoadCount() {
+  try {
+    const r = await fetch(`${LD_SB_URL}/rest/v1/waitlist?select=id`, {
+      headers: { 'apikey':LD_SB_ANON, 'Authorization':'Bearer '+LD_SB_ANON, 'Prefer':'count=exact', 'Range':'0-0' },
+    });
+    const match = (r.headers.get('content-range') || '').match(/\/(\d+)$/);
+    const n = match ? parseInt(match[1]) + 38 : 50;
+    document.getElementById('ldCountNum').textContent = n.toLocaleString('es-CL');
+  } catch { document.getElementById('ldCountNum').textContent = '+50'; }
+}
+
+// Init landing
+ldRenderBenefits('paciente');
+ldLoadCount();
+
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
@@ -1735,15 +2061,60 @@ function handlePhoto(input) {
   const reader = new FileReader();
   reader.onload = e => {
     ST.photo = e.target.result;
+    // Swap cards
+    document.getElementById('photoCard').style.display = 'none';
+    const filled = document.getElementById('photoCardFilled');
+    filled.style.display = 'flex';
     document.getElementById('photoThumb').src = e.target.result;
-    document.getElementById('photoPreview').style.display = 'flex';
-    // Enable continue even without a card selected if there's a photo + description
+    document.getElementById('photoCardSub').textContent = 'Analizando con IA…';
     if (!ST.sym) {
       ST.sym = 'otro'; ST.rama = 'dental';
       document.getElementById('btnSymNext').classList.add('ready');
     }
+    analyzeSymPhoto(e.target.result, file.type);
   };
   reader.readAsDataURL(file);
+}
+
+function removePhoto(evt) {
+  if (evt) evt.stopPropagation();
+  ST.photo = null;
+  document.getElementById('symPhoto').value = '';
+  document.getElementById('photoCardFilled').style.display = 'none';
+  document.getElementById('photoCard').style.display = '';
+  document.getElementById('symAiResult').style.display = 'none';
+}
+
+async function analyzeSymPhoto(dataUrl, mimeType) {
+  const resultBox = document.getElementById('symAiResult');
+  const textEl = document.getElementById('symAiText');
+  const urgEl = document.getElementById('symAiUrgency');
+  const subEl = document.getElementById('photoCardSub');
+  resultBox.style.display = 'none';
+  try {
+    const base64 = dataUrl.split(',')[1];
+    const resp = await fetch('https://api-production-37bd.up.railway.app/api/analyze/photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64, mimeType: mimeType || 'image/jpeg' })
+    });
+    if (!resp.ok) throw new Error('Error ' + resp.status);
+    const data = await resp.json();
+    subEl.textContent = 'Análisis listo — ver resultado abajo';
+    textEl.textContent = data.diagnosis || 'Sin respuesta';
+    const u = data.urgency || 'MODERADO';
+    urgEl.textContent = u;
+    if (u === 'URGENTE') { urgEl.style.background = '#FEE2E2'; urgEl.style.color = '#991B1B'; }
+    else if (u === 'ELECTIVO') { urgEl.style.background = '#DCFCE7'; urgEl.style.color = '#166534'; }
+    else { urgEl.style.background = '#FEF9C3'; urgEl.style.color = '#854D0E'; }
+    resultBox.style.display = 'flex';
+    if (u === 'URGENTE') ST.urgente = true;
+  } catch(err) {
+    subEl.textContent = 'No se pudo analizar — continúa igual';
+    textEl.textContent = 'No se pudo conectar con el servicio de análisis. Puedes continuar el triaje normalmente.';
+    urgEl.textContent = '';
+    resultBox.style.display = 'flex';
+  }
 }
 
 function removePhoto() {
