@@ -813,52 +813,102 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   background: #EDE9FE; border-color: #7C3AED; color: #5B21B6;
 }
 /* ── Scan overlay ── */
-.scan-wrapper {
-  position: relative; width: 160px; height: 180px;
+.scan-scene {
+  position: relative; width: 220px; height: 240px;
+  display: flex; align-items: center; justify-content: center;
 }
+/* Orbiting rings */
+.orbit {
+  position: absolute; border-radius: 50%;
+  border: 1.5px dashed rgba(45,212,191,.35);
+}
+.orbit-1 {
+  width: 180px; height: 210px;
+  animation: spin1 6s linear infinite;
+}
+.orbit-2 {
+  width: 220px; height: 240px;
+  border-color: rgba(139,92,246,.3);
+  animation: spin2 9s linear infinite reverse;
+}
+@keyframes spin1 { to { transform: rotate(360deg); } }
+@keyframes spin2 { to { transform: rotate(360deg); } }
+/* Orbital dots */
+.orb-dot {
+  position: absolute; width: 7px; height: 7px;
+  border-radius: 50%; background: #2DD4BF;
+  box-shadow: 0 0 8px 2px rgba(45,212,191,.9);
+}
+.d1 { animation: orbit1a 6s linear infinite; }
+.d2 { animation: orbit1a 6s linear infinite; animation-delay: -3s; }
+.d3 { animation: orbit2a 9s linear infinite reverse; background:#8B5CF6; box-shadow:0 0 8px 2px rgba(139,92,246,.9); }
+.d4 { animation: orbit2a 9s linear infinite reverse; animation-delay: -4.5s; background:#8B5CF6; box-shadow:0 0 8px 2px rgba(139,92,246,.9); }
+@keyframes orbit1a {
+  from { transform: rotate(0deg) translateX(93px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(93px) rotate(-360deg); }
+}
+@keyframes orbit2a {
+  from { transform: rotate(0deg) translateX(112px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(112px) rotate(-360deg); }
+}
+/* Tooth */
 .scan-tooth {
-  width: 160px; height: 180px; display: block;
-  filter: drop-shadow(0 0 18px rgba(45,212,191,.5));
-  animation: toothPulse 2s ease-in-out infinite;
+  position: relative; width: 120px; height: 160px; z-index: 2;
+  animation: toothPulse 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(45,212,191,.55));
 }
 @keyframes toothPulse {
-  0%,100% { filter: drop-shadow(0 0 12px rgba(45,212,191,.4)); }
-  50%      { filter: drop-shadow(0 0 28px rgba(45,212,191,.9)); }
+  0%,100% { filter: drop-shadow(0 0 10px rgba(45,212,191,.4)); }
+  50%      { filter: drop-shadow(0 0 26px rgba(45,212,191,.95)) drop-shadow(0 0 40px rgba(45,212,191,.3)); }
 }
-.scan-line {
-  position: absolute; left: 0; right: 0; top: 10px;
-  height: 3px; background: linear-gradient(90deg, transparent, #2DD4BF, transparent);
-  border-radius: 2px;
-  animation: scanMove 1.8s ease-in-out infinite;
-  box-shadow: 0 0 12px 3px rgba(45,212,191,.6);
+/* Scan beam */
+.scan-beam {
+  position: absolute; left: 20px; right: 20px; height: 2px; z-index: 3;
+  background: linear-gradient(90deg, transparent, #2DD4BF 30%, #fff 50%, #2DD4BF 70%, transparent);
+  box-shadow: 0 0 10px 3px rgba(45,212,191,.8), 0 0 20px 6px rgba(45,212,191,.3);
+  animation: beamSweep 2s cubic-bezier(.45,0,.55,1) infinite;
 }
-@keyframes scanMove {
-  0%   { top: 10px; opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { top: 165px; opacity: 0; }
+.scan-beam-trail {
+  position: absolute; left: 20px; right: 20px; height: 60px; z-index: 3;
+  background: linear-gradient(180deg, rgba(45,212,191,.18) 0%, transparent 100%);
+  animation: beamSweep 2s cubic-bezier(.45,0,.55,1) infinite;
+  animation-delay: 0s;
 }
-.scan-glow {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(45,212,191,.07) 100%);
-  border-radius: 8px;
-  animation: glowPulse 1.8s ease-in-out infinite;
+@keyframes beamSweep {
+  0%   { top: 10px;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 220px; opacity: 0; }
 }
-@keyframes glowPulse {
-  0%,100% { opacity: .5; } 50% { opacity: 1; }
+/* HUD corners */
+.hud-corner {
+  position: absolute; width: 16px; height: 16px; z-index: 4;
 }
+.hc-tl { top: 8px;  left: 28px;  border-top: 2px solid #2DD4BF; border-left: 2px solid #2DD4BF; }
+.hc-tr { top: 8px;  right: 28px; border-top: 2px solid #2DD4BF; border-right: 2px solid #2DD4BF; }
+.hc-bl { bottom: 8px; left: 28px;  border-bottom: 2px solid #2DD4BF; border-left: 2px solid #2DD4BF; }
+.hc-br { bottom: 8px; right: 28px; border-bottom: 2px solid #2DD4BF; border-right: 2px solid #2DD4BF; }
+/* Text */
+.scan-label-top {
+  color: #2DD4BF; font-size: 12px; font-weight: 800;
+  letter-spacing: .15em; margin: 0; text-transform: uppercase;
+}
+.scan-blink { animation: blink .9s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+/* Button */
 .scan-btn {
-  background: #2DD4BF; color: #070E1A; border: none; border-radius: 50px;
-  padding: 14px 32px; font-size: 15px; font-weight: 800; cursor: pointer;
+  background: linear-gradient(135deg, #2DD4BF, #0EA5E9);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 16px 36px; font-size: 16px; font-weight: 800; cursor: pointer;
   font-family: 'Inter', sans-serif; touch-action: manipulation;
-  animation: btnBounce 1.5s ease-in-out infinite;
-  box-shadow: 0 0 20px rgba(45,212,191,.4);
+  animation: btnPulse 1.8s ease-in-out infinite;
+  box-shadow: 0 0 24px rgba(45,212,191,.5), 0 4px 20px rgba(0,0,0,.4);
 }
-@keyframes btnBounce {
-  0%,100% { transform: scale(1); box-shadow: 0 0 20px rgba(45,212,191,.4); }
-  50%      { transform: scale(1.04); box-shadow: 0 0 30px rgba(45,212,191,.7); }
+@keyframes btnPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(45,212,191,.5), 0 4px 20px rgba(0,0,0,.4); transform: scale(1); }
+  50%      { box-shadow: 0 0 36px rgba(45,212,191,.8), 0 4px 28px rgba(0,0,0,.5); transform: scale(1.03); }
 }
-.scan-btn:active { transform: scale(.94) !important; animation: none; }
+.scan-btn:active { transform: scale(.93) !important; animation: none; box-shadow: none; }
 #symStep2 { display: none; }
 /* Card resultado IA en grid */
 .sym-ai-result-card {
@@ -1452,22 +1502,56 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 </div>
 
 <!-- ══ SCAN OVERLAY ══ -->
-<div id="scanOverlay" style="display:none;position:fixed;inset:0;z-index:300;background:#070E1A;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:32px 24px">
-  <div class="scan-wrapper">
-    <svg class="scan-tooth" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 100 C20 100 14 72 11 52 C8 32 10 14 20 8 C27 4 35 4 42 4 C48 4 54 4 60 4 C66 4 72 4 78 4 C85 4 93 4 100 8 C110 14 112 32 109 52 C106 72 100 100 100 100 C100 108 96 120 90 120 C84 120 80 112 76 100 C72 88 68 80 60 80 C52 80 48 88 44 100 C40 112 36 120 30 120 C24 120 20 108 20 100 Z" fill="none" stroke="#2DD4BF" stroke-width="3" stroke-linejoin="round"/>
-      <ellipse cx="42" cy="18" rx="12" ry="7" fill="rgba(45,212,191,0.2)" transform="rotate(-25 42 18)"/>
+<div id="scanOverlay" style="display:none;position:fixed;inset:0;z-index:300;background:#060D18;flex-direction:column;align-items:center;justify-content:center;gap:32px;padding:32px 24px">
+  <div class="scan-scene">
+    <!-- Orbiting rings -->
+    <div class="orbit orbit-1"></div>
+    <div class="orbit orbit-2"></div>
+    <!-- Particles on outer orbit -->
+    <div class="orb-dot d1"></div>
+    <div class="orb-dot d2"></div>
+    <div class="orb-dot d3"></div>
+    <div class="orb-dot d4"></div>
+    <!-- Tooth SVG with anatomy -->
+    <svg class="scan-tooth" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pulpGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,160,80,0.7)"/>
+          <stop offset="100%" stop-color="rgba(255,100,50,0.3)"/>
+        </linearGradient>
+        <filter id="toothGlow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Root canals -->
+      <path d="M46 96 Q47 128 47 150 Q49 158 52 158 Q55 158 56 150 Q56 128 57 100" fill="url(#pulpGrad)" opacity="0.7"/>
+      <path d="M74 96 Q73 126 73 146 Q71 154 68 154 Q65 154 64 146 Q64 126 63 100" fill="url(#pulpGrad)" opacity="0.6"/>
+      <!-- Pulp chamber -->
+      <path d="M46 46 Q46 92 60 96 Q74 92 74 46 Q69 28 60 28 Q51 28 46 46Z" fill="rgba(255,140,60,0.45)"/>
+      <!-- Dentin layer -->
+      <path d="M22 108 C22 108 14 76 11 54 C8 32 10 12 22 6 C30 2 38 0 46 0 Q60 0 74 0 C82 0 90 2 98 6 C110 12 112 32 109 54 C106 76 98 108 98 108 C98 118 94 132 88 132 Q80 132 74 110 Q68 88 60 88 Q52 88 46 110 Q40 132 32 132 Q24 132 22 108Z" fill="rgba(45,212,191,0.06)" stroke="rgba(45,212,191,0.25)" stroke-width="1.2"/>
+      <!-- Enamel outer -->
+      <path d="M22 108 C22 108 14 76 11 54 C8 32 10 12 22 6 C30 2 38 0 46 0 Q60 0 74 0 C82 0 90 2 98 6 C110 12 112 32 109 54 C106 76 98 108 98 108 C98 118 94 132 88 132 Q80 132 74 110 Q68 88 60 88 Q52 88 46 110 Q40 132 32 132 Q24 132 22 108Z" fill="none" stroke="#2DD4BF" stroke-width="2.5" filter="url(#toothGlow)"/>
+      <!-- Highlight specular -->
+      <ellipse cx="38" cy="22" rx="11" ry="6" fill="rgba(255,255,255,0.12)" transform="rotate(-22 38 22)"/>
+      <ellipse cx="34" cy="16" rx="5" ry="3" fill="rgba(255,255,255,0.18)" transform="rotate(-22 34 16)"/>
     </svg>
-    <div class="scan-line"></div>
-    <div class="scan-glow"></div>
+    <!-- Scan beam -->
+    <div class="scan-beam"></div>
+    <div class="scan-beam-trail"></div>
+    <!-- HUD corners -->
+    <div class="hud-corner hc-tl"></div>
+    <div class="hud-corner hc-tr"></div>
+    <div class="hud-corner hc-bl"></div>
+    <div class="hud-corner hc-br"></div>
   </div>
+
   <div style="text-align:center">
-    <p style="color:#2DD4BF;font-size:13px;font-weight:700;letter-spacing:.05em;margin:0 0 8px">ANALIZANDO IMAGEN</p>
-    <p style="color:rgba(255,255,255,.6);font-size:13px;line-height:1.6;margin:0">Análisis IA no disponible en esta versión beta.<br>Estará activo en el lanzamiento oficial de Bucaly.</p>
+    <p class="scan-label-top">BUCALY SCAN <span class="scan-blink">●</span></p>
+    <p style="color:rgba(255,255,255,.55);font-size:13px;line-height:1.65;margin:8px 0 0">Análisis IA no disponible en beta.<br>Estará activo en el lanzamiento oficial. 🚀</p>
   </div>
-  <button class="scan-btn" id="scanBtn" onclick="dismissScan()">
-    Continuar triaje →
-  </button>
+  <button class="scan-btn" onclick="dismissScan()">Continuar triaje →</button>
 </div>
 
 <!-- ══ SYMPTOM PICKER ══ -->
@@ -2302,75 +2386,88 @@ function continueAfterAnalysis() {
 
 function startFlow() {
   if (!ST.sym) return;
-  ST.answers = {}; ST.dolor = null;
+  ST.answers = {}; ST.dolor = null; answeredKeys = [];
   if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
   if (['estetico','implante','preventivo'].includes(ST.rama)) { runAnalysis(ST.rama); return; }
-  buildSwipeFlow(); go('sSwipe');
+  FLOW = buildAdaptiveQueue();
+  flowIdx = 0;
+  renderDots();
+  showCard(0);
+  go('sSwipe');
 }
 
 // ════════════════════════════════════════════════════════
-//  SWIPE FLOW DEFINITION
+//  ADAPTIVE FLOW DEFINITION
 // ════════════════════════════════════════════════════════
 let FLOW = [];
 let flowIdx = 0;
+let answeredKeys = [];
 
-function buildSwipeFlow() {
+function buildAdaptiveQueue() {
   const r = ST.rama;
-  const commonAlarms = [
-    { key: 'hinchazón', emoji: '😮', q: '¿Tienes la cara o cuello hinchados?', hint: 'Mejilla, mandíbula o cuello visiblemente inflamados' },
-    { key: 'fiebre',    emoji: '🌡️', q: '¿Tienes fiebre?', hint: 'Temperatura mayor a 38°C' },
-    { key: 'tragar',    emoji: '😰', q: '¿Te cuesta tragar o abrir la boca?', hint: 'Dificultad notoria para abrir o deglutir' },
-  ];
+  const a = ST.answers;
+  const done = new Set(Object.keys(a));
+  const queue = [];
+  const add = q => { if (!done.has(q.key)) queue.push(q); };
 
-  if (r === 'trauma') {
-    FLOW = [
-      { key: 'tiempo_30min', emoji: '⏱️', q: '¿El accidente ocurrió hace menos de 30 minutos?', hint: 'El reimplante exitoso depende del tiempo — ventana IADT 2020: < 30–60 min' },
-      { key: 'avulsión',     emoji: '😱', q: '¿El diente se salió completamente de su lugar?', hint: 'Avulsión: la pieza ya no está en el hueso' },
-      { key: 'fractura',     emoji: '💔', q: '¿El diente está roto o astillado?', hint: 'Fractura visible de la corona o parte del diente' },
-      { key: 'luxacion',     emoji: '↕️', q: '¿El diente está en una posición diferente a la normal?', hint: 'Desplazado, más largo, más corto o inclinado tras el golpe' },
-      ...commonAlarms
-    ];
-  } else if (r === 'atm') {
-    FLOW = [
-      { key: 'clic',            emoji: '🦴', q: '¿Escuchas clic o chasquido al abrir la boca?', hint: 'Ruido articular frente al oído, en la zona de la sien' },
-      { key: 'apertura_limit',  emoji: '😮', q: '¿Te cuesta abrir la boca completamente?', hint: 'Limitación o dolor al intentar abrir al máximo' },
-      { key: 'dolor_muscular',  emoji: '💪', q: '¿Sientes dolor en los músculos de la mejilla o la sien?', hint: 'Al palpar o al masticar — músculos masetero o temporal' },
-      { key: 'brux',            emoji: '😬', q: '¿Aprietas o rechinas los dientes?', hint: 'Especialmente de noche o bajo estrés — tu pareja o dentista te lo ha dicho' },
-      { key: 'estres',          emoji: '😤', q: '¿Has tenido mucho estrés o ansiedad últimamente?', hint: 'Períodos prolongados de tensión emocional o física' },
-      { key: 'cefalea',         emoji: '🤕', q: '¿Tienes dolores de cabeza frecuentes?', hint: 'Relacionados con la mandíbula, la sien o el cuello' },
-      ...commonAlarms
-    ];
-  } else if (r === 'periodontal') {
-    FLOW = [
-      { key: 'sangrado_cepillo',emoji: '🩸', q: '¿Te sangra la encía al cepillarte?', hint: 'Al mínimo contacto del cepillo o hilo dental' },
-      { key: 'sangrado_esp',    emoji: '🔴', q: '¿La encía sangra sin que la toques?', hint: 'Sangrado espontáneo — sin cepillar ni presionar' },
-      { key: 'movilidad',       emoji: '😨', q: '¿Sientes algún diente movedizo?', hint: 'Flojo o con mayor movimiento que antes' },
-      { key: 'retraccion',      emoji: '🫦', q: '¿Las encías se han retraído hacia arriba?', hint: 'Los cuellos de los dientes se ven más largos que antes' },
-      { key: 'halitosis',       emoji: '💨', q: '¿Tienes mal aliento persistente?', hint: 'Presente incluso después de cepillarte — puede indicar bolsa activa' },
-      ...commonAlarms
-    ];
+  if (r === 'dental' || r === 'diente_roto') {
+    add({ key:'espontaneo',       emoji:'⚡', q:'¿El dolor aparece solo, sin tocarlo?',                      hint:'Pulsante o presente en reposo — incluso de noche' });
+    if (a.espontaneo === true)
+      add({ key:'nocturno',       emoji:'🌙', q:'¿El dolor te despierta o empeora de noche?',               hint:'Dolor nocturno es signo de pulpitis irreversible avanzada' });
+    add({ key:'frio_calor',       emoji:'🥶', q:'¿Sientes sensibilidad al frío o al calor?',                hint:'Al tomar agua fría, caliente o alimentos dulces' });
+    if (a.frio_calor === true)
+      add({ key:'dolor_prolongado',emoji:'⏳',q:'¿Ese dolor al frío o calor dura más de 30 segundos?',      hint:'Persiste tras retirar el estímulo — pulpitis irreversible (AAE)' });
+    add({ key:'morder',           emoji:'😬', q:'¿Te duele al morder o presionar el diente?',               hint:'Sensibilidad a la masticación o percusión — puede ser fractura o infección' });
+    add({ key:'caries_restaur',   emoji:'🔍', q:'¿Sabes si tienes caries o una tapadura (restauración)?',  hint:'Caries activa o tapadura reciente en ese diente' });
+    add({ key:'tratado',          emoji:'🦷', q:'¿Ese diente tuvo tratamiento de conducto o corona antes?', hint:'Endodoncia, corona o poste previo en esa pieza' });
+    if (a.tratado === true)
+      add({ key:'post_tto',       emoji:'🔄', q:'¿El dolor empezó o empeoró después de ese tratamiento?',   hint:'Puede indicar reinfección del conducto o fractura radicular' });
+
   } else if (r === 'absceso') {
-    FLOW = [
-      { key: 'endodoncia_prev', emoji: '🦷', q: '¿Ese diente tuvo endodoncia (tratamiento de conducto) antes?', hint: 'Un diente ya tratado con dolor activo puede tener absceso periapical' },
-      { key: 'pus',             emoji: '🤢', q: '¿Notas mal sabor o pus en la zona?', hint: 'Sabor salado o descarga amarillenta — fístula activa' },
-      { key: 'espontaneo',      emoji: '⚡', q: '¿El dolor aparece solo, sin que nada lo provoque?', hint: 'Pulsante o latente, incluso en reposo o de noche' },
-      ...commonAlarms,
-    ];
-  } else {
-    // dental / diente_roto
-    FLOW = [
-      { key: 'espontaneo',      emoji: '⚡', q: '¿El dolor aparece solo, sin tocarlo?', hint: 'Pulsa, late o está presente en reposo o de noche' },
-      { key: 'frio_calor',      emoji: '🥶', q: '¿Sientes dolor con frío o calor?', hint: 'Al tomar agua fría, caliente o alimentos dulces' },
-      { key: 'dolor_prolongado',emoji: '⏳', q: '¿El dolor al frío o calor dura más de 30 segundos?', hint: 'Persiste después de retirar el estímulo — signo AAE de pulpitis irreversible' },
-      { key: 'morder',          emoji: '😬', q: '¿Te duele al morder o presionar el diente?', hint: 'Sensibilidad a la masticación o percusión' },
-      { key: 'caries_empaste',  emoji: '🔍', q: '¿Sabes si tienes caries o un empaste reciente?', hint: 'Caries conocida o restauración colocada recientemente' },
-      { key: 'tratado',         emoji: '🦷', q: '¿Ese diente fue tratado antes (endodoncia o corona)?', hint: 'Tratamiento de conducto, corona o poste previo' },
-      ...commonAlarms
-    ];
+    add({ key:'espontaneo',       emoji:'⚡', q:'¿El dolor aparece solo, sin que nada lo provoque?',        hint:'Pulsante o latente en reposo — signo de absceso activo' });
+    if (a.espontaneo === true)
+      add({ key:'nocturno',       emoji:'🌙', q:'¿El dolor te despierta de noche?',                        hint:'Dolor nocturno en absceso indica mayor presión de pus' });
+    add({ key:'pus',              emoji:'🤢', q:'¿Notas mal sabor o pus cerca del diente afectado?',       hint:'Sabor salado o descarga amarillenta — fístula o absceso drenando' });
+    add({ key:'endodoncia_prev',  emoji:'🦷', q:'¿Ese diente tuvo tratamiento de conducto antes?',         hint:'Un conducto ya tratado con dolor activo puede tener absceso periapical' });
+
+  } else if (r === 'periodontal') {
+    add({ key:'sangrado_cepillo', emoji:'🩸', q:'¿Te sangra la encía al cepillarte o usar hilo dental?',  hint:'Sangrado al contacto mínimo — signo clásico de gingivitis' });
+    if (a.sangrado_cepillo === true)
+      add({ key:'sangrado_esp',   emoji:'🔴', q:'¿La encía sangra sola, sin que la toques?',              hint:'Sangrado espontáneo indica inflamación severa o periodontitis activa' });
+    add({ key:'movilidad',        emoji:'😨', q:'¿Sientes algún diente más flojo de lo normal?',          hint:'Movilidad aumentada — pérdida de soporte óseo' });
+    if (a.movilidad === true)
+      add({ key:'retraccion',     emoji:'🫦', q:'¿Las encías se han retraído y los dientes se ven más largos?', hint:'Recesión gingival con cuellos expuestos y sensibles' });
+    add({ key:'halitosis',        emoji:'💨', q:'¿Tienes mal aliento persistente incluso tras cepillarte?',hint:'Puede indicar bolsa periodontal activa o infección' });
+
+  } else if (r === 'trauma') {
+    add({ key:'avulsion',         emoji:'😱', q:'¿El diente se salió completamente de su lugar?',          hint:'Avulsión: la pieza ya no está en el hueso alveolar' });
+    if (a.avulsion === true) {
+      add({ key:'tiempo_30min',   emoji:'⏱️', q:'¿El accidente ocurrió hace menos de 30 minutos?',        hint:'Reimplante exitoso: ventana crítica menor a 30–60 min (IADT 2020)' });
+      add({ key:'conservo_pieza', emoji:'💧', q:'¿Guardaste el diente en leche, suero fisiológico o saliva?', hint:'El medio de conservación afecta el pronóstico del reimplante' });
+    } else {
+      add({ key:'fractura',       emoji:'💔', q:'¿El diente está roto o astillado?',                       hint:'Fractura visible de la corona o parte del diente' });
+      add({ key:'luxacion',       emoji:'↕️', q:'¿El diente está en una posición diferente a la normal?', hint:'Desplazado, más largo, más corto o inclinado tras el golpe' });
+      if (a.fractura === true || a.luxacion === true)
+        add({ key:'sensib_trauma',emoji:'🥶', q:'¿Hay sensibilidad al frío o al morder en ese diente?',   hint:'Indica compromiso pulpar — cambia el tratamiento urgente' });
+    }
+
+  } else if (r === 'atm') {
+    add({ key:'apertura_limit',   emoji:'😮', q:'¿Te cuesta abrir la boca completamente?',                 hint:'Limitación o dolor al intentar abrir al máximo — puede ser luxación de disco' });
+    add({ key:'clic',             emoji:'🦴', q:'¿Escuchas clic o chasquido al abrir o cerrar la boca?',  hint:'Ruido articular cerca del oído — puede ser desplazamiento de disco' });
+    add({ key:'dolor_muscular',   emoji:'💪', q:'¿Sientes dolor en los músculos de la mejilla o la sien?',hint:'Músculos masetero o temporal — al palpar o al masticar' });
+    add({ key:'brux',             emoji:'😬', q:'¿Aprietas o rechinas los dientes, de día o de noche?',   hint:'Bruxismo — tu pareja, dentista o tú mismo lo han notado' });
+    if (a.brux === true || a.dolor_muscular === true)
+      add({ key:'cefalea',        emoji:'🤕', q:'¿Tienes dolores de cabeza frecuentes en la sien o nuca?', hint:'Cefalea tensional relacionada con la mandíbula o los músculos' });
+    add({ key:'estres',           emoji:'😤', q:'¿Has tenido mucho estrés o ansiedad últimamente?',       hint:'Factor desencadenante frecuente del dolor muscular craneofacial' });
   }
-  flowIdx = 0;
-  renderDots();
-  showCard(flowIdx);
+
+  // Alarmas comunes — siempre al final
+  add({ key:'hinchazon',          emoji:'😮', q:'¿Tienes la cara o el cuello hinchados?',                  hint:'Mejilla, mandíbula o cuello visiblemente inflamados — puede indicar absceso' });
+  if (a.hinchazon === true)
+    add({ key:'fiebre',           emoji:'🌡️', q:'¿Tienes fiebre (más de 38°C)?',                          hint:'Fiebre con hinchazón es una posible emergencia — requiere atención urgente' });
+  add({ key:'tragar',             emoji:'😰', q:'¿Te cuesta tragar o abrir la boca ampliamente?',          hint:'Dificultad notoria — signo de propagación de infección (emergencia)' });
+
+  return queue;
 }
 
 // ════════════════════════════════════════════════════════
@@ -2379,10 +2476,12 @@ function buildSwipeFlow() {
 function renderDots() {
   const dots = document.getElementById('swipeDots');
   dots.innerHTML = '';
-  const visible = Math.min(FLOW.length, 8);
+  const answered = answeredKeys.length;
+  const total = answered + FLOW.length;
+  const visible = Math.min(total, 9);
   for (let i = 0; i < visible; i++) {
     const d = document.createElement('div');
-    d.className = 'dot' + (i < flowIdx ? ' done' : i === flowIdx ? ' active' : '');
+    d.className = 'dot' + (i < answered ? ' done' : i === answered ? ' active' : '');
     dots.appendChild(d);
   }
 }
@@ -2399,8 +2498,9 @@ function showCard(idx) {
 }
 
 function answerCard(yes) {
-  const q = FLOW[flowIdx];
-  ST.answers[q.key] = yes; // null = no estoy seguro
+  const q = FLOW[0];
+  ST.answers[q.key] = yes;
+  answeredKeys.push(q.key);
 
   // Animate
   const card = document.getElementById('theCard');
@@ -2418,34 +2518,38 @@ function answerCard(yes) {
     card.style.opacity = '';
     if (ov) ov.style.opacity = 0;
 
-    flowIdx++;
+    // Rebuild queue adaptively based on all current answers
+    FLOW = buildAdaptiveQueue();
+    flowIdx = 0;
 
-    // Check for early emergency exit — null-safe: solo true dispara emergencia
+    // Emergency exit
     const a = ST.answers;
-    const isEmergencia = a.tragar === true || (a.hinchazón === true && a.fiebre === true);
-    if (isEmergencia && flowIdx >= 2) {
+    const isEmergencia = a.tragar === true || (a.hinchazon === true && a.fiebre === true);
+    if (isEmergencia && answeredKeys.length >= 2) {
       runAnalysis('emergency'); return;
     }
 
-    if (flowIdx >= FLOW.length) {
-      // Go to pain screen only for dental flows
-      if (['dental', 'diente_roto', 'absceso', 'trauma', 'periodontal'].includes(ST.rama)) {
-        buildPainScreen();
-        go('sPain');
+    if (FLOW.length === 0) {
+      if (['dental','diente_roto','absceso','trauma','periodontal'].includes(ST.rama)) {
+        buildPainScreen(); go('sPain');
       } else {
         runAnalysis(ST.rama);
       }
     } else {
-      showCard(flowIdx);
+      renderDots();
+      showCard(0);
     }
   }, 380);
 }
 
 function swipeBack() {
-  if (flowIdx > 0) {
-    flowIdx--;
-    delete ST.answers[FLOW[flowIdx].key];
-    showCard(flowIdx);
+  if (answeredKeys.length > 0) {
+    const lastKey = answeredKeys.pop();
+    delete ST.answers[lastKey];
+    FLOW = buildAdaptiveQueue();
+    flowIdx = 0;
+    renderDots();
+    showCard(0);
   } else {
     go('sSym');
   }
@@ -3044,7 +3148,7 @@ function analyzeUserText(text, photo) {
   if (/mandíbula|mandibula|articulac|chasquido|clic|traba|abrir la boca/.test(t)) chatCtx.atm = true;
   if (/golpe|trauma|caí|choque|accidente/.test(t)) chatCtx.trauma = true;
   if (/encía|encia|periodon/.test(t)) chatCtx.encia = true;
-  if (/roto|fractura|empaste|corona caída/.test(t)) chatCtx.roto = true;
+  if (/roto|fractura|tapadura|restauración|corona caída/.test(t)) chatCtx.roto = true;
   if (/morder|masticar|presion|percutir/.test(t)) chatCtx.morder = true;
   if (/semana|mes|hace tiempo|crónico|cronico|siempre/.test(t)) chatCtx.cronico = true;
   if (/día|ayer|hoy|reciente/.test(t)) chatCtx.reciente = true;
@@ -3101,11 +3205,11 @@ function respondToUser(text, photo) {
       return;
     }
     if (c.dolor && c.morder) {
-      addAiMsg('El dolor al morder puede tener varias causas. ¿Es un diente específico o zona general? ¿El diente tuvo algún tratamiento antes — endodoncia, corona, empaste grande?');
+      addAiMsg('El dolor al morder puede tener varias causas. ¿Es un diente específico o zona general? ¿El diente tuvo algún tratamiento antes — endodoncia, corona, tapadura (restauración) grande?');
       return;
     }
     if (c.roto) {
-      addAiMsg('Un diente roto o empaste caído puede ser urgente si hay dolor, o manejable si no molesta.\n\n¿Hay dolor al morderlo o al tomar cosas frías? ¿Se ve o sientes el borde roto al pasar la lengua?');
+      addAiMsg('Un diente roto o tapadura (restauración) caído puede ser urgente si hay dolor, o manejable si no molesta.\n\n¿Hay dolor al morderlo o al tomar cosas frías? ¿Se ve o sientes el borde roto al pasar la lengua?');
       return;
     }
     // genérico si hay texto pero sin keywords claras
@@ -3154,7 +3258,7 @@ function showChatResult() {
     frio_calor:       !!c.frio_calor,
     dolor_prolongado: !!c.cronico,
     morder:           !!c.morder,
-    caries_empaste:   false,
+    caries_tapadura (restauración):   false,
     tratado:          false,
     hinchazón:        !!c.hinchazon,
     fiebre:           !!c.fiebre,
