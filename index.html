@@ -2094,9 +2094,10 @@ async function analyzeSymPhoto(dataUrl, mimeType) {
   const urgEl = document.getElementById('symAiUrgency');
   const subEl = document.getElementById('photoCardSub');
   resultBox.style.display = 'none';
+  subEl.textContent = 'Analizando imagen con IA…';
   try {
     const base64 = dataUrl.split(',')[1];
-    const resp = await fetch('https://api-production-37bd.up.railway.app/api/analyze/photo', {
+    const resp = await fetch('/api/analyze-photo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ image: base64, mimeType: mimeType || 'image/jpeg' })
@@ -2104,8 +2105,8 @@ async function analyzeSymPhoto(dataUrl, mimeType) {
     if (!resp.ok) throw new Error('Error ' + resp.status);
     const data = await resp.json();
     subEl.textContent = 'Análisis listo — ver resultado abajo';
-    textEl.textContent = data.diagnosis || 'Sin respuesta';
-    const u = data.urgency || 'MODERADO';
+    textEl.textContent = data.diagnosis + (data.recommendation ? ' ' + data.recommendation : '');
+    const u = (data.urgency || 'MODERADO').toUpperCase();
     urgEl.textContent = u;
     if (u === 'URGENTE') { urgEl.style.background = '#FEE2E2'; urgEl.style.color = '#991B1B'; }
     else if (u === 'ELECTIVO') { urgEl.style.background = '#DCFCE7'; urgEl.style.color = '#166534'; }
