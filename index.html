@@ -812,6 +812,53 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .extra-chip.selected {
   background: #EDE9FE; border-color: #7C3AED; color: #5B21B6;
 }
+/* ── Scan overlay ── */
+.scan-wrapper {
+  position: relative; width: 160px; height: 180px;
+}
+.scan-tooth {
+  width: 160px; height: 180px; display: block;
+  filter: drop-shadow(0 0 18px rgba(45,212,191,.5));
+  animation: toothPulse 2s ease-in-out infinite;
+}
+@keyframes toothPulse {
+  0%,100% { filter: drop-shadow(0 0 12px rgba(45,212,191,.4)); }
+  50%      { filter: drop-shadow(0 0 28px rgba(45,212,191,.9)); }
+}
+.scan-line {
+  position: absolute; left: 0; right: 0; top: 10px;
+  height: 3px; background: linear-gradient(90deg, transparent, #2DD4BF, transparent);
+  border-radius: 2px;
+  animation: scanMove 1.8s ease-in-out infinite;
+  box-shadow: 0 0 12px 3px rgba(45,212,191,.6);
+}
+@keyframes scanMove {
+  0%   { top: 10px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 165px; opacity: 0; }
+}
+.scan-glow {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(45,212,191,.07) 100%);
+  border-radius: 8px;
+  animation: glowPulse 1.8s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100% { opacity: .5; } 50% { opacity: 1; }
+}
+.scan-btn {
+  background: #2DD4BF; color: #070E1A; border: none; border-radius: 50px;
+  padding: 14px 32px; font-size: 15px; font-weight: 800; cursor: pointer;
+  font-family: 'Inter', sans-serif; touch-action: manipulation;
+  animation: btnBounce 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(45,212,191,.4);
+}
+@keyframes btnBounce {
+  0%,100% { transform: scale(1); box-shadow: 0 0 20px rgba(45,212,191,.4); }
+  50%      { transform: scale(1.04); box-shadow: 0 0 30px rgba(45,212,191,.7); }
+}
+.scan-btn:active { transform: scale(.94) !important; animation: none; }
 #symStep2 { display: none; }
 /* Card resultado IA en grid */
 .sym-ai-result-card {
@@ -1402,6 +1449,25 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
   </div>
   <button class="btn-start" onclick="go('sSym')">Iniciar triaje gratuito →</button>
   <button class="btn-skip" onclick="go('sDirect')">Ya sé lo que necesito — buscar dentista</button>
+</div>
+
+<!-- ══ SCAN OVERLAY ══ -->
+<div id="scanOverlay" style="display:none;position:fixed;inset:0;z-index:300;background:#070E1A;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:32px 24px">
+  <div class="scan-wrapper">
+    <svg class="scan-tooth" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 100 C20 100 14 72 11 52 C8 32 10 14 20 8 C27 4 35 4 42 4 C48 4 54 4 60 4 C66 4 72 4 78 4 C85 4 93 4 100 8 C110 14 112 32 109 52 C106 72 100 100 100 100 C100 108 96 120 90 120 C84 120 80 112 76 100 C72 88 68 80 60 80 C52 80 48 88 44 100 C40 112 36 120 30 120 C24 120 20 108 20 100 Z" fill="none" stroke="#2DD4BF" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="42" cy="18" rx="12" ry="7" fill="rgba(45,212,191,0.2)" transform="rotate(-25 42 18)"/>
+    </svg>
+    <div class="scan-line"></div>
+    <div class="scan-glow"></div>
+  </div>
+  <div style="text-align:center">
+    <p style="color:#2DD4BF;font-size:13px;font-weight:700;letter-spacing:.05em;margin:0 0 8px">ANALIZANDO IMAGEN</p>
+    <p style="color:rgba(255,255,255,.6);font-size:13px;line-height:1.6;margin:0">Análisis IA no disponible en esta versión beta.<br>Estará activo en el lanzamiento oficial de Bucaly.</p>
+  </div>
+  <button class="scan-btn" id="scanBtn" onclick="dismissScan()">
+    Continuar triaje →
+  </button>
 </div>
 
 <!-- ══ SYMPTOM PICKER ══ -->
@@ -2086,6 +2152,12 @@ function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if (el) { el.classList.add('active'); el.scrollTop = 0; }
+  if (id === 'sSym') {
+    // Reset photoCard visibility each time sSym is entered
+    const pc = document.getElementById('photoCard');
+    if (pc) pc.style.display = '';
+    document.getElementById('scanOverlay').style.display = 'none';
+  }
   if (typeof gtag === 'function') gtag('event', 'screen_view', { screen_name: id });
 }
 
@@ -2112,25 +2184,24 @@ function handlePhoto(input) {
   const reader = new FileReader();
   reader.onload = e => {
     ST.photo = e.target.result;
-    // Transformar card: mostrar thumbnail
-    const thumb = document.getElementById('photoThumb');
-    thumb.src = e.target.result;
-    thumb.style.display = 'block';
-    document.getElementById('photoIc').style.display = 'none';
-    document.getElementById('photoLbl').style.display = 'none';
-    const btn = document.getElementById('btnQuitar');
-    btn.style.display = 'flex';
-    // Mostrar sección foto debajo del grid
-    document.getElementById('photoFlow').style.display = 'block';
-    document.getElementById('symFooter').style.display = 'none';
-    document.getElementById('symAiResult').style.display = 'none';
-    document.getElementById('symExtraBlock').style.display = 'none';
-    // Scroll hasta sección foto
-    setTimeout(() => {
-      document.getElementById('photoFlow').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    // Show scan overlay fullscreen
+    const ov = document.getElementById('scanOverlay');
+    ov.style.display = 'flex';
+    // After 3s auto-dismiss is NOT automatic — user taps the button
   };
   reader.readAsDataURL(file);
+}
+
+function dismissScan() {
+  document.getElementById('scanOverlay').style.display = 'none';
+  // Hide photoCard so only symptom cards remain
+  document.getElementById('photoCard').style.display = 'none';
+  // Reset photo state (beta: no photo analysis)
+  ST.photo = null; ST.photoType = null;
+  document.getElementById('symPhoto').value = '';
+  // Ensure normal triage footer is visible
+  document.getElementById('symFooter').style.display = '';
+  document.getElementById('photoFlow').style.display = 'none';
 }
 
 function removePhoto() {
