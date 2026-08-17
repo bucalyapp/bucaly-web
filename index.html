@@ -780,30 +780,33 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .sym-card-photo.has-photo .photo-info { flex: 1; min-width: 0; }
 .sym-card-photo.has-photo .photo-info .lbl { font-size: 13px !important; text-align: left !important; }
 .sym-card-photo.has-photo .photo-info .sub { font-size: 11px !important; text-align: left !important; }
-.sym-card-photo-filled {
+.photo-preview-bar {
+  display: flex; align-items: center; gap: 10px;
   background: linear-gradient(135deg,#5B21B6,#7C3AED);
-  border-radius: 16px; padding: 12px 14px;
-  display: flex; flex-direction: column; gap: 10px;
+  border-radius: 14px; padding: 12px 14px;
 }
-.photo-filled-row { display: flex; align-items: center; gap: 10px; }
-.photo-filled-row .photo-thumb { width: 54px; height: 54px; object-fit: cover; border-radius: 10px; flex-shrink: 0; border: 2px solid rgba(255,255,255,.3); }
-.photo-info { flex: 1; min-width: 0; }
-.photo-lbl { display: block; color: #fff; font-size: 13px; font-weight: 700; }
-.photo-sub { display: block; color: rgba(255,255,255,.75); font-size: 11px; margin-top: 2px; }
-.btn-quitar {
-  width: 100%; background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.3);
-  border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700;
-  padding: 10px; cursor: pointer; font-family: 'Inter', sans-serif;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+.photo-thumb-sm {
+  width: 48px; height: 48px; object-fit: cover; border-radius: 10px;
+  flex-shrink: 0; border: 2px solid rgba(255,255,255,.35);
 }
-.btn-quitar:active { background: rgba(255,255,255,.3); }
-.btn-continuar-analisis {
-  width: 100%; background: #7C3AED; border: none; border-radius: 12px;
-  color: #fff; font-size: 14px; font-weight: 700; padding: 12px;
+.btn-quitar-sm {
+  background: rgba(255,255,255,.2); border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 20px; color: #fff; font-size: 12px; font-weight: 700;
+  padding: 6px 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+  touch-action: manipulation; flex-shrink: 0; white-space: nowrap;
+}
+.btn-quitar-sm:active { background: rgba(255,255,255,.35); }
+.extra-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.extra-chip {
+  background: #f1f5f9; border: 1.5px solid #e2e8f0; border-radius: 20px;
+  color: #334155; font-size: 12px; font-weight: 600; padding: 7px 13px;
   cursor: pointer; font-family: 'Inter', sans-serif;
-  touch-action: manipulation; margin-top: 4px;
+  touch-action: manipulation; transition: all .15s;
 }
-.btn-continuar-analisis:active { background: #6D28D9; }
+.extra-chip.selected {
+  background: #EDE9FE; border-color: #7C3AED; color: #5B21B6;
+}
+#symStep2 { display: none; }
 /* Card resultado IA en grid */
 .sym-ai-result-card {
   grid-column: 1/-1;
@@ -1402,59 +1405,80 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
     <h2 style="padding-left:36px">¿Qué te pasa?</h2>
     <p style="padding-left:36px">Toca lo que mejor describe tu situación</p>
   </div>
-  <div class="sym-grid" id="symGrid">
-    <div class="sym-card" data-v="dolor_dental" data-rama="dental" onclick="selSym(this)">
-      <span class="ic">😣</span><span class="lbl">Dolor dental</span>
-    </div>
-    <div class="sym-card" data-v="hinchazon" data-rama="absceso" onclick="selSym(this)">
-      <span class="ic">😮</span><span class="lbl">Hinchazón</span>
-    </div>
-    <div class="sym-card" data-v="sangrado" data-rama="periodontal" onclick="selSym(this)">
-      <span class="ic">🩸</span><span class="lbl">Encía sangra</span>
-    </div>
-    <div class="sym-card" data-v="trauma" data-rama="trauma" onclick="selSym(this)">
-      <span class="ic">💥</span><span class="lbl">Golpe o trauma</span>
-    </div>
-    <div class="sym-card" data-v="diente_roto" data-rama="dental" onclick="selSym(this)">
-      <span class="ic">🦷</span><span class="lbl">Diente roto</span>
-    </div>
-    <div class="sym-card" data-v="mandibula" data-rama="atm" onclick="selSym(this)">
-      <span class="ic">😬</span><span class="lbl">Ruido / Dolor Mandibular</span>
-    </div>
-    <div class="sym-card" data-v="implante" data-rama="implante" onclick="selSym(this)">
-      <span class="ic">✨</span><span class="lbl">Implante</span>
-    </div>
-    <div class="sym-card" data-v="blanqueamiento" data-rama="estetico" onclick="selSym(this)">
-      <span class="ic">⬜</span><span class="lbl">Blanqueamiento</span>
-    </div>
-    <div class="sym-card" data-v="preventivo" data-rama="preventivo" onclick="selSym(this)">
-      <span class="ic">🔍</span><span class="lbl">Chequeo general</span>
-    </div>
-    <div class="sym-card sym-card-ai" onclick="openChat()" style="grid-column:1/-1">
-      <span class="ic">👨‍⚕️</span><span class="lbl">Conversa con Dr. IA</span><span class="sub">Descríbelo con tus palabras o agrega una foto — la IA te orienta</span>
-    </div>
+  <!-- Input file oculto -->
+  <input type="file" id="symPhoto" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
 
-    <!-- Card foto IA — estado sin foto -->
-    <div class="sym-card sym-card-photo" id="photoCard" onclick="document.getElementById('symPhoto').click()" style="grid-column:1/-1">
-      <span class="ic">📷</span>
-      <span class="lbl">Analizar foto con IA</span>
-      <span class="sub">Diagnóstico presuntivo con evidencia científica</span>
-      <input type="file" id="symPhoto" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
-    </div>
-
-    <!-- Card foto IA — estado con foto -->
-    <div class="sym-card-photo-filled" id="photoCardFilled" style="display:none;grid-column:1/-1">
-      <div class="photo-filled-row">
-        <img class="photo-thumb" id="photoThumb" src="" alt="foto">
-        <div class="photo-info">
-          <span class="photo-lbl">📷 Foto adjunta</span>
-          <span class="photo-sub" id="photoCardSub">Selecciona también tus síntomas arriba</span>
-        </div>
+  <!-- PASO 1: Grid de opciones (visible al inicio) -->
+  <div id="symStep1">
+    <div class="sym-grid">
+      <!-- Foto IA — PRIMERO, mismo tamaño que los demás -->
+      <div class="sym-card sym-card-photo" id="photoCard" onclick="document.getElementById('symPhoto').click()">
+        <span class="ic">📷</span>
+        <span class="lbl">Analizar foto</span>
       </div>
-      <button class="btn-quitar" id="btnQuitar" type="button" onclick="removePhoto()">✕ Quitar foto</button>
+      <div class="sym-card" data-v="dolor_dental" data-rama="dental" onclick="selSym(this)">
+        <span class="ic">😣</span><span class="lbl">Dolor dental</span>
+      </div>
+      <div class="sym-card" data-v="hinchazon" data-rama="absceso" onclick="selSym(this)">
+        <span class="ic">😮</span><span class="lbl">Hinchazón</span>
+      </div>
+      <div class="sym-card" data-v="sangrado" data-rama="periodontal" onclick="selSym(this)">
+        <span class="ic">🩸</span><span class="lbl">Encía sangra</span>
+      </div>
+      <div class="sym-card" data-v="trauma" data-rama="trauma" onclick="selSym(this)">
+        <span class="ic">💥</span><span class="lbl">Golpe o trauma</span>
+      </div>
+      <div class="sym-card" data-v="diente_roto" data-rama="dental" onclick="selSym(this)">
+        <span class="ic">🦷</span><span class="lbl">Diente roto</span>
+      </div>
+      <div class="sym-card" data-v="mandibula" data-rama="atm" onclick="selSym(this)">
+        <span class="ic">😬</span><span class="lbl">Dolor Mandibular</span>
+      </div>
+      <div class="sym-card" data-v="implante" data-rama="implante" onclick="selSym(this)">
+        <span class="ic">✨</span><span class="lbl">Implante</span>
+      </div>
+      <div class="sym-card" data-v="blanqueamiento" data-rama="estetico" onclick="selSym(this)">
+        <span class="ic">⬜</span><span class="lbl">Blanqueamiento</span>
+      </div>
+      <div class="sym-card" data-v="preventivo" data-rama="preventivo" onclick="selSym(this)">
+        <span class="ic">🔍</span><span class="lbl">Chequeo general</span>
+      </div>
+      <div class="sym-card sym-card-ai" onclick="openChat()" style="grid-column:1/-1">
+        <span class="ic">👨‍⚕️</span><span class="lbl">Conversa con Dr. IA</span><span class="sub">Descríbelo con tus palabras — la IA te orienta</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 2: Flujo foto (oculto hasta que se seleccione foto) -->
+  <div id="symStep2" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding:16px;gap:14px">
+
+    <!-- Miniatura + quitar -->
+    <div class="photo-preview-bar">
+      <img id="photoThumb" src="" alt="foto" class="photo-thumb-sm">
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px;color:#1e293b">📷 Foto lista</div>
+        <div style="font-size:11px;color:#64748b">Elige qué describe mejor tu situación</div>
+      </div>
+      <button class="btn-quitar-sm" type="button" onclick="removePhoto()">✕ Quitar</button>
     </div>
 
-    <!-- Resultado análisis IA -->
+    <!-- Subtítulo -->
+    <p style="font-size:13px;font-weight:600;color:#334155;margin:0">¿Qué describe mejor tu situación?</p>
+
+    <!-- Grid de síntomas (mismo que arriba) -->
+    <div class="sym-grid" id="symGridPhoto">
+      <div class="sym-card" data-v="dolor_dental" data-rama="dental" onclick="selSymPhoto(this)"><span class="ic">😣</span><span class="lbl">Dolor dental</span></div>
+      <div class="sym-card" data-v="hinchazon" data-rama="absceso" onclick="selSymPhoto(this)"><span class="ic">😮</span><span class="lbl">Hinchazón</span></div>
+      <div class="sym-card" data-v="sangrado" data-rama="periodontal" onclick="selSymPhoto(this)"><span class="ic">🩸</span><span class="lbl">Encía sangra</span></div>
+      <div class="sym-card" data-v="trauma" data-rama="trauma" onclick="selSymPhoto(this)"><span class="ic">💥</span><span class="lbl">Golpe o trauma</span></div>
+      <div class="sym-card" data-v="diente_roto" data-rama="dental" onclick="selSymPhoto(this)"><span class="ic">🦷</span><span class="lbl">Diente roto</span></div>
+      <div class="sym-card" data-v="mandibula" data-rama="atm" onclick="selSymPhoto(this)"><span class="ic">😬</span><span class="lbl">Dolor Mandibular</span></div>
+      <div class="sym-card" data-v="implante" data-rama="implante" onclick="selSymPhoto(this)"><span class="ic">✨</span><span class="lbl">Implante</span></div>
+      <div class="sym-card" data-v="blanqueamiento" data-rama="estetico" onclick="selSymPhoto(this)"><span class="ic">⬜</span><span class="lbl">Blanqueamiento</span></div>
+      <div class="sym-card" data-v="preventivo" data-rama="preventivo" onclick="selSymPhoto(this)"><span class="ic">🔍</span><span class="lbl">Chequeo general</span></div>
+    </div>
+
+    <!-- Resultado análisis IA (aparece tras analizar) -->
     <div class="sym-ai-result-card" id="symAiResult" style="display:none">
       <div class="ai-header">
         <span style="font-size:18px">🤖</span>
@@ -1463,10 +1487,27 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       </div>
       <div class="ai-text" id="symAiText"></div>
       <p class="ai-disclaimer">Análisis orientativo. No reemplaza la evaluación clínica presencial.</p>
-      <button class="btn-continuar-analisis" id="btnContinuarAnalisis" style="display:none" onclick="continueAfterAnalysis()">Continuar el triaje →</button>
+    </div>
+
+    <!-- Síntomas adicionales (aparece tras análisis IA) -->
+    <div id="symExtraBlock" style="display:none">
+      <p style="font-size:13px;font-weight:600;color:#334155;margin:0 0 8px">¿Tienes también alguno de estos signos o síntomas?</p>
+      <div class="extra-chips" id="extraChips">
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">🌡️ Sensibilidad al frío o calor</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">🦷 Dolor al morder</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">😫 Dolor espontáneo</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">💊 Encías inflamadas</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">👃 Mal sabor u olor</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">😴 Dolor nocturno</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">🔲 Diente flojo</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">💧 Pus o supuración</button>
+        <button class="extra-chip" type="button" onclick="toggleChip(this)">🫦 Encía retraída</button>
+      </div>
+      <button class="btn-main" style="margin-top:12px" onclick="continueAfterAnalysis()">Continuar el triaje →</button>
     </div>
   </div>
-  <div class="sym-footer">
+
+  <div class="sym-footer" id="symFooter">
     <button class="btn-main" id="btnSymNext" onclick="startFlow()">Continuar →</button>
   </div>
 </div>
@@ -2087,108 +2128,104 @@ function handlePhoto(input) {
   const reader = new FileReader();
   reader.onload = e => {
     ST.photo = e.target.result;
-    document.getElementById('photoCard').style.display = 'none';
-    document.getElementById('photoCardFilled').style.display = 'flex';
     document.getElementById('photoThumb').src = e.target.result;
-    document.getElementById('photoCardSub').textContent = 'Foto lista · Selecciona también tus síntomas arriba';
+    document.getElementById('symStep1').style.display = 'none';
+    document.getElementById('symStep2').style.display = 'flex';
+    document.getElementById('symFooter').style.display = 'none';
     document.getElementById('symAiResult').style.display = 'none';
-    if (!ST.sym) {
-      ST.sym = 'otro'; ST.rama = 'dental';
-      document.getElementById('btnSymNext').classList.add('ready');
-    }
+    document.getElementById('symExtraBlock').style.display = 'none';
   };
   reader.readAsDataURL(file);
 }
 
 function removePhoto() {
-  ST.photo = null;
-  ST.photoType = null;
+  ST.photo = null; ST.photoType = null; ST.extraSyms = [];
   document.getElementById('symPhoto').value = '';
-  document.getElementById('photoCardFilled').style.display = 'none';
-  document.getElementById('photoCard').style.display = '';
+  document.getElementById('symStep1').style.display = '';
+  document.getElementById('symStep2').style.display = 'none';
+  document.getElementById('symFooter').style.display = '';
   document.getElementById('symAiResult').style.display = 'none';
+  document.getElementById('symExtraBlock').style.display = 'none';
+  document.querySelectorAll('#symGridPhoto .sym-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.extra-chip').forEach(c => c.classList.remove('selected'));
 }
 
-let _pendingFlow = null;
+function selSymPhoto(el) {
+  document.querySelectorAll('#symGridPhoto .sym-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  ST.sym  = el.dataset.v;
+  ST.rama = el.dataset.rama;
+  analyzeSymPhoto(ST.photo, ST.photoType || 'image/jpeg', ST.sym, '');
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
 
 async function analyzeSymPhoto(dataUrl, mimeType, symptom, desc) {
   const resultBox = document.getElementById('symAiResult');
   const textEl    = document.getElementById('symAiText');
   const urgEl     = document.getElementById('symAiUrgency');
-  const subEl     = document.getElementById('photoCardSub');
-  const btnCont   = document.getElementById('btnContinuarAnalisis');
-  const btnNext   = document.getElementById('btnSymNext');
+  const extraBlock = document.getElementById('symExtraBlock');
 
-  subEl.textContent = 'Analizando imagen con IA…';
-  textEl.textContent = 'Procesando tu foto, espera un momento…';
+  textEl.textContent = 'Analizando tu foto con IA…';
   urgEl.textContent = '';
-  btnCont.style.display = 'none';
   resultBox.style.display = 'flex';
-  if (btnNext) btnNext.disabled = true;
+  extraBlock.style.display = 'none';
 
   try {
     const base64 = dataUrl.split(',')[1];
     const symCtx = symptom && symptom !== 'otro'
-      ? `\nSíntoma reportado: "${symptom}".${desc ? ` Descripción: "${desc}".` : ''}`
-      : (desc ? `\nDescripción del paciente: "${desc}".` : '');
-    const prompt = `Eres un asistente de triaje dental para Bucaly. Analiza esta imagen oral con base en evidencia científica (ADA, AAE, AAPD).${symCtx}\n\n1. DIAGNÓSTICO PRESUNTIVO: máximo 3 oraciones en español simple.\n2. URGENCIA: solo una palabra: URGENTE / MODERADO / ELECTIVO.\n   URGENTE=absceso,trauma,hemorragia,infección propagada. MODERADO=caries,gingivitis,movilidad,sensibilidad. ELECTIVO=estético,desgaste leve,sin dolor.\n3. RECOMENDACIÓN: una oración concreta.\n\nResponde SOLO en JSON (sin markdown):\n{"diagnosis":"texto","urgency":"URGENTE|MODERADO|ELECTIVO","recommendation":"texto"}`;
+      ? `\nEl paciente indica: "${symptom}".${desc ? ` Descripción: "${desc}".` : ''}`
+      : '';
+    const prompt = `Eres un asistente de triaje dental para Bucaly. Analiza esta imagen oral con base en evidencia científica (ADA, AAE, AAPD).${symCtx}\n\n1. DIAGNÓSTICO PRESUNTIVO: máximo 3 oraciones en español simple para pacientes.\n2. URGENCIA: solo una: URGENTE / MODERADO / ELECTIVO.\n   URGENTE=absceso,trauma,hemorragia,infección propagada.\n   MODERADO=caries visible,gingivitis,movilidad,sensibilidad persistente.\n   ELECTIVO=estético,desgaste leve,sin dolor.\n3. RECOMENDACIÓN: una oración concreta de qué hacer.\n\nResponde SOLO en JSON sin markdown:\n{"diagnosis":"texto","urgency":"URGENTE|MODERADO|ELECTIVO","recommendation":"texto"}`;
     const gk = ['AQ.Ab8RN6Ke8q','nQ_7Jknj1QPH3n','ZdFQKi9WvJmqOXSkWN7w0kBTcg'].join('');
     const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gk}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ inline_data:{ mime_type: mimeType||'image/jpeg', data: base64 }},{ text: prompt }]}],
+        contents: [{ parts: [
+          { inline_data: { mime_type: mimeType||'image/jpeg', data: base64 } },
+          { text: prompt }
+        ]}],
         generationConfig: { temperature: 0.2, maxOutputTokens: 600 }
       })
     });
-    if (!resp.ok) throw new Error('Gemini ' + resp.status);
+    if (!resp.ok) throw new Error('Error ' + resp.status);
     const raw = await resp.json();
     const txt = raw.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const data = JSON.parse(txt.replace(/```json|```/g,'').trim());
-    subEl.textContent = 'Análisis IA listo';
     textEl.textContent = data.diagnosis + (data.recommendation ? ' ' + data.recommendation : '');
     const u = (data.urgency || 'MODERADO').toUpperCase();
     urgEl.textContent = u;
-    if (u === 'URGENTE') { urgEl.style.background = '#FEE2E2'; urgEl.style.color = '#991B1B'; }
-    else if (u === 'ELECTIVO') { urgEl.style.background = '#DCFCE7'; urgEl.style.color = '#166534'; }
-    else { urgEl.style.background = '#FEF9C3'; urgEl.style.color = '#854D0E'; }
+    if (u === 'URGENTE') { urgEl.style.background='#FEE2E2'; urgEl.style.color='#991B1B'; }
+    else if (u === 'ELECTIVO') { urgEl.style.background='#DCFCE7'; urgEl.style.color='#166534'; }
+    else { urgEl.style.background='#FEF9C3'; urgEl.style.color='#854D0E'; }
     if (u === 'URGENTE') ST.urgente = true;
   } catch(err) {
-    subEl.textContent = 'No se pudo analizar la foto';
-    textEl.textContent = 'No se pudo conectar con el servicio de análisis. Puedes continuar el triaje normalmente.';
+    textEl.textContent = 'No se pudo analizar la imagen. Puedes continuar igual.';
     urgEl.textContent = '';
   }
 
-  if (btnNext) btnNext.disabled = false;
-  btnCont.style.display = 'block';
+  extraBlock.style.display = 'block';
+  document.getElementById('symStep2').scrollTo({ top: 9999, behavior: 'smooth' });
 }
 
 function continueAfterAnalysis() {
-  if (_pendingFlow) { _pendingFlow(); _pendingFlow = null; }
+  ST.extraSyms = [...document.querySelectorAll('.extra-chip.selected')].map(c => c.textContent.trim());
+  ST.answers = {}; ST.dolor = null;
+  if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
+  if (['estetico','implante','preventivo'].includes(ST.rama)) { runAnalysis(ST.rama); return; }
+  buildSwipeFlow(); go('sSwipe');
 }
 
 function startFlow() {
-  if (!ST.sym && !ST.photo) return;
-  ST.desc = (document.getElementById('symDesc') || {value:''}).value.trim();
-  ST.answers = {};
-  ST.dolor = null;
+  if (!ST.sym) return;
+  ST.desc = (document.getElementById('symDesc')||{value:''}).value.trim();
+  ST.answers = {}; ST.dolor = null;
   if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
-
-  const proceed = () => {
-    if (['estetico', 'implante', 'preventivo'].includes(ST.rama)) {
-      runAnalysis(ST.rama); return;
-    }
-    buildSwipeFlow();
-    go('sSwipe');
-  };
-
-  if (ST.photo) {
-    _pendingFlow = proceed;
-    analyzeSymPhoto(ST.photo, ST.photoType || 'image/jpeg', ST.sym, ST.desc);
-    return;
-  }
-
-  proceed();
+  if (['estetico','implante','preventivo'].includes(ST.rama)) { runAnalysis(ST.rama); return; }
+  buildSwipeFlow(); go('sSwipe');
 }
 
 // ════════════════════════════════════════════════════════
