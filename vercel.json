@@ -1,15 +1,17 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/analyze-photo.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "*.json", "use": "@vercel/static" },
-    { "src": "*.png", "use": "@vercel/static" },
+    { "src": "analyze-photo.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "dashboard.html", "use": "@vercel/static" },
+    { "src": "dentista.html", "use": "@vercel/static" },
+    { "src": "manifest.json", "use": "@vercel/static" },
     { "src": "sw.js", "use": "@vercel/static" },
-    { "src": "manifest.json", "use": "@vercel/static" }
+    { "src": "icon-192.png", "use": "@vercel/static" },
+    { "src": "icon-512.png", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/analyze-photo", "dest": "/api/analyze-photo.js" },
+    { "src": "/api/analyze-photo", "dest": "/analyze-photo.js" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }

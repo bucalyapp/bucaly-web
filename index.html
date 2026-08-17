@@ -780,13 +780,30 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
 .sym-card-photo.has-photo .photo-info { flex: 1; min-width: 0; }
 .sym-card-photo.has-photo .photo-info .lbl { font-size: 13px !important; text-align: left !important; }
 .sym-card-photo.has-photo .photo-info .sub { font-size: 11px !important; text-align: left !important; }
-.sym-photo-remove-card {
-  background: rgba(255,255,255,.2); border: none; border-radius: 20px; color: #fff;
-  font-size: 11px; font-weight: 700; padding: 5px 11px; cursor: pointer;
-  font-family: 'Inter', sans-serif; flex-shrink: 0;
-  position: relative; z-index: 10; -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+.sym-card-photo-filled {
+  background: linear-gradient(135deg,#5B21B6,#7C3AED);
+  border-radius: 16px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 10px;
 }
+.photo-filled-row { display: flex; align-items: center; gap: 10px; }
+.photo-filled-row .photo-thumb { width: 54px; height: 54px; object-fit: cover; border-radius: 10px; flex-shrink: 0; border: 2px solid rgba(255,255,255,.3); }
+.photo-info { flex: 1; min-width: 0; }
+.photo-lbl { display: block; color: #fff; font-size: 13px; font-weight: 700; }
+.photo-sub { display: block; color: rgba(255,255,255,.75); font-size: 11px; margin-top: 2px; }
+.btn-quitar {
+  width: 100%; background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.3);
+  border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700;
+  padding: 10px; cursor: pointer; font-family: 'Inter', sans-serif;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-quitar:active { background: rgba(255,255,255,.3); }
+.btn-continuar-analisis {
+  width: 100%; background: #7C3AED; border: none; border-radius: 12px;
+  color: #fff; font-size: 14px; font-weight: 700; padding: 12px;
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  touch-action: manipulation; margin-top: 4px;
+}
+.btn-continuar-analisis:active { background: #6D28D9; }
 /* Card resultado IA en grid */
 .sym-ai-result-card {
   grid-column: 1/-1;
@@ -1425,14 +1442,16 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       <input type="file" id="symPhoto" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
     </div>
 
-    <!-- Card foto IA — estado con foto (oculto hasta que se suba) -->
-    <div class="sym-card sym-card-photo has-photo" id="photoCardFilled" style="display:none">
-      <img class="photo-thumb" id="photoThumb" src="" alt="foto">
-      <div class="photo-info">
-        <span class="lbl">📷 Foto adjunta</span>
-        <span class="sub" id="photoCardSub">Analizando con IA…</span>
+    <!-- Card foto IA — estado con foto -->
+    <div class="sym-card-photo-filled" id="photoCardFilled" style="display:none;grid-column:1/-1">
+      <div class="photo-filled-row">
+        <img class="photo-thumb" id="photoThumb" src="" alt="foto">
+        <div class="photo-info">
+          <span class="photo-lbl">📷 Foto adjunta</span>
+          <span class="photo-sub" id="photoCardSub">Selecciona también tus síntomas arriba</span>
+        </div>
       </div>
-      <button class="sym-photo-remove-card" onclick="removePhoto(event)">Quitar</button>
+      <button class="btn-quitar" id="btnQuitar" type="button" onclick="removePhoto()">✕ Quitar foto</button>
     </div>
 
     <!-- Resultado análisis IA -->
@@ -1444,6 +1463,7 @@ html, body { height: 100%; overflow: hidden; background: var(--navy); font-famil
       </div>
       <div class="ai-text" id="symAiText"></div>
       <p class="ai-disclaimer">Análisis orientativo. No reemplaza la evaluación clínica presencial.</p>
+      <button class="btn-continuar-analisis" id="btnContinuarAnalisis" style="display:none" onclick="continueAfterAnalysis()">Continuar el triaje →</button>
     </div>
   </div>
   <div class="sym-footer">
@@ -2063,81 +2083,102 @@ function selSym(card) {
 function handlePhoto(input) {
   const file = input.files[0];
   if (!file) return;
+  ST.photoType = file.type;
   const reader = new FileReader();
   reader.onload = e => {
     ST.photo = e.target.result;
-    // Swap cards
     document.getElementById('photoCard').style.display = 'none';
-    const filled = document.getElementById('photoCardFilled');
-    filled.style.display = 'flex';
+    document.getElementById('photoCardFilled').style.display = 'flex';
     document.getElementById('photoThumb').src = e.target.result;
-    document.getElementById('photoCardSub').textContent = 'Analizando con IA…';
+    document.getElementById('photoCardSub').textContent = 'Foto lista · Selecciona también tus síntomas arriba';
+    document.getElementById('symAiResult').style.display = 'none';
     if (!ST.sym) {
       ST.sym = 'otro'; ST.rama = 'dental';
       document.getElementById('btnSymNext').classList.add('ready');
     }
-    analyzeSymPhoto(e.target.result, file.type);
   };
   reader.readAsDataURL(file);
 }
 
-function removePhoto(evt) {
-  if (evt) evt.stopPropagation();
+function removePhoto() {
   ST.photo = null;
+  ST.photoType = null;
   document.getElementById('symPhoto').value = '';
   document.getElementById('photoCardFilled').style.display = 'none';
   document.getElementById('photoCard').style.display = '';
   document.getElementById('symAiResult').style.display = 'none';
 }
 
-async function analyzeSymPhoto(dataUrl, mimeType) {
+let _pendingFlow = null;
+
+async function analyzeSymPhoto(dataUrl, mimeType, symptom, desc) {
   const resultBox = document.getElementById('symAiResult');
-  const textEl = document.getElementById('symAiText');
-  const urgEl = document.getElementById('symAiUrgency');
-  const subEl = document.getElementById('photoCardSub');
-  resultBox.style.display = 'none';
+  const textEl    = document.getElementById('symAiText');
+  const urgEl     = document.getElementById('symAiUrgency');
+  const subEl     = document.getElementById('photoCardSub');
+  const btnCont   = document.getElementById('btnContinuarAnalisis');
+  const btnNext   = document.getElementById('btnSymNext');
+
   subEl.textContent = 'Analizando imagen con IA…';
+  textEl.textContent = 'Procesando tu foto, espera un momento…';
+  urgEl.textContent = '';
+  btnCont.style.display = 'none';
+  resultBox.style.display = 'flex';
+  if (btnNext) btnNext.disabled = true;
+
   try {
     const base64 = dataUrl.split(',')[1];
     const resp = await fetch('/api/analyze-photo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: base64, mimeType: mimeType || 'image/jpeg' })
+      body: JSON.stringify({ image: base64, mimeType: mimeType || 'image/jpeg', symptom, description: desc })
     });
     if (!resp.ok) throw new Error('Error ' + resp.status);
     const data = await resp.json();
-    subEl.textContent = 'Análisis listo — ver resultado abajo';
+    subEl.textContent = 'Análisis IA listo';
     textEl.textContent = data.diagnosis + (data.recommendation ? ' ' + data.recommendation : '');
     const u = (data.urgency || 'MODERADO').toUpperCase();
     urgEl.textContent = u;
     if (u === 'URGENTE') { urgEl.style.background = '#FEE2E2'; urgEl.style.color = '#991B1B'; }
     else if (u === 'ELECTIVO') { urgEl.style.background = '#DCFCE7'; urgEl.style.color = '#166534'; }
     else { urgEl.style.background = '#FEF9C3'; urgEl.style.color = '#854D0E'; }
-    resultBox.style.display = 'flex';
     if (u === 'URGENTE') ST.urgente = true;
   } catch(err) {
-    subEl.textContent = 'No se pudo analizar — continúa igual';
+    subEl.textContent = 'No se pudo analizar la foto';
     textEl.textContent = 'No se pudo conectar con el servicio de análisis. Puedes continuar el triaje normalmente.';
     urgEl.textContent = '';
-    resultBox.style.display = 'flex';
   }
+
+  if (btnNext) btnNext.disabled = false;
+  btnCont.style.display = 'block';
 }
 
+function continueAfterAnalysis() {
+  if (_pendingFlow) { _pendingFlow(); _pendingFlow = null; }
+}
 
 function startFlow() {
-  if (!ST.sym) return;
+  if (!ST.sym && !ST.photo) return;
   ST.desc = (document.getElementById('symDesc') || {value:''}).value.trim();
   ST.answers = {};
   ST.dolor = null;
   if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
 
-  // Fast-track non-symptom flows
-  if (['estetico', 'implante', 'preventivo'].includes(ST.rama)) {
-    runAnalysis(ST.rama); return;
+  const proceed = () => {
+    if (['estetico', 'implante', 'preventivo'].includes(ST.rama)) {
+      runAnalysis(ST.rama); return;
+    }
+    buildSwipeFlow();
+    go('sSwipe');
+  };
+
+  if (ST.photo) {
+    _pendingFlow = proceed;
+    analyzeSymPhoto(ST.photo, ST.photoType || 'image/jpeg', ST.sym, ST.desc);
+    return;
   }
-  // Start swipe flow
-  buildSwipeFlow();
-  go('sSwipe');
+
+  proceed();
 }
 
 // ════════════════════════════════════════════════════════
