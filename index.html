@@ -2121,11 +2121,6 @@ async function analyzeSymPhoto(dataUrl, mimeType) {
   }
 }
 
-function removePhoto() {
-  ST.photo = null;
-  document.getElementById('symPhoto').value = '';
-  document.getElementById('photoPreview').style.display = 'none';
-}
 
 function startFlow() {
   if (!ST.sym) return;
