@@ -2182,27 +2182,29 @@ Criterios de urgencia:
 - ELECTIVO: condición estética, desgaste leve, restauración fracturada sin dolor`;
 
   const gk = ['AQ.Ab8RN6It','lZ7IHES-86gf93f','LL0KtSe5_7ARleloy501H2ZxF5Q'].join('');
+  const MODELS = [
+    'gemini-2.5-flash','gemini-2.5-flash-preview-05-20',
+    'gemini-2.5-pro','gemini-1.5-flash','gemini-1.5-pro','gemini-pro-vision'
+  ];
   try {
     const base64 = dataUrl.split(',')[1];
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${gk}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { inline_data: { mime_type: mimeType || 'image/jpeg', data: base64 } },
-            { text: prompt }
-          ]}],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 600 }
-        })
-      }
-    );
-    if (!r.ok) {
-      const errBody = await r.text();
-      throw new Error(`HTTP ${r.status}: ${errBody.slice(0,120)}`);
+    const body = JSON.stringify({
+      contents: [{ parts: [
+        { inline_data: { mime_type: mimeType || 'image/jpeg', data: base64 } },
+        { text: prompt }
+      ]}],
+      generationConfig: { temperature: 0.2, maxOutputTokens: 600 }
+    });
+    let raw, lastErr;
+    for (const model of MODELS) {
+      const r = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${gk}`,
+        { method:'POST', headers:{'Content-Type':'application/json'}, body }
+      );
+      if (r.ok) { raw = await r.json(); break; }
+      lastErr = `${model}: ${r.status}`;
     }
-    const raw = await r.json();
+    if (!raw) throw new Error('Sin modelos disponibles — ' + lastErr);
     const txt = raw.candidates?.[0]?.content?.parts?.[0]?.text || '';
     const data = JSON.parse(txt.replace(/```json|```/g,'').trim());
     textEl.textContent = data.diagnosis + (data.recommendation ? ' ' + data.recommendation : '');
