@@ -2378,10 +2378,10 @@ Criterios de urgencia:
 
 function continueAfterAnalysis() {
   ST.extraSyms = [...document.querySelectorAll('.extra-chip.selected')].map(c => c.textContent.trim());
-  ST.answers = {}; ST.dolor = null;
+  ST.answers = {}; ST.dolor = null; answeredKeys = [];
   if (typeof gtag === 'function') gtag('event', 'triaje_inicio', { rama: ST.rama, sym: ST.sym });
   if (['estetico','implante','preventivo'].includes(ST.rama)) { runAnalysis(ST.rama); return; }
-  buildSwipeFlow(); go('sSwipe');
+  FLOW = buildAdaptiveQueue(); flowIdx = 0; renderDots(); showCard(0); go('sSwipe');
 }
 
 function startFlow() {
