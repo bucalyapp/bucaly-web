@@ -2132,7 +2132,7 @@ async function analyzeSymPhoto(dataUrl, mimeType, symptom, desc) {
       ? `\nSíntoma reportado: "${symptom}".${desc ? ` Descripción: "${desc}".` : ''}`
       : (desc ? `\nDescripción del paciente: "${desc}".` : '');
     const prompt = `Eres un asistente de triaje dental para Bucaly. Analiza esta imagen oral con base en evidencia científica (ADA, AAE, AAPD).${symCtx}\n\n1. DIAGNÓSTICO PRESUNTIVO: máximo 3 oraciones en español simple.\n2. URGENCIA: solo una palabra: URGENTE / MODERADO / ELECTIVO.\n   URGENTE=absceso,trauma,hemorragia,infección propagada. MODERADO=caries,gingivitis,movilidad,sensibilidad. ELECTIVO=estético,desgaste leve,sin dolor.\n3. RECOMENDACIÓN: una oración concreta.\n\nResponde SOLO en JSON (sin markdown):\n{"diagnosis":"texto","urgency":"URGENTE|MODERADO|ELECTIVO","recommendation":"texto"}`;
-    const gk = ['AQ.Ab8RN6Ke8q','nQ_7Jknj1QPH3n','ZdFQKi9WvJmqOXSkWN7w0kBTcg'].join('');
+    const gk = ['AQ.Ab8RN6It','lZ7IHES-86gf93f','LL0KtSe5_7ARleloy501H2ZxF5Q'].join('');
     const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gk}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
