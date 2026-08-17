@@ -2173,8 +2173,7 @@ function selSym(card) {
 }
 
 function photoCardClick() {
-  if (ST.photo) return; // ya tiene foto, no abrir picker
-  document.getElementById('symPhoto').click();
+  document.getElementById('scanOverlay').style.display = 'flex';
 }
 
 function handlePhoto(input) {
